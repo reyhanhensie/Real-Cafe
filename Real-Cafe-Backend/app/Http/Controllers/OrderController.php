@@ -15,10 +15,15 @@ use App\Models\MinumanPanas;
 
 class OrderController extends Controller
 {
+    public function index(){
+        $orders = Order::with('items')->get();
+        return response()->json($orders);
+    }
     // Store a newly created order in storage
     public function store(Request $request)
     {
         $request->validate([
+            'meja' => 'required|integer', // Validate meja_no
             'items' => 'required|array',
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
             'items.*.id' => 'required|integer',
@@ -47,7 +52,6 @@ class OrderController extends Controller
                 'item_type' => $item['type'],
                 'quantity' => $item['qty'],
                 'price' => $itemPrice,
-                'item_name' => $menuItem->name, // Set item_name based on the model
             ];
     
             // Subtract the quantity from the stock
@@ -57,6 +61,7 @@ class OrderController extends Controller
         // Create the order
         $order = Order::create([
             'total_price' => $totalPrice,
+            'meja_no' => $request->meja, // Add meja_no here
         ]);
     
         // Save order items
@@ -64,6 +69,17 @@ class OrderController extends Controller
     
         return response()->json($order->load('items'), 201);
     }
+    
+    public function markAsCompleted($id)
+{
+    $order = Order::findOrFail($id);
+
+    // Update the status to 'completed'
+    $order->update(['status' => 'completed']);
+
+    return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
+}
+
     
     
 

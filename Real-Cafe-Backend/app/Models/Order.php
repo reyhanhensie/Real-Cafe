@@ -2,17 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
-
-    // Fillable attributes
-    protected $fillable = [
-        'total_price',
-    ];
+    protected $fillable = ['total_price','meja_no', 'status']; // Include 'status' in fillable
 
     // Define the relationship with OrderItem
     public function items()
