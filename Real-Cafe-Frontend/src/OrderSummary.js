@@ -5,7 +5,8 @@ import "./OrderSummary.css"; // Import custom styling
 const OrderSummary = () => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
-  const [strokedItems, setStrokedItems] = useState([]); // Track stroked items
+  const [strokedItems, setStrokedItems] = useState({}); // Track stroked items by order_id and item_name
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -16,7 +17,14 @@ const OrderSummary = () => {
       }
     };
 
-    fetchOrders();
+    fetchOrders(); // Fetch orders on initial render
+
+    const intervalId = setInterval(() => {
+      // Fetch orders every minute
+      fetchOrders();
+    }, 30000); // 60,000 milliseconds = 1 minute
+
+    return () => clearInterval(intervalId); // Clear interval on component unmount
   }, []);
 
   const groupItemsByType = (items) => {
@@ -33,19 +41,23 @@ const OrderSummary = () => {
     try {
       await axios.patch(`http://127.0.0.1:8000/api/order/${orderId}/complete`);
       // Refresh orders list after marking as completed
-      const response = await axios.get("http://127.0.0.1:8000/api/orders");
+      const response = await axios.get("http://127.0.0.1:8000/api/live-orders");
       setOrders(response.data);
     } catch (err) {
       setError("Error completing the order");
     }
   };
-  const handleItemClick = (itemName) => {
-    setStrokedItems(
-      (prevStrokedItems) =>
-        prevStrokedItems.includes(itemName)
-          ? prevStrokedItems.filter((name) => name !== itemName) // Remove stroke if already stroked
-          : [...prevStrokedItems, itemName] // Add stroke if not already stroked
-    );
+
+  const handleItemClick = (orderId, itemName) => {
+    setStrokedItems((prevStrokedItems) => {
+      const orderStrokedItems = prevStrokedItems[orderId] || [];
+      return {
+        ...prevStrokedItems,
+        [orderId]: orderStrokedItems.includes(itemName)
+          ? orderStrokedItems.filter((name) => name !== itemName) // Remove stroke if already stroked
+          : [...orderStrokedItems, itemName] // Add stroke if not already stroked
+      };
+    });
   };
 
   return (
@@ -53,11 +65,11 @@ const OrderSummary = () => {
       <h2>Pesanan</h2>
       {error && <p className="error">{error}</p>}
       <div className="orders-list">
-        {orders.map((order, orderIndex) => (
+        {orders.map((order) => (
           <div key={order.id} className="order-card">
             <h3>Meja No: {order.meja_no}</h3>
             <h4>Status: {order.status}</h4>
-            <h5>Urutan ke-{orderIndex + 1}</h5> {/* Display order number */}
+            <h5>Urutan ke-{orders.indexOf(order) + 1}</h5> {/* Display order number */}
             {Object.entries(groupItemsByType(order.items)).map(
               ([type, items]) => (
                 <div key={type} className="order-category">
@@ -67,11 +79,11 @@ const OrderSummary = () => {
                       <li key={index} className="order-item">
                         <span
                           className={`item-name ${
-                            strokedItems.includes(item.item_name)
+                            (strokedItems[order.id] || []).includes(item.item_name)
                               ? "stroked"
                               : ""
                           }`}
-                          onClick={() => handleItemClick(item.item_name)}
+                          onClick={() => handleItemClick(order.id, item.item_name)}
                         >
                           {item.item_name}
                         </span>
