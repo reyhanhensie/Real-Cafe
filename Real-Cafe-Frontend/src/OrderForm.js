@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import './OrderForm.css'; // Import custom styling
 
 const OrderForm = () => {
-  const [categories, setCategories] = useState([
+  const [categories] = useState([
     'Camilan', 'Coffe', 'Jus', 'Lalapan', 'Makanan', 'Milkshake', 'MinumanDingin', 'MinumanPanas'
   ]);
   const [selectedCategory, setSelectedCategory] = useState('Makanan');
@@ -13,7 +12,6 @@ const OrderForm = () => {
   const [mejaNo, setMejaNo] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -29,8 +27,8 @@ const OrderForm = () => {
   }, [selectedCategory]);
 
   const handleAddItem = (id, price) => {
-    setOrderItems([...orderItems, { id, qty: 1, price }]);
-    calculateTotalPrice([...orderItems, { id, qty: 1, price }]);
+    setOrderItems([...orderItems, { type: selectedCategory.toLowerCase(), id, qty: 1, price }]);
+    calculateTotalPrice([...orderItems, { type: selectedCategory.toLowerCase(), id, qty: 1, price }]);
   };
 
   const handleChangeQty = (index, qty) => {
@@ -46,21 +44,37 @@ const OrderForm = () => {
   };
 
   const handleSubmit = async () => {
-    if (!mejaNo) {
-      setError('Meja No is required');
+    // Check if mejaNo is a valid number
+    const mejaNoNumber = parseInt(mejaNo, 10);
+    if (isNaN(mejaNoNumber)) {
+      setError('Meja No must be a valid number');
       return;
     }
-    
+  
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/order', {
-        meja_no: mejaNo,
-        items: orderItems,
+      // Prepare the order items with their respective types
+      const formattedItems = orderItems.map(item => ({
+        type: selectedCategory.toLowerCase(), // Convert category to lowercase as required by the API
+        id: item.id,
+        qty: item.qty,
+      }));
+  
+      console.log('Sending data to /send-order:', formattedItems); // Log the data
+      // Send the request to the API
+      const response = await axios.post('http://127.0.0.1:8000/api/send-order', {
+        meja: mejaNoNumber, // Ensure meja_no is a number
+        items: formattedItems,
       });
-      navigate(`/order-summary?id=${response.data.id}`);
+      alert(`Order placed successfully! Order ID: ${response.data.id}`);
+      setOrderItems([]); // Reset the order form
+      setTotalPrice(0); // Reset the total price
+      setMejaNo(''); // Reset Meja No
     } catch (err) {
       setError('Error placing the order');
     }
   };
+  
+  
 
   return (
     <div className="order-form">
