@@ -9,7 +9,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 use App\Http\Controllers\FoodMenuController;
+use App\Http\Controllers\DrinkMenuController;
 
 Route::apiResource('food-menu', FoodMenuController::class);
+Route::apiResource('drink-menu', DrinkMenuController::class);
 
 Route::get('/test', [TestController::class, 'index']);
