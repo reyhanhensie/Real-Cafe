@@ -52,6 +52,7 @@ class OrderController extends Controller
                 'item_type' => $item['type'],
                 'quantity' => $item['qty'],
                 'price' => $itemPrice,
+                'item_name' => $menuItem->name,
             ];
     
             // Subtract the quantity from the stock

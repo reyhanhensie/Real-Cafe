@@ -9,9 +9,24 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 use App\Http\Controllers\CamilanController;
+use App\Http\Controllers\CoffeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\JusController;
+use App\Http\Controllers\LalapanController;
+use App\Http\Controllers\MakananController;
+use App\Http\Controllers\MilkshakeController;
+use App\Http\Controllers\MinumanDinginController;
+use App\Http\Controllers\MinumanPanasController;
 
-Route::apiResource('camilan', CamilanController::class);
+Route::apiResource('Camilan', CamilanController::class);
+Route::apiResource('Coffe', CoffeController::class);
+Route::apiResource('Jus', JusController::class);
+Route::apiResource('Lalapan', LalapanController::class);
+Route::apiResource('Makanan', MakananController::class);
+Route::apiResource('Milkshake', MilkshakeController::class);
+Route::apiResource('MinumanDingin', MinumanDinginController::class);
+Route::apiResource('MinumanPanas', MinumanPanasController::class);
+
 
 Route::get('/orders', [OrderController::class, 'index']); // Create an order
 Route::post('/order', [OrderController::class, 'store']); // Create an order
