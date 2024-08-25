@@ -9,7 +9,7 @@ const OrderSummary = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/orders'); // Adjust API endpoint as needed
+        const response = await axios.get('http://127.0.0.1:8000/api/orders');
         setOrders(response.data);
       } catch (err) {
         setError('Error fetching orders');
@@ -19,24 +19,35 @@ const OrderSummary = () => {
     fetchOrders();
   }, []);
 
+  const groupItemsByType = (items) => {
+    return items.reduce((acc, item) => {
+      if (!acc[item.item_type]) {
+        acc[item.item_type] = [];
+      }
+      acc[item.item_type].push(item.item_name);
+      return acc;
+    }, {});
+  };
+
   return (
     <div className="order-summary">
-      <h2>Order Summary</h2>
+      <h2>Pesanan</h2>
       {error && <p className="error">{error}</p>}
       <div className="orders-list">
         {orders.map((order) => (
           <div key={order.id} className="order-card">
-            <h3>Order ID: {order.id}</h3>
-            <p>Total Price: Rp. {order.total_price}</p>
-            <p>Status: {order.status}</p>
-            <p>Meja No: {order.meja_no}</p>
-            <ul>
-              {order.items.map((item) => (
-                <li key={item.id}>
-                  {item.item_name} - Qty: {item.quantity} - Rp. {item.price}
-                </li>
-              ))}
-            </ul>
+            <h3>Meja No: {order.meja_no}</h3>
+            <h4>Status: {order.status}</h4>
+            {Object.entries(groupItemsByType(order.items)).map(([type, items]) => (
+              <div key={type} className="order-category">
+                <h5>{type.charAt(0).toUpperCase() + type.slice(1)}</h5>
+                <ul>
+                  {items.map((itemName, index) => (
+                    <li key={index}>{itemName}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         ))}
       </div>
