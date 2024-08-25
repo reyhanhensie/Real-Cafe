@@ -29,6 +29,6 @@ Route::apiResource('MinumanPanas', MinumanPanasController::class);
 
 
 Route::get('/orders', [OrderController::class, 'index']); // Create an order
-Route::post('/order', [OrderController::class, 'store']); // Create an order
+Route::post('/send-order', [OrderController::class, 'store']); // Create an order
 Route::get('/order/{id}', [OrderController::class, 'show']); // Retrieve an order
 Route::patch('/order/{id}/complete', [OrderController::class, 'markAsCompleted']);
