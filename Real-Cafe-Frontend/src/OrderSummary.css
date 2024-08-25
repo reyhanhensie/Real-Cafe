@@ -53,3 +53,7 @@
   text-align: right;
   flex-basis: 80px; /* Adjust as needed */
 }
+.item-name.stroked {
+  text-decoration: line-through; /* Adds the stroke effect */
+  color: red; /* Optional: change color to highlight stroked text */
+}
