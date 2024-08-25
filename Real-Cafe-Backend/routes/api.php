@@ -28,6 +28,7 @@ Route::apiResource('MinumanDingin', MinumanDinginController::class);
 Route::apiResource('MinumanPanas', MinumanPanasController::class);
 
 
+Route::get('/live-orders', [OrderController::class, 'live']); // Create an order
 Route::get('/orders', [OrderController::class, 'index']); // Create an order
 Route::post('/send-order', [OrderController::class, 'store']); // Create an order
 Route::get('/order/{id}', [OrderController::class, 'show']); // Retrieve an order

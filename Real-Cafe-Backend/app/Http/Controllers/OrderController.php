@@ -15,8 +15,15 @@ use App\Models\MinumanPanas;
 
 class OrderController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $orders = Order::with('items')->get();
+        return response()->json($orders);
+    }
+    public function live()
+    {
+        // Filter orders with status 'pending'
+        $orders = Order::where('status', 'pending')->with('items')->get();
         return response()->json($orders);
     }
     // Store a newly created order in storage
@@ -29,23 +36,23 @@ class OrderController extends Controller
             'items.*.id' => 'required|integer',
             'items.*.qty' => 'required|integer|min:1',
         ]);
-    
-        $totalPrice = 0;    
+
+        $totalPrice = 0;
         $orderItems = [];
-    
+
         foreach ($request->items as $item) {
             $model = $this->getModel($item['type']);
             $menuItem = $model::findOrFail($item['id']);
-    
+
             // Check if there's enough stock
             if ($menuItem->qty < $item['qty']) {
                 return response()->json(['error' => 'Insufficient stock for item ' . $item['id']], 400);
             }
-    
+
             // Calculate price and update total
             $itemPrice = $menuItem->price * $item['qty'];
             $totalPrice += $itemPrice;
-    
+
             // Prepare order item data
             $orderItems[] = [
                 'item_id' => $item['id'],
@@ -54,35 +61,35 @@ class OrderController extends Controller
                 'price' => $itemPrice,
                 'item_name' => $menuItem->name,
             ];
-    
+
             // Subtract the quantity from the stock
             $menuItem->decrement('qty', $item['qty']);
         }
-    
+
         // Create the order
         $order = Order::create([
             'total_price' => $totalPrice,
             'meja_no' => $request->meja, // Add meja_no here
         ]);
-    
+
         // Save order items
         $order->items()->createMany($orderItems);
-    
+
         return response()->json($order->load('items'), 201);
     }
-    
+
     public function markAsCompleted($id)
-{
-    $order = Order::findOrFail($id);
+    {
+        $order = Order::findOrFail($id);
 
-    // Update the status to 'completed'
-    $order->update(['status' => 'completed']);
+        // Update the status to 'completed'
+        $order->update(['status' => 'completed']);
 
-    return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
-}
+        return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
+    }
 
-    
-    
+
+
 
     // Display the specified order
     public function show($id)
