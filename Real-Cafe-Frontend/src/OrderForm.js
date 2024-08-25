@@ -60,7 +60,7 @@ const OrderForm = () => {
 
     setAddedItems(prevAddedItems => ({
       ...prevAddedItems,
-      [selectedCategory]: new Set([...(prevAddedItems[selectedCategory] || []), id])
+      [type]: new Set([...(prevAddedItems[type] || []), id])
     }));
   };
 
@@ -71,20 +71,15 @@ const OrderForm = () => {
   
     // Update addedItems for the current category
     setAddedItems(prevAddedItems => {
-      const updatedCategoryItems = new Set(prevAddedItems[selectedCategory] || []);
+      const updatedCategoryItems = new Set(prevAddedItems[type] || []);
       updatedCategoryItems.delete(id);
-  
+
       return {
         ...prevAddedItems,
-        [selectedCategory]: updatedCategoryItems
+        [type]: updatedCategoryItems
       };
     });
   };
-  
-
-  
-  
-  
 
   const handleChangeQty = (index, qty) => {
     const newOrderItems = [...orderItems];
@@ -148,7 +143,7 @@ const OrderForm = () => {
             {menuItems.map((item) => (
               <li key={item.id} className="menu-item">
                 <span>{item.name} - Rp. {item.price}</span>
-                {!addedItems[selectedCategory]?.has(item.id) && (
+                {!addedItems[selectedCategory.toLowerCase().replace(/\s+/g, '')]?.has(item.id) && (
                   <button onClick={() => handleAddItem(item.id, item.name, item.price)}>Add</button>
                 )}
               </li>
@@ -160,21 +155,21 @@ const OrderForm = () => {
       <div className="order-summary">
         <h3>Your Order</h3>
         <ul>
-{orderItems.map((item, index) => (
-  <li key={index} className="order-item">
-    {item.name} - Qty:
-    <input
-      type="number"
-      value={item.qty}
-      min="1"
-      onChange={(e) => handleChangeQty(index, parseInt(e.target.value, 10))}
-    />
-    - Rp. {item.price * item.qty}
-    <button onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
-  </li>
-))}
-
-
+          {orderItems.map((item, index) => (
+            <li key={index} className="order-item">
+              {item.name} - Qty:
+              <input
+                type="number"
+                value={item.qty}
+                min="1"
+                onChange={(e) =>
+                  handleChangeQty(index, parseInt(e.target.value, 10))
+                }
+              />
+              - Rp. {item.price * item.qty}
+              <button onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
+            </li>
+          ))}
         </ul>
         <input
           type="text"
