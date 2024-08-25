@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DrinkMenu; // Import your model
+use App\Models\Milkshake; // Import your model
 
-class DrinkMenuController extends Controller
+class MilkshakeController extends Controller
 {
     // Display a listing of the resource
     public function index()
     {
-        return DrinkMenu::all(); // Return all Drink menu items
+        return Milkshake::all(); // Return all food menu items
     }
 
     // Store a newly created resource in storage
@@ -22,19 +22,19 @@ class DrinkMenuController extends Controller
             'qty' => 'required|integer',
         ]);
 
-        $DrinkMenu = DrinkMenu::create($request->all());
+        $Milkshake = Milkshake::create($request->all());
 
-        return response()->json($DrinkMenu, 201);
+        return response()->json($Milkshake, 201);
     }
 
     // Display the specified resource
-    public function show(DrinkMenu $DrinkMenu)
+    public function show(Milkshake $Milkshake)
     {
-        return $DrinkMenu;
+        return $Milkshake;
     }
 
     // Update the specified resource in storage
-    public function update(Request $request, DrinkMenu $DrinkMenu)
+    public function update(Request $request, Milkshake $Milkshake)
     {
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
@@ -42,15 +42,15 @@ class DrinkMenuController extends Controller
             'qty' => 'sometimes|required|integer',
         ]);
 
-        $DrinkMenu->update($request->all());
+        $Milkshake->update($request->all());
 
-        return response()->json($DrinkMenu, 200);
+        return response()->json($Milkshake, 200);
     }
 
     // Remove the specified resource from storage
-    public function destroy(DrinkMenu $DrinkMenu)
+    public function destroy(Milkshake $Milkshake)
     {
-        $DrinkMenu->delete();
+        $Milkshake->delete();
 
         return response()->json(null, 204);
     }

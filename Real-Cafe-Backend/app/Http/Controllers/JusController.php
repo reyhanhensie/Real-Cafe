@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\FoodMenu; // Import your model
+use App\Models\Jus; // Import your model
 
-class FoodMenuController extends Controller
+class JusController extends Controller
 {
     // Display a listing of the resource
     public function index()
     {
-        return FoodMenu::all(); // Return all food menu items
+        return Jus::all(); // Return all food menu items
     }
 
     // Store a newly created resource in storage
@@ -22,19 +22,19 @@ class FoodMenuController extends Controller
             'qty' => 'required|integer',
         ]);
 
-        $foodMenu = FoodMenu::create($request->all());
+        $Jus = Jus::create($request->all());
 
-        return response()->json($foodMenu, 201);
+        return response()->json($Jus, 201);
     }
 
     // Display the specified resource
-    public function show(FoodMenu $foodMenu)
+    public function show(Jus $Jus)
     {
-        return $foodMenu;
+        return $Jus;
     }
 
     // Update the specified resource in storage
-    public function update(Request $request, FoodMenu $foodMenu)
+    public function update(Request $request, Jus $Jus)
     {
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
@@ -42,15 +42,15 @@ class FoodMenuController extends Controller
             'qty' => 'sometimes|required|integer',
         ]);
 
-        $foodMenu->update($request->all());
+        $Jus->update($request->all());
 
-        return response()->json($foodMenu, 200);
+        return response()->json($Jus, 200);
     }
 
     // Remove the specified resource from storage
-    public function destroy(FoodMenu $foodMenu)
+    public function destroy(Jus $Jus)
     {
-        $foodMenu->delete();
+        $Jus->delete();
 
         return response()->json(null, 204);
     }
