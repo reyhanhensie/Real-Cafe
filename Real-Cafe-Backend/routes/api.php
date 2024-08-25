@@ -15,3 +15,8 @@ Route::apiResource('food-menu', FoodMenuController::class);
 Route::apiResource('drink-menu', DrinkMenuController::class);
 
 Route::get('/test', [TestController::class, 'index']);
+
+use App\Http\Controllers\OrderController;
+
+Route::post('/orders', [OrderController::class, 'store']); // Create an order
+Route::get('/orders/{id}', [OrderController::class, 'show']); // Retrieve an order

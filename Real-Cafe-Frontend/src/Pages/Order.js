@@ -6,7 +6,7 @@ const Order = () => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/test')
+        axios.get('http://127.0.0.1:8000/api/food-menu')
             .then(response => {
                 setData(response.data.message);
             })
