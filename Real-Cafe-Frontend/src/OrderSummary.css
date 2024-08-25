@@ -48,3 +48,8 @@
 .order-card li span.qty {
   text-align: right;
 }
+
+.item-qty {
+  text-align: right;
+  flex-basis: 80px; /* Adjust as needed */
+}

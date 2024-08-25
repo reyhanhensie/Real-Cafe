@@ -24,7 +24,7 @@ const OrderSummary = () => {
       if (!acc[item.item_type]) {
         acc[item.item_type] = [];
       }
-      acc[item.item_type].push(item.item_name);
+      acc[item.item_type].push(item);
       return acc;
     }, {});
   };
@@ -42,8 +42,11 @@ const OrderSummary = () => {
               <div key={type} className="order-category">
                 <h5>{type.charAt(0).toUpperCase() + type.slice(1)}</h5>
                 <ul>
-                  {items.map((itemName, index) => (
-                    <li key={index}>{itemName}</li>
+                  {items.map((item, index) => (
+                    <li key={index} className="order-item">
+                      <span className="item-name">{item.item_name}</span>
+                      <span className="item-qty">x{item.quantity}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
