@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('drink_menu', function (Blueprint $table) {
+        Schema::create('camilan', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
             $table->string('name'); // Food name
             $table->decimal('price', 8); // Price with 8 digits total and 2 decimals
             $table->integer('qty'); // Quantity
-            $table->timestamp('created_at'); // Created at and updated at timestamps
+            $table->timestamps(); // Created at and updated at timestamps
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('drink_menu');
+        Schema::dropIfExists('camilan');
     }
 };

@@ -20,7 +20,7 @@ class OrderController extends Controller
             'items.*.qty' => 'required|integer|min:1',
         ]);
 
-        $totalPrice = 0;
+        $totalPrice = 0;    
         $orderItems = [];
 
         foreach ($request->items as $item) {
