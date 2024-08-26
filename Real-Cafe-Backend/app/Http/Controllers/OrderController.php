@@ -30,7 +30,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'message'=> 'nullable',
+            // 'message'=> 'nullable',
             'meja' => 'required|integer', // Validate meja_no
             'items' => 'required|array',
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
