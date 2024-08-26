@@ -64,7 +64,7 @@ const OrderSummary = () => {
 
   return (
       <div className="order-summary">
-        <h2>Pesanan</h2>
+        <h2>ORDERS</h2>
         {error && <p className="error">{error}</p>}
         <div className="orders-list">
           {orders.map((order) => (
@@ -72,6 +72,7 @@ const OrderSummary = () => {
               <h3>Meja: {order.meja_no}</h3>
               <h5>No Urut : {orders.indexOf(order) + 1}</h5>{" "}
               {/* Display order number */}
+              <div className="List">
               {Object.entries(groupItemsByType(order.items)).map(
                 ([type, items]) => (
                   <div key={type} className="order-category">
@@ -100,23 +101,22 @@ const OrderSummary = () => {
                   </div>
                 )
               )}
-              <div className="bottom-interact">
+              </div>
                 {order.message && (
                   <div className="order-message">
                     <strong>Catatan:</strong>
                     <p>{order.message}</p>
                   </div>
                 )}
-                {order.status !== "completed" && (
+                  <div className="order-mark"> 
                   <button
                     className="Pesanan-button"
                     onClick={() => handleCompleteOrder(order.id)}
                   >
                     Pesanan Selesai
                   </button>
-                )}
+                  </div>
               </div>
-            </div>
           ))}
         </div>
       </div>
