@@ -23,7 +23,6 @@ const OrderForm = () => {
   const [message, setMessage] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
-  const [showMessageForm, setShowMessageForm] = useState(false); // Track visibility of the message form
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -103,10 +102,6 @@ const OrderForm = () => {
       return;
     }
 
-    if (showMessageForm && message.trim() === "") {
-      setError("Message cannot be empty if the message form is displayed");
-      return;
-    }
 
     try {
       const formattedItems = orderItems.map((item) => ({
@@ -115,11 +110,16 @@ const OrderForm = () => {
         qty: item.qty,
       }));
 
+      if (formattedItems.length === 0) {
+        setError("ERROR : Minimal 1 Pesanan");
+        return;
+      }
+
       const response = await axios.post(
         "http://127.0.0.1:8000/api/send-order",
         {
           meja: mejaNoNumber,
-          message: message ? message : "", // Send message only if the form is shown
+          message: message,
           items: formattedItems,
         }
       );
@@ -129,10 +129,9 @@ const OrderForm = () => {
       setTotalPrice(0);
       setMejaNo("");
       setMessage(""); // Clear the message after submission
-      setShowMessageForm(false); // Hide the message form after submission
       setAddedItems({});
     } catch (err) {
-      setError("Error placing the order");
+      setError("Error, Stock Habis");
     }
   };
 

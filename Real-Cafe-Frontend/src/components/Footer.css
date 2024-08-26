@@ -1,1 +1,9 @@
-/* Styles for Navbar component */
+footer {
+    background-color: #38220f;
+    /* padding: 5px; */
+    text-align: center;
+    color: #ece0d1;
+    font-size: small;
+    color: #ece0d1;
+    /* margin-bottom: 0%; */
+  }
