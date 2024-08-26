@@ -38,6 +38,8 @@
 
 .order-summary {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 button {
@@ -46,4 +48,9 @@ button {
 
 input {
   margin-left: 5px;
+}
+
+.message-input {
+  margin-top: 10px; /* Add margin on top to separate from Meja No */
+  resize: vertical; /* Allow vertical resizing */
 }

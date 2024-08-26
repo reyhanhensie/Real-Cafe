@@ -1,37 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './OrderForm.css'; // Import custom styling
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./OrderForm.css"; // Import custom styling
 
 const OrderForm = () => {
-  // Mapping for display names to API keys
   const categoryMap = {
-    'Camilan': 'Camilan',
-    'Coffe': 'Coffe',
-    'Jus': 'Jus',
-    'Lalapan': 'Lalapan',
-    'Makanan': 'Makanan',
-    'Milkshake': 'Milkshake',
-    'Minuman Dingin': 'MinumanDingin',
-    'Minuman Panas': 'MinumanPanas',
+    Camilan: "Camilan",
+    Coffe: "Coffe",
+    Jus: "Jus",
+    Lalapan: "Lalapan",
+    Makanan: "Makanan",
+    Milkshake: "Milkshake",
+    "Minuman Dingin": "MinumanDingin",
+    "Minuman Panas": "MinumanPanas",
   };
 
   const [categories] = useState(Object.keys(categoryMap));
-  const [selectedCategory, setSelectedCategory] = useState('Makanan');
+  const [selectedCategory, setSelectedCategory] = useState("Makanan");
   const [menuItems, setMenuItems] = useState([]);
   const [orderItems, setOrderItems] = useState([]);
-  const [addedItems, setAddedItems] = useState({}); // Track added items by category
-  const [mejaNo, setMejaNo] = useState('');
+  const [addedItems, setAddedItems] = useState({});
+  const [mejaNo, setMejaNo] = useState("");
+  const [message, setMessage] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
+  const [showMessageForm, setShowMessageForm] = useState(false); // Track visibility of the message form
 
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const apiCategory = categoryMap[selectedCategory]; // Use API key
-        const response = await axios.get(`http://127.0.0.1:8000/api/${apiCategory}`);
+        const apiCategory = categoryMap[selectedCategory];
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/${apiCategory}`
+        );
         setMenuItems(response.data);
       } catch (err) {
-        setError('Error fetching menu items');
+        setError("Error fetching menu items");
       }
     };
 
@@ -39,44 +42,44 @@ const OrderForm = () => {
   }, [selectedCategory]);
 
   useEffect(() => {
-    // Update addedItems when orderItems change
-    setAddedItems(orderItems.reduce((acc, item) => {
-      if (!acc[item.type]) acc[item.type] = new Set();
-      acc[item.type].add(item.id);
-      return acc;
-    }, {}));
+    setAddedItems(
+      orderItems.reduce((acc, item) => {
+        if (!acc[item.type]) acc[item.type] = new Set();
+        acc[item.type].add(item.id);
+        return acc;
+      }, {})
+    );
   }, [orderItems]);
 
   const handleAddItem = (id, name, price) => {
-    const type = selectedCategory
-      .toLowerCase()
-      .replace(/\s+/g, ''); // Convert to lower case and remove spaces
-    
-    setOrderItems(prevOrderItems => {
+    const type = selectedCategory.toLowerCase().replace(/\s+/g, "");
+
+    setOrderItems((prevOrderItems) => {
       const newItems = [...prevOrderItems, { type, id, name, qty: 1, price }];
       calculateTotalPrice(newItems);
       return newItems;
     });
 
-    setAddedItems(prevAddedItems => ({
+    setAddedItems((prevAddedItems) => ({
       ...prevAddedItems,
-      [type]: new Set([...(prevAddedItems[type] || []), id])
+      [type]: new Set([...(prevAddedItems[type] || []), id]),
     }));
   };
 
   const handleRemoveItem = (id, type) => {
-    const newOrderItems = orderItems.filter(item => !(item.id === id && item.type === type));
+    const newOrderItems = orderItems.filter(
+      (item) => !(item.id === id && item.type === type)
+    );
     setOrderItems(newOrderItems);
     calculateTotalPrice(newOrderItems);
-  
-    // Update addedItems for the current category
-    setAddedItems(prevAddedItems => {
+
+    setAddedItems((prevAddedItems) => {
       const updatedCategoryItems = new Set(prevAddedItems[type] || []);
       updatedCategoryItems.delete(id);
 
       return {
         ...prevAddedItems,
-        [type]: updatedCategoryItems
+        [type]: updatedCategoryItems,
       };
     });
   };
@@ -96,29 +99,40 @@ const OrderForm = () => {
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
     if (isNaN(mejaNoNumber)) {
-      setError('Meja No must be a valid number');
+      setError("Meja No must be a valid number");
+      return;
+    }
+
+    if (showMessageForm && message.trim() === "") {
+      setError("Message cannot be empty if the message form is displayed");
       return;
     }
 
     try {
-      const formattedItems = orderItems.map(item => ({
+      const formattedItems = orderItems.map((item) => ({
         type: item.type,
         id: item.id,
         qty: item.qty,
       }));
 
-      console.log('Sending data to /send-order:', formattedItems);
-      const response = await axios.post('http://127.0.0.1:8000/api/send-order', {
-        meja: mejaNoNumber,
-        items: formattedItems,
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/send-order",
+        {
+          meja: mejaNoNumber,
+          message: message ? message : "", // Send message only if the form is shown
+          items: formattedItems,
+        }
+      );
+
       alert(`Order placed successfully! Order ID: ${response.data.id}`);
       setOrderItems([]);
       setTotalPrice(0);
-      setMejaNo('');
-      setAddedItems({}); // Reset added items for all categories
+      setMejaNo("");
+      setMessage(""); // Clear the message after submission
+      setShowMessageForm(false); // Hide the message form after submission
+      setAddedItems({});
     } catch (err) {
-      setError('Error placing the order');
+      setError("Error placing the order");
     }
   };
 
@@ -129,7 +143,9 @@ const OrderForm = () => {
           {categories.map((category) => (
             <button
               key={category}
-              className={`nav-button ${selectedCategory === category ? 'active' : ''}`}
+              className={`nav-button ${
+                selectedCategory === category ? "active" : ""
+              }`}
               onClick={() => setSelectedCategory(category)}
             >
               {category}
@@ -142,9 +158,19 @@ const OrderForm = () => {
           <ul>
             {menuItems.map((item) => (
               <li key={item.id} className="menu-item">
-                <span>{item.name} - Rp. {item.price}</span>
-                {!addedItems[selectedCategory.toLowerCase().replace(/\s+/g, '')]?.has(item.id) && (
-                  <button onClick={() => handleAddItem(item.id, item.name, item.price)}>Add</button>
+                <span>
+                  {item.name} - Rp. {item.price}
+                </span>
+                {!addedItems[
+                  selectedCategory.toLowerCase().replace(/\s+/g, "")
+                ]?.has(item.id) && (
+                  <button
+                    onClick={() =>
+                      handleAddItem(item.id, item.name, item.price)
+                    }
+                  >
+                    Add
+                  </button>
                 )}
               </li>
             ))}
@@ -167,7 +193,9 @@ const OrderForm = () => {
                 }
               />
               - Rp. {item.price * item.qty}
-              <button onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
+              <button onClick={() => handleRemoveItem(item.id, item.type)}>
+                X
+              </button>
             </li>
           ))}
         </ul>
@@ -176,6 +204,13 @@ const OrderForm = () => {
           value={mejaNo}
           onChange={(e) => setMejaNo(e.target.value)}
           placeholder="Meja No"
+        />
+        <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Enter your message"
+            rows="3" // Set the textarea to have 3 rows
+            className="message-input" // Apply the class here
         />
         <h3>Total Price: Rp. {totalPrice}</h3>
         <button onClick={handleSubmit}>Place Order</button>
