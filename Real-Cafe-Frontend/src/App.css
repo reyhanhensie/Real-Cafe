@@ -1,17 +1,27 @@
-html,body {
-  font-family: Arial, sans-serif;
+html, body {
   margin: 0;
-  height: 100%;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #dbc1ac;
+
+  overflow-x: hidden; /* Prevents horizontal scroll */
+  width: 100%; /* Ensures no overflow due to width */
+  box-sizing: border-box; /* Includes padding and border in the element's width and height */
 }
 
 .app {
+  max-width: 100%;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Full viewport height */
+  min-height: 100vh; /* Ensures it takes the full height of the viewport */
 }
 
 .main-content {
-  flex: 1;
+  flex: 1; /* Allows it to grow and fill available space */
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 
