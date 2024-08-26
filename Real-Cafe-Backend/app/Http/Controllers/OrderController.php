@@ -30,6 +30,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'message'=> 'nullable',
             'meja' => 'required|integer', // Validate meja_no
             'items' => 'required|array',
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
@@ -70,6 +71,7 @@ class OrderController extends Controller
         $order = Order::create([
             'total_price' => $totalPrice,
             'meja_no' => $request->meja, // Add meja_no here
+            'message' => $request->message
         ]);
 
         // Save order items
