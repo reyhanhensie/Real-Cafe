@@ -1,3 +1,5 @@
+/* Base styles for larger screens */
+
 .order-form {
   display: flex;
   padding: 20px;
@@ -28,12 +30,9 @@
   color: white;
 }
 
-.menu-section {
-  flex: 1;
-}
-
-.menu-item {
-  margin-bottom: 10px;
+.menu-section li {
+  display: flex;
+  justify-content: space-between;
 }
 
 .order-summary {
@@ -42,8 +41,8 @@
   flex-direction: column;
 }
 
-button {
-  margin-left: 10px;
+span.item-name {
+  flex: 3;
 }
 
 input {
@@ -53,4 +52,108 @@ input {
 .message-input {
   margin-top: 10px; /* Add margin on top to separate from Meja No */
   resize: vertical; /* Allow vertical resizing */
+}
+
+.menu-item {
+  margin-bottom: 10px;
+  justify-content: space-between;
+  display: flex;
+}
+
+.item-name {
+  text-align: left;
+  font-weight: 500;
+  flex: 3;
+}
+
+.item-price {
+  text-align: left;
+  flex: 2;
+  font-weight: 500;
+}
+
+.add-icon {
+  width: 20px;  /* Adjust the size as needed */
+  height: 20px;
+}
+
+.item-add {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+li button {
+  width: 60px; /* Adjust this width as necessary */
+  text-align: center;
+}
+
+.item-add,
+.item-add-placeholder {
+  width: 60px; /* Adjust this width as necessary */
+  text-align: center;
+}
+
+ul {
+  font-size: 18px;
+}
+
+/* Media Queries for Portrait Mode on Phones */
+
+@media (max-width: 600px) {
+  .order-form {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .menu-container {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .nav-bar {
+    flex-direction: column;
+  }
+
+  .nav-button {
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .menu-section {
+    margin-bottom: 20px;
+  }
+
+  .order-summary {
+    flex: none;
+    width: 100%;
+  }
+
+  .menu-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-name,
+  .item-price {
+    text-align: center;
+    flex: none;
+  }
+
+  .item-add,
+  .item-add-placeholder {
+    width: auto;
+  }
+
+  ul {
+    font-size: 16px;
+  }
+
+  .message-input {
+    width: 100%;
+  }
 }

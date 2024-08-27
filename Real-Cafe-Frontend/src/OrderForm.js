@@ -153,19 +153,21 @@ const OrderForm = () => {
           <ul>
             {menuData[selectedCategory]?.map((item) => (
               <li key={item.id} className="menu-item">
-                <span>
-                  {item.name} - Rp. {item.price}
-                </span>
+                <span className="item-name">{item.name}</span>
+                <span className="item-price">Rp. {item.price}</span>
                 {!addedItems[
                   selectedCategory.toLowerCase().replace(/\s+/g, "")
-                ]?.has(item.id) && (
+                ]?.has(item.id) ? (
                   <button
+                    className="item-add"
                     onClick={() =>
                       handleAddItem(item.id, item.name, item.price)
                     }
                   >
-                    Add
+                    <img src="/icons/plus-solid.svg" alt="Add Icon" className="add-icon" />
                   </button>
+                ) : (
+                  <span className="item-add-placeholder"></span>
                 )}
               </li>
             ))}

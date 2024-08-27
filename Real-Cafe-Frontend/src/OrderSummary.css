@@ -1,9 +1,8 @@
-
-
 .order-summary {
   height: 100%;
   width: 100%;
   margin-top: 0;
+  overflow-x: auto;
 }
 .List{
   margin-bottom: 15%;
@@ -143,6 +142,7 @@ h2 {
 .order-message {
   margin-top: 10%;
   margin-bottom: 20%;
+  font-size: 18px;
 }
 .Pesanan-button:hover {
   background-color: #0056b3;
