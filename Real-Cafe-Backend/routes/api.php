@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\MenuController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,6 +29,7 @@ Route::apiResource('MinumanDingin', MinumanDinginController::class);
 Route::apiResource('MinumanPanas', MinumanPanasController::class);
 
 
+Route::get('Menu',[MenuController::class,'index']);
 Route::get('/live-orders', [OrderController::class, 'live']); // Create an order
 Route::get('/orders', [OrderController::class, 'index']); // Create an order
 Route::post('/send-order', [OrderController::class, 'store']); // Create an order
