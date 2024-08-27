@@ -14,7 +14,8 @@ use App\Models\MinumanPanas;
 
 class MenuController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $Camilan = Camilan::all();
         $Coffe = Coffe::all();
         $Jus = Jus::all();
@@ -23,7 +24,7 @@ class MenuController extends Controller
         $Milkshake = Milkshake::all();
         $MinumanDingin = MinumanDingin::all();
         $MinumanPanas = MinumanPanas::all();
-    
+
         return response()->json([
             'Camilan' => $Camilan,
             'Coffe' => $Coffe,
@@ -32,8 +33,7 @@ class MenuController extends Controller
             'Makanan' => $Makanan,
             'Milkshake' => $Milkshake,
             'Minuman Dingin' => $MinumanDingin,
-            'Minuman Panas'=> $MinumanPanas
-        ]
-        );
+            'Minuman Panas' => $MinumanPanas
+        ]);
     }
 }
