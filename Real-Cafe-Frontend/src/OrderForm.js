@@ -10,13 +10,13 @@ const OrderForm = () => {
     Lalapan: "Lalapan",
     Makanan: "Makanan",
     Milkshake: "Milkshake",
-    "Minuman Dingin": "MinumanDingin",
-    "Minuman Panas": "MinumanPanas",
+    "Minuman Dingin": "Minuman Dingin",
+    "Minuman Panas": "Minuman Panas",
   };
 
   const [categories] = useState(Object.keys(categoryMap));
   const [selectedCategory, setSelectedCategory] = useState("Makanan");
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuData, setMenuData] = useState({});
   const [orderItems, setOrderItems] = useState([]);
   const [addedItems, setAddedItems] = useState({});
   const [mejaNo, setMejaNo] = useState("");
@@ -27,18 +27,15 @@ const OrderForm = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const apiCategory = categoryMap[selectedCategory];
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/${apiCategory}`
-        );
-        setMenuItems(response.data);
+        const response = await axios.get(`http://127.0.0.1:8000/api/Menu`);
+        setMenuData(response.data);
       } catch (err) {
         setError("Error fetching menu items");
       }
     };
 
     fetchMenuItems();
-  }, [selectedCategory]);
+  }, []);
 
   useEffect(() => {
     setAddedItems(
@@ -102,7 +99,6 @@ const OrderForm = () => {
       return;
     }
 
-
     try {
       const formattedItems = orderItems.map((item) => ({
         type: item.type,
@@ -111,7 +107,7 @@ const OrderForm = () => {
       }));
 
       if (formattedItems.length === 0) {
-        setError("ERROR : Minimal 1 Pesanan");
+        setError("ERROR: Minimal 1 Pesanan");
         return;
       }
 
@@ -155,7 +151,7 @@ const OrderForm = () => {
         <div className="menu-section">
           <h3>{selectedCategory} Menu</h3>
           <ul>
-            {menuItems.map((item) => (
+            {menuData[selectedCategory]?.map((item) => (
               <li key={item.id} className="menu-item">
                 <span>
                   {item.name} - Rp. {item.price}
@@ -205,11 +201,11 @@ const OrderForm = () => {
           placeholder="Meja No"
         />
         <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Enter your message"
-            rows="3" // Set the textarea to have 3 rows
-            className="message-input" // Apply the class here
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Enter your message"
+          rows="3" // Set the textarea to have 3 rows
+          className="message-input" // Apply the class here
         />
         <h3>Total Price: Rp. {totalPrice}</h3>
         <button onClick={handleSubmit}>Place Order</button>
