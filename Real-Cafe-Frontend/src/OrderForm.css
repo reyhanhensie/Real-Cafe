@@ -135,6 +135,7 @@ ul {
 /* CHEKOUT PESANAN */
 .order-item{
   margin-bottom: 5px;
+  font-weight: 500;
 }
 /* Remove the spinners for WebKit browsers */
 input[type="number"]::-webkit-outer-spin-button,
@@ -160,16 +161,29 @@ input[type="number"] {
 
 .order-name {
   flex: 3;
+  font-weight: 500;
 }
 .order-price{
   flex: 3;
   align-items: right;
-  text-align: right;
-
+  text-align: left;
+  text-indent: 20px;
 }
+
 .order-qty-container {
   flex: 2;
   display: flex;
+}
+.order-remove{
+  align-items: right;
+  width: 35px;
+  color:  white;
+  background-color: red;
+  border-radius: 8px;
+  border-color: red;
+  font-weight: 800;
+  justify-content: right;
+  align-content: right;
 }
 .order-qty-button {
   flex: 1;

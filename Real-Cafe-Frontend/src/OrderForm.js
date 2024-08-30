@@ -219,10 +219,10 @@ const OrderForm = () => {
                   +
                 </button>
               </span>
+            
               <span className="order-price">
-              - Rp. {item.price * item.qty}  
-              <button onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
-              </span>
+              - Rp. {item.price * item.qty} </span>
+              <button className="order-remove" onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
             </li>
           ))}
         </ul>
