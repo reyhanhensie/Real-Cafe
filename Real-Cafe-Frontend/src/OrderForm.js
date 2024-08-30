@@ -27,7 +27,7 @@ const OrderForm = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/Menu`);
+        const response = await axios.get(`http://localhost:8000/api/Menu`);
         setMenuData(response.data);
       } catch (err) {
         setError("Error fetching menu items");
@@ -95,11 +95,21 @@ const OrderForm = () => {
     const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
     setTotalPrice(total);
   };
+  const handleMejaNoChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*$/; // Regex to allow only numeric values
+    if (regex.test(value)) {
+      setMejaNo(value);
+    }
+  };
 
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
     if (isNaN(mejaNoNumber)) {
-      setError("Meja No must be a valid number");
+      setError("Masukkan Nomor Meja Terlebih Dahulu!");
+      {
+        error && <p className="error-message">{error}</p>;
+      }
       return;
     }
 
@@ -219,29 +229,45 @@ const OrderForm = () => {
                   +
                 </button>
               </span>
-            
+
               <span className="order-price">
-              - Rp. {item.price * item.qty} </span>
-              <button className="order-remove" onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
+                - Rp. {item.price * item.qty}{" "}
+              </span>
+              <button
+                className="order-remove"
+                onClick={() => handleRemoveItem(item.id, item.type)}
+              >
+                X
+              </button>
             </li>
           ))}
         </ul>
-        <input
-          type="text"
-          value={mejaNo}
-          onChange={(e) => setMejaNo(e.target.value)}
-          placeholder="Meja No"
-        />
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Enter your message"
-          rows="3" // Set the textarea to have 3 rows
-          className="message-input" // Apply the class here
-        />
-        <h3>Total Price: Rp. {totalPrice}</h3>
-        <button onClick={handleSubmit}>Place Order</button>
-        {error && <p>{error}</p>}
+        <div className="order-form-input">
+          <div className="order-form-message">
+            <h3>Catatan</h3>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Tuliskan Catatan Pesanan (OPSIONAL)"
+              rows="3" // Set the textarea to have 3 rows
+              className="message-input" // Apply the class here
+            />
+          </div>
+
+          <div className="order-form-meja">
+            <h3>Nomor Meja:</h3>
+            <input
+              type="text"
+              value={mejaNo}
+              onChange={handleMejaNoChange}
+              placeholder="Masukkan No Meja"
+            />
+          </div>
+
+          <h3>Total Price: Rp. {totalPrice}</h3>
+          <button onClick={handleSubmit}>Place Order</button>
+          {error && <p>{error}</p>}
+        </div>
       </div>
     </div>
   );
