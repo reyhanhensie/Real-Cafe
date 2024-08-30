@@ -81,10 +81,14 @@ const OrderForm = () => {
   };
 
   const handleChangeQty = (index, qty) => {
+    if (!qty || qty <= 0) {
+      qty = 1;
+    }
     const newOrderItems = [...orderItems];
     newOrderItems[index].qty = qty;
     setOrderItems(newOrderItems);
     calculateTotalPrice(newOrderItems);
+    setError(null); // Clear the error if the quantity is valid
   };
 
   const calculateTotalPrice = (items) => {
@@ -151,8 +155,15 @@ const OrderForm = () => {
         <div className="menu-section">
           <h3>{selectedCategory} Menu</h3>
           <ul>
+            <li className="menu-header">
+              <span className="header-stock">STOCK</span>
+              <span className="header-name">NAMA</span>
+              <span className="header-price">HARGA</span>
+              <span className="header-add">TAMBAH</span>
+            </li>
             {menuData[selectedCategory]?.map((item) => (
               <li key={item.id} className="menu-item">
+                <span className="item-stock">{item.qty || "Habis"}</span>
                 <span className="item-name">{item.name}</span>
                 <span className="item-price">Rp. {item.price}</span>
                 {!addedItems[
@@ -164,7 +175,11 @@ const OrderForm = () => {
                       handleAddItem(item.id, item.name, item.price)
                     }
                   >
-                    <img src="/icons/plus-solid.svg" alt="Add Icon" className="add-icon" />
+                    <img
+                      src="/icons/plus-solid.svg"
+                      alt="Add Icon"
+                      className="add-icon"
+                    />
                   </button>
                 ) : (
                   <span className="item-add-placeholder"></span>
@@ -180,19 +195,34 @@ const OrderForm = () => {
         <ul>
           {orderItems.map((item, index) => (
             <li key={index} className="order-item">
-              {item.name} - Qty:
-              <input
-                type="number"
-                value={item.qty}
-                min="1"
-                onChange={(e) =>
-                  handleChangeQty(index, parseInt(e.target.value, 10))
-                }
-              />
-              - Rp. {item.price * item.qty}
-              <button onClick={() => handleRemoveItem(item.id, item.type)}>
-                X
-              </button>
+              <span className="order-name">{item.name}</span>
+              <span className="order-qty-container">
+                <button
+                  className="order-qty-button"
+                  onClick={() => handleChangeQty(index, item.qty - 1)}
+                >
+                  -
+                </button>
+                <input
+                  className="order-qty-input"
+                  type="number"
+                  value={item.qty}
+                  min="1"
+                  onChange={(e) =>
+                    handleChangeQty(index, parseInt(e.target.value, 10))
+                  }
+                />
+                <button
+                  className="order-qty-button"
+                  onClick={() => handleChangeQty(index, item.qty + 1)}
+                >
+                  +
+                </button>
+              </span>
+              <span className="order-price">
+              - Rp. {item.price * item.qty}  
+              <button onClick={() => handleRemoveItem(item.id, item.type)}>X</button>
+              </span>
             </li>
           ))}
         </ul>

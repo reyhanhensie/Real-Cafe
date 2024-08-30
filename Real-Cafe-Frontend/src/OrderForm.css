@@ -22,12 +22,16 @@
   padding: 10px;
   cursor: pointer;
   border: none;
-  background-color: #ddd;
+  background-color: #4e3928;
+  color: #ece0d1;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
 .nav-button.active {
-  background-color: #007bff;
-  color: white;
+  background-color: #ece0d1;
+  color: #4e3928;
+  font-weight: 600;
 }
 
 .menu-section li {
@@ -35,18 +39,29 @@
   justify-content: space-between;
 }
 
-.order-summary {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+.menu-header {
+  margin-bottom: 5px;
+  font-weight: 700;
+  color: #4e3928;
 }
-
-span.item-name {
+li.menu-header {
+  border-color: black;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+span.header-stock {
+  flex: 1;
+}
+span.header-name {
   flex: 3;
 }
-
-input {
-  margin-left: 5px;
+span.header-price {
+  flex: 2;
+}
+span.header-add {
+  flex: 1;
+  align-items: center;
+  text-align: center;
 }
 
 .message-input {
@@ -54,10 +69,21 @@ input {
   resize: vertical; /* Allow vertical resizing */
 }
 
+span.item-name {
+  flex: 3;
+}
 .menu-item {
   margin-bottom: 10px;
   justify-content: space-between;
   display: flex;
+}
+
+.item-stock {
+  flex: 1;
+  font-weight: 500;
+  align-items: center;
+  text-align: center;
+  text-indent: -35px;
 }
 
 .item-name {
@@ -73,12 +99,12 @@ input {
 }
 
 .add-icon {
-  width: 20px;  /* Adjust the size as needed */
+  width: 20px; /* Adjust the size as needed */
   height: 20px;
 }
 
 .item-add {
-  display: flex;
+  flex: 1;
   align-items: center;
   background: none;
   border: none;
@@ -93,14 +119,84 @@ li button {
 
 .item-add,
 .item-add-placeholder {
-  width: 60px; /* Adjust this width as necessary */
-  text-align: center;
+  flex: 1;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 ul {
   font-size: 18px;
+  padding-left: 15px;
 }
 
+/* CHEKOUT PESANAN */
+.order-item{
+  margin-bottom: 5px;
+}
+/* Remove the spinners for WebKit browsers */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove the spinners for Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield; /* Standard property */
+}
+
+.order-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.order-summary{
+  margin:10px
+}
+
+.order-name {
+  flex: 3;
+}
+.order-price{
+  flex: 3;
+  align-items: right;
+  text-align: right;
+
+}
+.order-qty-container {
+  flex: 2;
+  display: flex;
+}
+.order-qty-button {
+  flex: 1;
+  font-weight: 600;
+  font-size: 20px;
+  color: #ece0d1;
+  background-color:#4e3928;
+  border: none;
+  border-radius: 8px;
+}
+input.order-qty-input {
+  flex: 1;
+  margin-left: 5px;
+  margin-right: 5px;
+  border: none;
+  background: transparent;
+  color: #4e3928;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+   width: 5px;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: textfield; /* Standard property */
+}
 /* Media Queries for Portrait Mode on Phones */
 
 @media (max-width: 600px) {
@@ -122,6 +218,7 @@ ul {
     margin-bottom: 10px;
     width: 100%;
     text-align: center;
+    border-radius: 8px;
   }
 
   .menu-section {
