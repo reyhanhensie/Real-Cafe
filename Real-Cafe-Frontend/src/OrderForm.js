@@ -20,7 +20,7 @@ const OrderForm = () => {
   const [menuData, setMenuData] = useState({});
   const [orderItems, setOrderItems] = useState([]);
   const [addedItems, setAddedItems] = useState({});
-  const [mejaNo, setMejaNo] = useState("");
+  const [mejaNo, setMejaNo] = useState('');
   const [message, setMessage] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
@@ -30,7 +30,7 @@ const OrderForm = () => {
       try {
         const response = await axios.get(`${API_URL}/Menu`);
         setMenuData(response.data);
-                console.log(API_URL);
+        console.log(API_URL);
       } catch (err) {
         setError("Error fetching menu items");
       }
@@ -97,12 +97,20 @@ const OrderForm = () => {
     const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
     setTotalPrice(total);
   };
-  const handleMejaNoChange = (e) => {
-    const value = e.target.value;
-    const regex = /^[0-9]*$/; // Regex to allow only numeric values
-    if (regex.test(value)) {
-      setMejaNo(value);
-    }
+
+    const handleMejaNoChange = (event) => {
+    let value = event.target.value;
+        // const regex = /^(0?[1-9]|[1-9][0-9])$/; // Regex to allow only numeric values
+    // if (regex.test(value)) {
+    //   setMejaNo(value);
+    // }
+    // Remove any non-numeric characters
+    value = value.replace(/[^0-9]/g, '');
+    // Convert to number and clamp to the range 1-99
+    const numberValue = value ? Math.min(99, Math.max(1, parseInt(value, 10))) : '';
+    
+    // Set the new value
+    setMejaNo(numberValue.toString()); // Ensure value is a string for the input
   };
 
   const handleSubmit = async () => {
@@ -127,16 +135,13 @@ const OrderForm = () => {
         return;
       }
 
-      const response = await axios.post(
-        `${API_URL}/send-order`,
-        {
-          meja: mejaNoNumber,
-          message: message,
-          items: formattedItems,
-        }
-      );
+      const response = await axios.post(`${API_URL}/send-order`, {
+        meja: mejaNoNumber,
+        message: message,
+        items: formattedItems,
+      });
 
-      alert(`Order placed successfully! Order ID: ${response.data.id}`);
+      alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
       setOrderItems([]);
       setTotalPrice(0);
       setMejaNo("");
@@ -257,17 +262,17 @@ const OrderForm = () => {
           </div>
 
           <div className="order-form-meja">
-            <h3>Nomor Meja:</h3>
+            <h3>Nomor Meja :</h3>
             <input
               type="text"
               value={mejaNo}
               onChange={handleMejaNoChange}
-              placeholder="Masukkan No Meja"
+              placeholder="Nomor"
             />
           </div>
 
           <h3>Total Price: Rp. {totalPrice}</h3>
-          <button onClick={handleSubmit}>Place Order</button>
+          <button onClick={handleSubmit}>Kirim Ke Dapur</button>
           {error && <p>{error}</p>}
         </div>
       </div>

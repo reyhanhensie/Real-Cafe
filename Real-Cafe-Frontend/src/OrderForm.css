@@ -2,11 +2,11 @@
 
 .order-form {
   display: flex;
-  padding: 20px;
+  flex-direction: row;
 }
 
 .menu-container {
-  flex: 1;
+  flex: 2.3;
   margin-right: 20px;
   display: flex;
   flex-direction: column;
@@ -14,12 +14,19 @@
 
 .nav-bar {
   display: flex;
-  margin-bottom: 20px;
+  flex-direction: row;  
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 80%;
+  align-self: center;
+  /* margin-bottom: 20px; */
 }
 
 .nav-button {
-  margin-right: 10px;
-  padding: 10px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 10px;
+  padding: 20px;
   cursor: pointer;
   border: none;
   background-color: #4e3928;
@@ -33,7 +40,10 @@
   color: #4e3928;
   font-weight: 600;
 }
-
+.menu-section ul {
+  margin-left: 0;
+  padding-left: 0px;
+}
 .menu-section li {
   display: flex;
   justify-content: space-between;
@@ -50,7 +60,7 @@ li.menu-header {
   border-bottom-style: solid;
 }
 span.header-stock {
-  flex: 1;
+  flex: 1.5;
 }
 span.header-name {
   flex: 3;
@@ -64,11 +74,6 @@ span.header-add {
   text-align: center;
 }
 
-
-
-span.item-name {
-  flex: 3;
-}
 .menu-item {
   margin-bottom: 10px;
   justify-content: space-between;
@@ -76,11 +81,11 @@ span.item-name {
 }
 
 .item-stock {
-  flex: 1;
+  flex: 1.5;
   font-weight: 500;
   align-items: center;
-  text-align: center;
-  text-indent: -35px;
+  text-align: left;
+  text-indent: 15px;
 }
 
 .item-name {
@@ -124,13 +129,21 @@ li button {
   padding: 0;
 }
 
-ul {
-  font-size: 18px;
-  padding-left: 15px;
+/* CHEKOUT PESANAN */
+
+/* PARENT */
+.order-summary {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  overflow-x: visible;
+}
+.order-summary ul {
+  padding-left: 10px;
 }
 
-/* CHEKOUT PESANAN */
-.order-item{
+/* CHILD */
+.order-item {
   margin-bottom: 5px;
   font-weight: 500;
 }
@@ -147,12 +160,11 @@ input[type="number"] {
   appearance: textfield; /* Standard property */
 }
 
-
 .order-name {
   flex: 3;
   font-weight: 500;
 }
-.order-price{
+.order-price {
   flex: 3;
   align-items: right;
   text-align: left;
@@ -163,10 +175,10 @@ input[type="number"] {
   flex: 2;
   display: flex;
 }
-.order-remove{
+.order-remove {
   align-items: right;
   width: 35px;
-  color:  white;
+  color: white;
   background-color: red;
   border-radius: 8px;
   border-color: red;
@@ -180,7 +192,7 @@ input[type="number"] {
   font-weight: 600;
   font-size: 20px;
   color: #ece0d1;
-  background-color:#4e3928;
+  background-color: #4e3928;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -197,7 +209,7 @@ input.order-qty-input {
   text-align: center;
   align-items: center;
   align-content: center;
-   width: 5px;
+  width: 5px;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   appearance: textfield; /* Standard property */
@@ -209,32 +221,69 @@ input.order-qty-input {
   font-weight: bold;
   margin-top: 10px;
 }
-.order-form-input{
-
+.order-form-input {
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
-.message-input {
+.order-form-message {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.order-form-message .message-input {
+  align-items: center;
+  justify-content: center;
+  border-color: #4e3928;
+  border-radius: 12px;
+  font-size: 16px;
+  text-indent: 10px;
   margin-top: 10px; /* Add margin on top to separate from Meja No */
   width: 95%;
   height: 50%;
-  resize: none; 
+  resize: none;
   background-color: #ecd9c4;
-  
 }
 
- .order-form-input h3{
-  margin-bottom: 0px;
+.order-form-meja h3 {
+  margin-right: 10px;
 }
-.order-form-meja{
+.order-form-meja {
   display: flex;
+  flex-direction: row;
   margin-top: 10px;
+}
+
+.order-form-meja input {
+  background-color: #ecd9c4;
+  border-color: #4e3928;
+  border-radius: 8px;
+  width: 60px;
+  height: 100%;
+  align-items: center;
+  position: relative;
+  font-size: 20px;
+  padding-top: 5px;
   text-align: center;
+  padding-right: 5px;
+  margin-top: 15px;
+  display: inline-block;
+    white-space: wrap; /* Prevent text from wrapping */
+    overflow: visible; /* Hide overflow content */
+}
+.order-form-input button{
+  font-size: 20px;
+  border-radius: 12px;
+  border-color: #4e3928;
+  background-color: #4e3928;
+  color: #ecd9c4;
+  cursor: pointer;
 }
 
 /* Media Queries for Portrait Mode on Phones */
 
+/* Mobile styles for screens with max width of 600px */
 @media (max-width: 600px) {
   .order-form {
     flex-direction: column;
@@ -242,51 +291,127 @@ input.order-qty-input {
   }
 
   .menu-container {
+    flex: none;
     margin-right: 0;
-    margin-bottom: 20px;
   }
 
   .nav-bar {
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
   }
 
   .nav-button {
-    margin-bottom: 10px;
-    width: 100%;
-    text-align: center;
-    border-radius: 8px;
+    margin: 5px;
+    padding: 8px;
+    font-size: 14px;
   }
 
-  .menu-section {
-    margin-bottom: 20px;
+  .menu-section ul {
+    padding-left: 0;
   }
 
-  .order-summary {
-    flex: none;
-    width: 100%;
+  .menu-section li {
+    flex-direction: row;
+    margin-bottom: 15px;
+  }
+  .menu-header{
+    font-size: 12px;
   }
 
   .menu-item {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: 15px;
   }
 
-  .item-name,
-  .item-price {
-    text-align: center;
+  .item-stock, .item-name, .item-price {
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .item-add {
+    margin-top: 10px;
+  }
+
+  .order-summary {
     flex: none;
+    margin-top: 20px;
   }
 
-  .item-add,
-  .item-add-placeholder {
-    width: auto;
+  .order-item {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
   }
 
-  ul {
+  .order-name, .order-price {
+    font-size: 12px;
+  }
+
+  .order-qty-container {
+    flex-direction: row;
+    align-items: center;
+    display: flex;
+  }
+
+  .order-qty-button {
+    font-size: 12px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 50%;
+
+  }
+
+  input.order-qty-input {
+    width: 8px;
     font-size: 16px;
+    margin: 0;
+    padding: 0;
   }
 
-  .message-input {
+  .order-remove {
+    /* width: 15px;
+    height: 15px; */
+    font-size: 10px;
+    padding: 0;
+    margin: 0;
+
+  }
+
+  .error-message {
+    font-size: 14px;
+  }
+
+  .order-form-input {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .order-form-message .message-input {
     width: 100%;
+    font-size: 14px;
+    height: auto;
+    margin-top: 5px;
+  }
+
+  .order-form-meja {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .order-form-meja input {
+    width: 80%;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+
+  .order-form-input button {
+    font-size: 18px;
+    padding: 10px;
   }
 }
