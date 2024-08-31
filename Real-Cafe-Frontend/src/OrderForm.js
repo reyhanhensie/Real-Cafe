@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OrderForm.css"; // Import custom styling
+import API_URL from "./apiconfig"; // Import the API_URL
 
 const OrderForm = () => {
   const categoryMap = {
@@ -27,8 +28,9 @@ const OrderForm = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/Menu`);
+        const response = await axios.get(`${API_URL}/Menu`);
         setMenuData(response.data);
+                console.log(API_URL);
       } catch (err) {
         setError("Error fetching menu items");
       }
@@ -126,7 +128,7 @@ const OrderForm = () => {
       }
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/send-order",
+        `${API_URL}/send-order`,
         {
           meja: mejaNoNumber,
           message: message,
