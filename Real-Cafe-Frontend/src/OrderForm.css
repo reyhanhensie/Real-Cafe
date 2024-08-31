@@ -14,7 +14,7 @@
 
 .nav-bar {
   display: flex;
-  flex-direction: row;  
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
   width: 80%;
@@ -103,6 +103,7 @@ span.header-add {
 .add-icon {
   width: 20px; /* Adjust the size as needed */
   height: 20px;
+  /* font-size: 16px; */
 }
 
 .item-add {
@@ -115,10 +116,9 @@ span.header-add {
 }
 
 li button {
-  width: 60px; /* Adjust this width as necessary */
+  /* width: 60px;  */
   text-align: center;
 }
-
 .item-add,
 .item-add-placeholder {
   flex: 1;
@@ -127,6 +127,8 @@ li button {
   border: none;
   cursor: pointer;
   padding: 0;
+  display: flex; /* Ensure flex container properties are applied */
+  justify-content: center; /* Center the content inside */
 }
 
 /* CHEKOUT PESANAN */
@@ -269,10 +271,10 @@ input.order-qty-input {
   padding-right: 5px;
   margin-top: 15px;
   display: inline-block;
-    white-space: wrap; /* Prevent text from wrapping */
-    overflow: visible; /* Hide overflow content */
+  white-space: wrap; /* Prevent text from wrapping */
+  overflow: visible; /* Hide overflow content */
 }
-.order-form-input button{
+.order-form-input button {
   font-size: 20px;
   border-radius: 12px;
   border-color: #4e3928;
@@ -312,29 +314,57 @@ input.order-qty-input {
     padding-left: 0;
   }
 
-  .menu-section li {
-    flex-direction: row;
-    margin-bottom: 15px;
-  }
-  .menu-header{
+
+  .menu-header {
     font-size: 12px;
   }
 
   .menu-item {
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
+    flex-direction: row;
+
+  }
+  .menu-item li {
+    margin-bottom: 0px;
+  }
+  li .menu-item{
+    margin-bottom: 0px;
   }
 
-  .item-stock, .item-name, .item-price {
+  .item-stock,
+  .item-name,
+  .item-price {
     font-size: 12px;
     text-align: left;
   }
 
+  .add-icon {
+    width: 20px; /* Adjust the size as needed */
+    height: 16px;
+    /* font-size: 16px; */
+  }
   .item-add {
-    margin-top: 10px;
+    flex: 1;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
   }
 
+  .item-add,
+  .item-add-placeholder {
+    flex: 1;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    padding: 0;
+    display: flex; /* Ensure flex container properties are applied */
+    justify-content: center; /* Center the content inside */
+  }
+
+  /* PARENT */
   .order-summary {
     flex: none;
     margin-top: 20px;
@@ -346,7 +376,8 @@ input.order-qty-input {
     margin-bottom: 10px;
   }
 
-  .order-name, .order-price {
+  .order-name,
+  .order-price {
     font-size: 12px;
   }
 
@@ -363,7 +394,6 @@ input.order-qty-input {
     padding-top: 5px;
     padding-bottom: 5px;
     width: 50%;
-
   }
 
   input.order-qty-input {
@@ -379,7 +409,6 @@ input.order-qty-input {
     font-size: 10px;
     padding: 0;
     margin: 0;
-
   }
 
   .error-message {
