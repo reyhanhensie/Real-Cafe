@@ -1,38 +1,27 @@
+// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import OrderForm from './OrderForm'; // Your Order Form component
-import OrderSummary from './OrderSummary'; // Your Order Summary component
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
+import OrderForm from './OrderForm';
+import OrderSummary from './OrderSummary';
+import Register from './pages/Auth/Register'; // Import Register component
+import Login from './pages/Auth/Login'; // Import Register component
+import Layout from './components/Layout'; // Import Layout component
+
 import './App.css'; // Import global CSS file
 
-const App = () => {
-  const location = useLocation();
-
-  const hideNavbarRoutes = ['/order-form', '/order-summary'];
-
-  return (
-    <div className="app">
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/order-form" element={<OrderForm />} />
-          <Route path="/order-summary" element={<OrderSummary />} />
-        </Routes>
-      </main>
-      <Footer className="footer" />
-    </div>
-  );
-};
-
-const AppWrapper = () => (
+const App = () => (
   <Router>
-    <App />
+    <Routes>
+      <Route path="/" element={<Layout><Home /></Layout>} />
+      <Route path="/contact" element={<Layout><Contact /></Layout>} />
+      <Route path="/order-form" element={<Layout><OrderForm /></Layout>} />
+      <Route path="/order-summary" element={<Layout><OrderSummary /></Layout>} />
+      <Route path="/register" element={<Register />} /> {/* No Layout for Register */}
+      <Route path="/login" element={<Login />} /> {/* No Layout for Register */}
+    </Routes>
   </Router>
 );
 
-export default AppWrapper;
+export default App;
