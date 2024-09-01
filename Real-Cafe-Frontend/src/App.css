@@ -27,7 +27,7 @@ html, body {
 
 
 .navbar {
-  background-color: #333;
+  background-color: #38220f;
   color: #fff;
   padding: 10px;
   display: flex;
@@ -36,7 +36,10 @@ html, body {
 }
 
 .navbar .logo img {
-  height: 40px;
+ height: 35px;
+ /* border-style: groove; */
+ border-color: white;
+ border-radius: 10px;
 }
 
 .navbar .nav-links {
