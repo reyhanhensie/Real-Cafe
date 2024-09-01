@@ -31,7 +31,13 @@ const Login = () => {
           'Content-Type': 'application/json' // Ensure content type is set to JSON
         }
       });
+    const token = response.data.token;
+    const sessionDurationMinutes = 180; // Session duration
+    const expirationTime = new Date().getTime() + sessionDurationMinutes * 60 * 1000; // in milliseconds
 
+    // Save token and expiration time
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('tokenExpiration', expirationTime);
       setMessage(response.data.message);
       setError('');
       // Navigate to the /secret route after successful login

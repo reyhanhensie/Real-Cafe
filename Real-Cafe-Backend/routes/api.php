@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\SecretController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,7 @@ use App\Http\Controllers\MinumanPanasController;
 // AUTHENTICATION
 Route::middleware('web')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -32,7 +34,6 @@ Route::middleware('auth:sanctum')->get('/auth/check', function (Request $request
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
-Route::post('logout', [AuthController::class, 'logout']);
 
 Route::apiResource('Camilan', CamilanController::class);
 Route::apiResource('Coffe', CoffeController::class);

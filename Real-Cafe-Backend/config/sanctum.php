@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => 60 * 1, // Token expiration time in minutes (e.g., 1440 minutes = 1 day)
 
     /*
     |--------------------------------------------------------------------------
