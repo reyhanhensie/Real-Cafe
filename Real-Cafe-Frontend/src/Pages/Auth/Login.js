@@ -1,6 +1,8 @@
+// src/pages/Auth/Login.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import URL_API from '../../apiconfig'; // Updated import path
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -8,6 +10,7 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     // Get the CSRF token from the meta tag after the component mounts
@@ -31,6 +34,8 @@ const Login = () => {
 
       setMessage(response.data.message);
       setError('');
+      // Navigate to the /secret route after successful login
+      navigate('/secret');
     } catch (err) {
       console.error('Login error:', err.response ? err.response.data : err.message);
       if (err.response && err.response.data.error) {
