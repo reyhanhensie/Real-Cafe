@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Http\Request;
+use App\Http\Controllers\SecretController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuController;
@@ -18,6 +19,17 @@ use App\Http\Controllers\MinumanPanasController;
 Route::middleware('web')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/secret', [SecretController::class, 'show']);
+    // Route::get('/another', [AnotherController::class, 'show']);
+    // More authenticated routes here
+});
+
+Route::middleware('auth:sanctum')->get('/auth/check', function (Request $request) {
+    return response()->json(['user' => $request->user()]);
+});
+
 Route::post('register', [AuthController::class, 'register']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
 Route::post('logout', [AuthController::class, 'logout']);
