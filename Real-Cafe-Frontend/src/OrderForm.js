@@ -112,29 +112,55 @@ const OrderForm = () => {
     setMejaNo(numberValue.toString());
   };
 
-  const saveAsPDF = () => {
-    const element = printRef.current;
-    if (!element) return;
+  // const saveAsPDF = () => {
+  //   const element = printRef.current;
+  //   if (!element) return;
 
-    // Temporarily show the element
-    const originalDisplay = element.style.display;
-    element.style.display = "block";
+  //   // Temporarily show the element
+  //   const originalDisplay = element.style.display;
+  //   element.style.display = "block";
 
-    const opt = {
-      margin: 1,
-      filename: `Order_${new Date().toISOString()}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    };
-    
-    html2pdf()
-      .from(element)
-      .set(opt)
-      .save()
-      .then(() => {
-        element.style.display = originalDisplay;
+  //   const opt = {
+  //     margin: 1,
+  //     filename: `Order_${new Date().toISOString()}.pdf`,
+  //     image: { type: "jpeg", quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+  //   };
+
+  //   html2pdf()
+  //     .from(element)
+  //     .set(opt)
+  //     .save()
+  //     .then(() => {
+  //       element.style.display = originalDisplay;
+  //     });
+  // };
+  const downloadPDF = async (orderId) => {
+    try {
+      const response = await axios.get(`${API_URL}/receipt/${orderId}`, {
+        responseType: "blob", // Set the response type to blob to handle binary data
       });
+      // Generate a timestamp
+      const timestamp = new Date().toISOString().split('.')[0].replace(/:/g, "_");
+
+      // Create a link element
+      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      link.href = url;
+      // link.setAttribute('download', `order_${orderId}.pdf`);
+      link.setAttribute("download", `Order_${timestamp}_ID-${orderId}.pdf`);
+
+      // Append the link to the body
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading PDF", err);
+    }
   };
 
   const handleSubmit = async () => {
@@ -169,7 +195,7 @@ const OrderForm = () => {
       setMejaNo("");
       setMessage("");
       setAddedItems({});
-      saveAsPDF();
+      downloadPDF(response.data.id);
     } catch (err) {
       setError("Error, Stock Habis");
     }
@@ -294,17 +320,13 @@ const OrderForm = () => {
               onChange={handleMejaNoChange}
               placeholder="Nomor"
             />
-            {isMejaNoValid ? (
-              <h2></h2>
-            ): (
-            <h4>masukkan nomor meja !</h4>
-            )}
+            {isMejaNoValid ? <h2></h2> : <h4>masukkan nomor meja !</h4>}
           </div>
 
           <h3>Total Price: Rp. {totalPrice}</h3>
           {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
-          {(isMejaNoValid && isMinimalOrder) ? (
+          {isMejaNoValid && isMinimalOrder ? (
             <ReactToPrint
               trigger={() => <button>Kirim Ke Dapur</button>}
               content={() => printRef.current}

@@ -125,11 +125,10 @@ class OrderController extends Controller
             11 => '11_November',
             12 => '12_Desember'
         ];
-
         $monthName = $months[$month];
         $timestamp = $now->format('Y-m-d\TH:i:s');
         $timestamp = str_replace([':'], ['_'], $timestamp);
-        $filename = "Order_{$timestamp}.pdf";
+        $filename = "Order_{$timestamp}_ID-{$id}.pdf";
         $directory = "Receipt/{$year}/{$monthName}";
         
         // Ensure the directory exists
@@ -137,7 +136,6 @@ class OrderController extends Controller
             Storage::makeDirectory($directory);
         }
 
-        $filename = "order_{$timestamp}.pdf";
         $path = "{$directory}/{$filename}";
 
         // Save the PDF to storage
