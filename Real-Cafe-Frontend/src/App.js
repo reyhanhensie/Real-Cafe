@@ -23,8 +23,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/contact" element={<Layout><Contact /></Layout>} />
-            <Route path="/order-form" element={<Layout><OrderForm /></Layout>} />
-            <Route path="/order-summary" element={<Layout><OrderSummary /></Layout>} />
+            <Route path="/order-form" element={<OrderForm />} /> {/* No Layout */}
+            <Route path="/order-summary" element={<OrderSummary />} /> {/* No Layout */}
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/secret" element={<ProtectedRoute element={<Secret />} />} /> {/* Protect Secret route */}

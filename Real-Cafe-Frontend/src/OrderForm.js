@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./OrderForm.css"; // Import custom styling
 import API_URL from "./apiconfig"; // Import the API_URL
+import ReactToPrint from "react-to-print";
+import PrintableOrder from "./PrintableOrder"; // Import the printable component
+import html2pdf from "html2pdf.js";
 
 const OrderForm = () => {
+  const printRef = useRef(null); // Reference to the print section
+
   const categoryMap = {
     Camilan: "Camilan",
     Coffe: "Coffe",
@@ -20,7 +25,7 @@ const OrderForm = () => {
   const [menuData, setMenuData] = useState({});
   const [orderItems, setOrderItems] = useState([]);
   const [addedItems, setAddedItems] = useState({});
-  const [mejaNo, setMejaNo] = useState('');
+  const [mejaNo, setMejaNo] = useState("");
   const [message, setMessage] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
@@ -98,28 +103,44 @@ const OrderForm = () => {
     setTotalPrice(total);
   };
 
-    const handleMejaNoChange = (event) => {
+  const handleMejaNoChange = (event) => {
     let value = event.target.value;
-        // const regex = /^(0?[1-9]|[1-9][0-9])$/; // Regex to allow only numeric values
-    // if (regex.test(value)) {
-    //   setMejaNo(value);
-    // }
-    // Remove any non-numeric characters
-    value = value.replace(/[^0-9]/g, '');
-    // Convert to number and clamp to the range 1-99
-    const numberValue = value ? Math.min(99, Math.max(1, parseInt(value, 10))) : '';
+    value = value.replace(/[^0-9]/g, "");
+    const numberValue = value
+      ? Math.min(99, Math.max(1, parseInt(value, 10)))
+      : "";
+    setMejaNo(numberValue.toString());
+  };
+
+  const saveAsPDF = () => {
+    const element = printRef.current;
+    if (!element) return;
+
+    // Temporarily show the element
+    const originalDisplay = element.style.display;
+    element.style.display = "block";
+
+    const opt = {
+      margin: 1,
+      filename: `Order_${new Date().toISOString()}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
     
-    // Set the new value
-    setMejaNo(numberValue.toString()); // Ensure value is a string for the input
+    html2pdf()
+      .from(element)
+      .set(opt)
+      .save()
+      .then(() => {
+        element.style.display = originalDisplay;
+      });
   };
 
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
     if (isNaN(mejaNoNumber)) {
       setError("Masukkan Nomor Meja Terlebih Dahulu!");
-      {
-        error && <p className="error-message">{error}</p>;
-      }
       return;
     }
 
@@ -142,16 +163,20 @@ const OrderForm = () => {
       });
 
       alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
+
       setOrderItems([]);
       setTotalPrice(0);
       setMejaNo("");
-      setMessage(""); // Clear the message after submission
+      setMessage("");
       setAddedItems({});
+      saveAsPDF();
     } catch (err) {
       setError("Error, Stock Habis");
     }
   };
 
+  const isMinimalOrder = orderItems.length !== 0;
+  const isMejaNoValid = mejaNo.trim() !== "";
   return (
     <div className="order-form">
       <div className="menu-container">
@@ -269,13 +294,39 @@ const OrderForm = () => {
               onChange={handleMejaNoChange}
               placeholder="Nomor"
             />
+            {isMejaNoValid ? (
+              <h2></h2>
+            ): (
+            <h4>masukkan nomor meja !</h4>
+            )}
           </div>
 
           <h3>Total Price: Rp. {totalPrice}</h3>
-          <button onClick={handleSubmit}>Kirim Ke Dapur</button>
+          {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
+          {/* Conditional rendering of ReactToPrint based on mejaNo */}
+          {(isMejaNoValid && isMinimalOrder) ? (
+            <ReactToPrint
+              trigger={() => <button>Kirim Ke Dapur</button>}
+              content={() => printRef.current}
+              // onBeforePrint={saveAsPDF}
+              onAfterPrint={handleSubmit}
+            />
+          ) : (
+            <button disabled>Kirim Ke Dapur</button>
+          )}
+          {/* <button onClick={saveAsPDF}>Save as PDF</button> */}
           {error && <p>{error}</p>}
         </div>
       </div>
+
+      {/* The printable component */}
+      <PrintableOrder
+        ref={printRef}
+        mejaNo={mejaNo}
+        orderItems={orderItems}
+        totalPrice={totalPrice}
+        message={message}
+      />
     </div>
   );
 };

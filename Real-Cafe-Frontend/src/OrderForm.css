@@ -1,7 +1,11 @@
 /* Base styles for larger screens */
 
+
+/* In your OrderForm.css or a new print-specific stylesheet */
+
 .order-form {
   display: flex;
+  margin: 1%;
   flex-direction: row;
 }
 
@@ -27,12 +31,18 @@
   margin-left: 0px;
   margin-bottom: 10px;
   padding: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+  /* width: px; */
   cursor: pointer;
   border: none;
   background-color: #4e3928;
   color: #ece0d1;
   border-radius: 8px;
   font-weight: 600;
+  text-wrap: wrap;
+  text-align: center;
+  flex-direction: row;
 }
 
 .nav-button.active {

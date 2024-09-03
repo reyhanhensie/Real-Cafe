@@ -1,0 +1,41 @@
+/* PrintableOrder.css */
+
+/* Initially hide the receipt on the screen */
+.Receipt {
+  display: none;
+}
+
+/* Make the receipt visible when printing */
+@media print {
+  .Receipt {
+    display: block;
+    background-color: white;
+    color: black;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+    /* max-width: 300px; */
+    border: 1px solid #000;
+  }
+
+  .Receipt h2, .Receipt h3, .Receipt p {
+    margin: 10px 0;
+  }
+
+  .Receipt ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .Receipt li {
+    margin: 5px 0;
+    text-align: left;
+  }
+
+  .Receipt li::before {
+    content: "• ";
+    color: black;
+  }
+}
