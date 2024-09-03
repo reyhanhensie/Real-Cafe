@@ -12,6 +12,10 @@ use App\Models\Milkshake;
 use App\Models\Makanan;
 use App\Models\MinumanDingin;
 use App\Models\MinumanPanas;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+
 
 class OrderController extends Controller
 {
@@ -67,6 +71,8 @@ class OrderController extends Controller
             $menuItem->decrement('qty', $item['qty']);
         }
 
+
+
         // Create the order
         $order = Order::create([
             'total_price' => $totalPrice,
@@ -78,6 +84,68 @@ class OrderController extends Controller
         $order->items()->createMany($orderItems);
 
         return response()->json($order->load('items'), 201);
+    }
+     /**
+     * Generate a PDF for the specified order and save it to a directory.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+   public function generatePdf($id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+
+        $data = [
+            'mejaNo' => $order->meja_no,
+            'orderItems' => $order->items,
+            'totalPrice' => $order->total_price,
+            'message' => $order->message,
+        ];
+
+        // Create PDF
+        $pdf = Pdf::loadView('pdf.order_receipt', $data);
+
+        // Define the file path with timestamp
+        $now = Carbon::now();
+        $year = $now->year;
+        $month = $now->format('n'); // Numeric month (1-12)
+
+        // Map numeric month to Indonesian name
+        $months = [
+            1 => '1_Januari',
+            2 => '2_Februari',
+            3 => '3_Maret',
+            4 => '4_April',
+            5 => '5_Mei',
+            6 => '6_Juni',
+            7 => '7_Juli',
+            8 => '8_Agustus',
+            9 => '9_September',
+            10 => '10_Oktober',
+            11 => '11_November',
+            12 => '12_Desember'
+        ];
+
+        $monthName = $months[$month];
+        $timestamp = $now->format('Y-m-d\TH:i:s');
+        $timestamp = str_replace([':'], ['_'], $timestamp);
+        $filename = "Order_{$timestamp}.pdf";
+        $directory = "Receipt/{$year}/{$monthName}";
+        
+        // Ensure the directory exists
+        if (!Storage::exists($directory)) {
+            Storage::makeDirectory($directory);
+        }
+
+        $filename = "order_{$timestamp}.pdf";
+        $path = "{$directory}/{$filename}";
+
+        // Save the PDF to storage
+        Storage::put($path, $pdf->output());
+
+        return $pdf->download($filename);
+
+        // return response()->json(['message' => 'PDF saved successfully', 'path' => $path], 200);
     }
 
     public function markAsCompleted($id)
