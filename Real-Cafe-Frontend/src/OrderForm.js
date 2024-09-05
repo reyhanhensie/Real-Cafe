@@ -4,7 +4,6 @@ import "./OrderForm.css"; // Import custom styling
 import API_URL from "./apiconfig"; // Import the API_URL
 import ReactToPrint from "react-to-print";
 import PrintableOrder from "./PrintableOrder"; // Import the printable component
-import html2pdf from "html2pdf.js";
 
 const OrderForm = () => {
   const printRef = useRef(null); // Reference to the print section
@@ -68,6 +67,11 @@ const OrderForm = () => {
       [type]: new Set([...(prevAddedItems[type] || []), id]),
     }));
   };
+  const [selectedValue, setSelectedValue] = useState("");
+  // const nama_kasir = axios.get(`${API_URL}`);
+  const options = [
+{ value: 'Option 1', label: 'Option 1' },
+  ]
 
   const handleRemoveItem = (id, type) => {
     const newOrderItems = orderItems.filter(
@@ -142,7 +146,10 @@ const OrderForm = () => {
         responseType: "blob", // Set the response type to blob to handle binary data
       });
       // Generate a timestamp
-      const timestamp = new Date().toISOString().split('.')[0].replace(/:/g, "_");
+      const timestamp = new Date()
+        .toISOString()
+        .split(".")[0]
+        .replace(/:/g, "_");
 
       // Create a link element
       const link = document.createElement("a");
@@ -259,7 +266,21 @@ const OrderForm = () => {
       </div>
 
       <div className="order-summary">
-        <h3>Your Order</h3>
+        <span className="header">
+          <h3>Your Order</h3>
+          <h3 id="kasir">Kasir :</h3>
+          <select
+            value={selectedValue}
+            onChange={(e) => setSelectedValue(e.target.value)}
+          >
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </span>
+
         <ul>
           {orderItems.map((item, index) => (
             <li key={index} className="order-item">

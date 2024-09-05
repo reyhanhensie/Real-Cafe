@@ -5,6 +5,7 @@ import URL_API from "../../apiconfig"; // Updated import path
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Login = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -40,6 +41,7 @@ const Login = () => {
 
       console.log("Login response:", response.data);
 
+      setIsAuthenticated(true);
       // Assuming the token is in the 'access_token' field
       const { access_token } = response.data;
 

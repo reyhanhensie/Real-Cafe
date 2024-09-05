@@ -9,17 +9,16 @@ import Register from './pages/Auth/Register';
 import Secret from './pages/Secret/Secret';
 import Login from './pages/Auth/Login';
 import Layout from './components/Layout';
-import PrivateRoute from './components/PrivateRoute';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import AuthWrapper from './components/AuthWrapper'; // Import the AuthWrapper component
+import PrivateRoute from './components/PrivateRoute';
 import './App.css';
 
 const App = () => {
+
   return (
     <Router>
       <AuthProvider>
-        <AuthWrapper> {/* Wrap Routes in AuthWrapper */}
           <Routes>
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/contact" element={<Layout><Contact /></Layout>} />
@@ -29,8 +28,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/secret" element={<ProtectedRoute element={<Secret />} />} /> {/* Protect Secret route */}
           </Routes>
-        </AuthWrapper>
-      </AuthProvider>
+      </AuthProvider> 
     </Router>
   );
 };

@@ -1,34 +1,28 @@
 // src/pages/Secret/Secret.js
-
 import React from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import URL_API from '../../apiconfig';
+import usePrivilege from '../../hooks/PrivilegeHook'; // Import the custom hook
 
 const Secret = () => {
+  const { userRole, isAuthenticated, loading } = usePrivilege();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await axios.post(`${URL_API}/logout`, {}, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
+  // Redirect if loading or not authenticated
+  if (loading) return <p>Loading...</p>;
+  if (!isAuthenticated) {
+    navigate('/login');
+    return null;
+  }
 
-      localStorage.removeItem('authToken');
-      // Redirect to login or home page after logout
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout error:', err.response ? err.response.data : err.message);
-    }
-  };
+  // Optionally handle role-based access
+  if (userRole !== 'admin') {
+    return <p>You do not have access to this page.</p>;
+  }
 
   return (
     <div>
-      <h2>Secret Data</h2>
-      {/* Logout Button */}
-      <button onClick={handleLogout}>Logout</button>
+      <h2>Welcome, Admin</h2>
+      <button onClick={() => navigate('/login')}>Logout</button>
     </div>
   );
 };

@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+// src/hooks/usePrivilege.js
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import URL_API from '../apiconfig';
 
-const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
+const usePrivilege = () => {
   const [userRole, setUserRole] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -19,24 +19,22 @@ export const AuthProvider = ({ children }) => {
             },
           });
           setUserRole(response.data.role);
-          console.log(isAuthenticated);
+          setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
         }
       } catch (error) {
         console.error('Error fetching user role:', error);
         setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserRole();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []); // This effect runs once when the component mounts
 
-  return (
-    <AuthContext.Provider value={{ userRole  }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return { userRole, isAuthenticated, loading };
 };
 
-export const useAuth = () => useContext(AuthContext);
+export default usePrivilege;

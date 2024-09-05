@@ -150,9 +150,19 @@ li button {
   flex-direction: column;
   overflow-x: visible;
 }
+.order-summary .header{
+  display: flex;
+  flex-direction: row;
+}
+#kasir{
+  flex: 1;
+  text-align: right;
+  align-items: center;
+}
 .order-summary ul {
   padding-left: 10px;
 }
+
 
 /* CHILD */
 .order-item {
