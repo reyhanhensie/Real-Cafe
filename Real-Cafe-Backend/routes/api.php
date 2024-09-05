@@ -18,10 +18,13 @@ use App\Http\Controllers\MinumanPanasController;
 
 // AUTHENTICATION
 Route::middleware('web')->group(function () {
-    Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
-
+Route::post('login', [AuthController::class, 'login']);
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('/me', [AuthController::class, 'me']);
+    // Add other protected routes here
+});
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/secret', [SecretController::class, 'show']);
     // Route::get('/another', [AnotherController::class, 'show']);
@@ -48,7 +51,7 @@ Route::apiResource('MinumanPanas', MinumanPanasController::class);
 Route::get('Menu', [MenuController::class, 'index']);
 Route::get('/live-orders', [OrderController::class, 'live']); // Create an order
 Route::get('/orders', [OrderController::class, 'index']); // Create an order
-Route::get('/receipt/{id}',[OrderController::class,'generatePdf']);
+Route::get('/receipt/{id}', [OrderController::class, 'generatePdf']);
 Route::post('/send-order', [OrderController::class, 'store']); // Create an order
 Route::get('/order/{id}', [OrderController::class, 'show']); // Retrieve an order
 Route::patch('/order/{id}/complete', [OrderController::class, 'markAsCompleted']);

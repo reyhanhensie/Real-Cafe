@@ -15,7 +15,7 @@ use App\Models\MinumanPanas;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\Receipt;
 
 class OrderController extends Controller
 {
@@ -140,6 +140,8 @@ class OrderController extends Controller
 
         // Save the PDF to storage
         Storage::put($path, $pdf->output());
+
+        Receipt::generateAndSavePdf($order);
 
         return $pdf->download($filename);
 

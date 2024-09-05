@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject; // Import JWTSubject interface
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject // Implement JWTSubject
 {
-    use HasApiTokens,HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +21,12 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'password',
+        'role',
     ];
+
+    // Add role constants for easier management
+    const ROLE_USER = 'user';
+    const ROLE_ADMIN = 'admin';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -33,14 +39,29 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'password' => 'hashed',
+    ];
+
+    /**
+     * Get the identifier that will be stored in the JWT.
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); // Typically the primary key (id)
+    }
+
+    /**
+     * Return a key-value array, containing any custom claims to be added to the JWT.
+     */
+    public function getJWTCustomClaims()
     {
         return [
-            'password' => 'hashed',
+            'role' => $this->role,
         ];
     }
 }
