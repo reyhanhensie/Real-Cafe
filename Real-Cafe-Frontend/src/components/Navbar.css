@@ -1,3 +1,34 @@
-.navbar{
-    background-color: white;
+.navbar {
+  background-color: white;
+  display: flex;
+  justify-content: space-between; /* Adjust this if necessary */
+  align-items: center;
+}
+
+.navbar li img {
+  filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
+    brightness(91%) contrast(89%);
+
+  width: 25px; /* Adjust the size as needed */
+  height: 25px;
+  display: block;
+  margin: auto;
+}
+
+/* Ensure nav-links are laid out horizontally */
+
+/* Style the list items */
+a li {
+  display: flex;
+  flex-direction: column; /* Stack the image and text vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  padding: 10px; /* Adjust padding for better spacing */
+}
+
+/* Style the text */
+.nav-links li p {
+  margin: 0;
+  font-size: 14px; /* Adjust font size as needed */
+  text-align: center;
 }

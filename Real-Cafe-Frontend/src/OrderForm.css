@@ -1,6 +1,5 @@
 /* Base styles for larger screens */
 
-
 /* In your OrderForm.css or a new print-specific stylesheet */
 
 .order-form {
@@ -114,6 +113,8 @@ span.header-add {
   width: 20px; /* Adjust the size as needed */
   height: 20px;
   /* font-size: 16px; */
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
+    brightness(93%) contrast(85%);
 }
 
 .item-add {
@@ -150,11 +151,11 @@ li button {
   flex-direction: column;
   overflow-x: visible;
 }
-.order-summary .header{
+.order-summary .header {
   display: flex;
   flex-direction: row;
 }
-#kasir{
+#kasir {
   flex: 1;
   text-align: right;
   align-items: center;
@@ -162,7 +163,6 @@ li button {
 .order-summary ul {
   padding-left: 10px;
 }
-
 
 /* CHILD */
 .order-item {
@@ -356,7 +356,9 @@ input.order-qty-input {
   .add-icon {
     width: 20px; /* Adjust the size as needed */
     height: 16px;
-    /* font-size: 16px; */
+    font-size: 16px;
+    filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
+      brightness(93%) contrast(85%);
   }
   .item-add {
     flex: 1;
