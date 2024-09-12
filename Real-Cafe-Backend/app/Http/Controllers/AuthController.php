@@ -46,8 +46,18 @@ class AuthController extends Controller
             'role' => $role, // Assign the role based on the secret token
         ]);
 
-        // Return a success response
-        return response()->json(['message' => 'User registered successfully.'], 201);
+        //return response JSON user is created
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'user'    => $user,
+            ], status: 201);
+        }
+
+        //return JSON process insert failed 
+        return response()->json([
+            'success' => false,
+        ], status: 409);
     }
     /**
      * Handle password reset for a user.
@@ -88,26 +98,34 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // Validate the request data
+        //set validation
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string',
-            'password' => 'required|string',
+            'username'  => 'required',
+            'password'  => 'required'
         ]);
 
-        // If validation fails, return the errors
+        //if validation fails
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json($validator->errors(), 422);
         }
 
-        // Attempt to authenticate the user
+        //get credentials from request
         $credentials = $request->only('username', 'password');
 
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials.'], 401);
+        //if auth failed
+        if (!$token = auth()->guard('api')->attempt($credentials)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email atau Password Anda salah'
+            ], 401);
         }
 
-        // Return the JWT token and user details using the helper method
-        return $this->respondWithToken($token);
+        //if auth success
+        return response()->json([
+            'success' => true,
+            'user'    => auth()->guard('api')->user(),
+            'token'   => $token
+        ], 200);
     }
 
 
@@ -120,30 +138,21 @@ class AuthController extends Controller
         ]);
     }
 
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'user' => Auth::user(), // User details along with the token
-            'role' => Auth::user()->role, // Include the user's role in the response
-        ]);
-    }
-
 
     /**
      * Handle user logout and session destruction.
      */
     public function logout(Request $request)
-    {
-        // Invalidate the JWT token
-        JWTAuth::invalidate(JWTAuth::getToken());
+    {        
+        //remove token
+        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
 
-        // Optionally, invalidate the session (for web-based session)
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return response()->json(['message' => 'Logout successful.'], 200);
+        if($removeToken) {
+            //return response JSON
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout Berhasil!',  
+            ]);
+        }
     }
 }

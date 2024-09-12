@@ -56,12 +56,12 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
     }
 
     /**
-     * Return a key-value array, containing any custom claims to be added to the JWT.
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
      */
     public function getJWTCustomClaims()
     {
-        return [
-            'role' => $this->role,
-        ];
+        return [];
     }
 }

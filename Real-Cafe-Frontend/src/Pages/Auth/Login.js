@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import URL_API from "../../apiconfig"; // Updated import path
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import Cookies from "js-cookie";
 
 const Login = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -38,28 +39,18 @@ const Login = () => {
           },
         }
       );
-
+      //set token on cookies
+      Cookies.set('token', response.data.token);
       console.log("Login response:", response.data);
 
       setIsAuthenticated(true);
-      // Assuming the token is in the 'access_token' field
-      const { access_token } = response.data;
-
-      if (!access_token) {
-        throw new Error("No token received from server");
-      }
-
-      // Save token in localStorage
-      localStorage.setItem("authToken", access_token);
-
-      setError("");
       navigate("/secret");
     } catch (err) {
       console.error(
         "Login error:",
         err.response ? err.response.data : err.message
       );
-      setError(err.response?.data?.error || "An unexpected error occurred.");
+      setError(err.response?.data?.message || "An unexpected error occurred.");
       setMessage("");
     }
   };

@@ -20,20 +20,19 @@ use App\Http\Controllers\MinumanPanasController;
 Route::middleware('web')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
+
+// Route::post('logout', [AuthController::class, 'logout']);
 Route::post('login', [AuthController::class, 'login']);
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('/me', [AuthController::class, 'me']);
-    // Add other protected routes here
-});
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/secret', [SecretController::class, 'show']);
-    // Route::get('/another', [AnotherController::class, 'show']);
-    // More authenticated routes here
+
+// Route::group(['middleware' => 'auth:api'], function () {
+//     Route::get('/me', [AuthController::class, 'me']);
+// });
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });
 
-Route::middleware('auth:sanctum')->get('/auth/check', function (Request $request) {
-    return response()->json(['user' => $request->user()]);
-});
+
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
