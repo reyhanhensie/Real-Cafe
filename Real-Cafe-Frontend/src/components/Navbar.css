@@ -14,16 +14,14 @@
   transition: transform 0.5s ease-in-out, position 0.5s ease-in-out;
   padding: 0.5rem;
 }
-.reopen.closed {
-  background-color: #38220f;
-  color: white;
-  border-radius: 16px;
-  cursor: pointer;
-  position: fixed;
-  top: 1%;
-  /* left: 1%; */
+
+.reopen {
+  position: absolute;
+  opacity: 0;
+  transition: transform 0.25s ease-in-out, position 0.5s ease-in-out, opacity 0.15s ease-in;
 }
-.reopen.closed img {
+
+.reopen img {
   width: 24px;
   height: 24px;
   padding: 2px;
@@ -31,8 +29,42 @@
   filter: invert(95%) sepia(8%) saturate(1074%) hue-rotate(322deg)
     brightness(98%) contrast(88%);
 }
+
+.reopen.closed {
+  background-color: #38220f;
+  color: white;
+  border-radius: 16px;
+  cursor: pointer;
+  position: fixed;
+  display: flex;
+  /* width: 5%; */
+  transform: translate(0);
+  visibility: visible;
+  opacity: 1;
+  top: 0; /* Stick it to the top of the page */
+  left: 0; /* Align it to the left */
+  opacity: 50%;
+  transition: opacity 100ms ease-in;
+  /* left: 1%; */
+}
+.reopen.closed:hover {
+  color: black;
+  opacity: 1;
+  transition: opacity 100ms ease-in-out;
+}
+
 .reopen.open {
-  display: none;
+  background-color: #38220f;
+  color: white;
+  border-radius: 16px;
+  cursor: pointer;
+  position: fixed;
+  /* top: 1%; */
+  color: white;
+  transform: translateY(-100%);
+  /* opacity: 0; */
+  /* transition: opacity 250ms ease-in; */
+  /* display: none; */
 }
 
 .navbar.closed {

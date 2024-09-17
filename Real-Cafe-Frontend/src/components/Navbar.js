@@ -10,6 +10,14 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  // Function to scroll to the top
+  const scrollToTop = () => {
+    document.body.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <>
       <nav className={`navbar ${isOpen ? "open" : "closed"}`}>
@@ -46,7 +54,10 @@ const Navbar = () => {
       </nav>
       <button
         className={`reopen ${isOpen ? "open" : "closed"}`}
-        onClick={toggleNavbar}
+        onClick={() => {
+          toggleNavbar(); // Toggle the navbar
+          scrollToTop(); // Scroll to the top of the screen
+        }}
       >
         <img src="/icons/navbar.svg" alt="Nav" />
       </button>
