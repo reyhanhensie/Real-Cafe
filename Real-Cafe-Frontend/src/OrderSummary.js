@@ -1,19 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./OrderSummary.css";
 import API_URL from "./apiconfig";
+import notification from "./assets/sounds/notification_sound.wav";
 
 const OrderSummary = () => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const [strokedItems, setStrokedItems] = useState({});
-  const [confirmationDialog, setConfirmationDialog] = useState({ isOpen: false, orderId: null });
+  const [confirmationDialog, setConfirmationDialog] = useState({
+    isOpen: false,
+    orderId: null,
+  });
+  const audioRef = useRef(null);
+  const previousOrdersCount = useRef(0);
+  const [canPlaySound, setCanPlaySound] = useState(false);
+
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      setCanPlaySound(true); // Enable sound playback after user interaction
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+    };
+
+    // Add listeners to detect user interaction
+    window.addEventListener("click", handleUserInteraction);
+    window.addEventListener("keydown", handleUserInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(`${API_URL}/live-orders`);
         setOrders(response.data);
+        if (response.data.length > previousOrdersCount.current) {
+          // Play sound for new order
+          audioRef.current.play();
+        }
+        previousOrdersCount.current = response.data.length;
       } catch (err) {
         console.error("Error fetching orders:", err);
         setError("Error fetching orders");
@@ -41,9 +70,13 @@ const OrderSummary = () => {
 
   const confirmCompleteOrder = async () => {
     try {
-      await axios.patch(`${API_URL}/order/${confirmationDialog.orderId}/complete`);
+      await axios.patch(
+        `${API_URL}/order/${confirmationDialog.orderId}/complete`
+      );
       const response = await axios.get(`${API_URL}/live-orders`);
       setOrders(response.data);
+      // Subtract 1 from previousOrdersCount since one order has been completed
+      previousOrdersCount.current = response.data.length;
     } catch (err) {
       console.error("Error completing the order:", err);
       setError("Error completing the order");
@@ -69,6 +102,7 @@ const OrderSummary = () => {
 
   return (
     <div className="order-summary">
+      <audio ref={audioRef} src={notification} />
       <h2>ORDERS</h2>
       {error && <p className="error">{error}</p>}
       {orders.length === 0 ? (
@@ -137,8 +171,12 @@ const OrderSummary = () => {
         <div className="confirmation-dialog">
           <p>Apakah anda yakin?</p>
           <div className="confirmation-buttons">
-            <button onClick={cancelCompleteOrder} className="cancel-button">Cancel</button>
-            <button onClick={confirmCompleteOrder} className="confirm-button">Iya</button>
+            <button onClick={cancelCompleteOrder} className="cancel-button">
+              Cancel
+            </button>
+            <button onClick={confirmCompleteOrder} className="confirm-button">
+              Iya
+            </button>
           </div>
         </div>
       )}
