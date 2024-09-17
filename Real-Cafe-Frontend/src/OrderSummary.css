@@ -143,3 +143,102 @@
 .Pesanan-button:hover {
   background-color: #0056b3;
 }
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  text-align: center;
+}
+
+.confirmation-dialog p {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.cancel-button,
+.confirm-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.confirm-button {
+  background-color: #4e3928;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+}
+
+.confirm-button:hover {
+  background-color: #3e2c1e;
+}
+
+.empty-order {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 200px); /* Adjust based on your layout */
+}
+
+.empty-order-content {
+  text-align: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.empty-order-icon {
+  font-size: 48px;
+  color: #4e3928;
+  margin-bottom: 20px;
+}
+
+.empty-order h3 {
+  font-size: 24px;
+  color: #4e3928;
+  margin-bottom: 10px;
+}
+
+.empty-order p {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Add a subtle animation to make it more interactive */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.empty-order-content {
+  animation: pulse 2s infinite;
+}
