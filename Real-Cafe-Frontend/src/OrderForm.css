@@ -6,6 +6,7 @@
   display: flex;
   margin: 1%;
   flex-direction: row;
+  min-height: 100vh;
 }
 
 .menu-container {
@@ -126,9 +127,10 @@ span.header-add {
   padding: 0;
 }
 
-li button {
+.order-form button {
   /* width: 60px;  */
   text-align: center;
+  border: none;
 }
 .item-add,
 .item-add-placeholder {
@@ -193,32 +195,42 @@ input[type="number"] {
   text-indent: 20px;
 }
 
-.order-qty-container {
+.order-qty-container button {
   flex: 2;
+  align-items: center;
+  justify-content: center;
+  /* height: 25px; */
+  /* width: 25px; */
+}
+
+.order-item img {
+  display: block;
+  margin: 0;
+  height: 30px;
+  width: 30px;
+  justify-content: center;
+  align-items: center;
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
+    brightness(93%) contrast(85%);
+}
+
+.order-qty-container {
   display: flex;
 }
-.order-remove {
-  align-items: right;
-  width: 35px;
-  color: white;
-  background-color: red;
-  border-radius: 8px;
-  border-color: red;
-  font-weight: 800;
-  justify-content: right;
-  align-content: right;
+.order-item {
+  font-size: 18px;
+}
+button.order-qty-button {
+  width: 30px; /* Adjust the size as needed */
+  height: 30px;
+  /* font-size: 16px; */
+  justify-content: center;
+  align-items: center;
+  background: none;
+  padding: 0px;
   cursor: pointer;
 }
-.order-qty-button {
-  flex: 1;
-  font-weight: 600;
-  font-size: 20px;
-  color: #ece0d1;
-  background-color: #4e3928;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+
 input.order-qty-input {
   flex: 1;
   margin-left: 5px;
@@ -227,14 +239,30 @@ input.order-qty-input {
   background: transparent;
   color: #4e3928;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
   text-align: center;
   align-items: center;
+
   align-content: center;
-  width: 5px;
+  width: 20px;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   appearance: textfield; /* Standard property */
+}
+.order-remove img {
+  height: 30px;
+  width: 30px;
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
+    brightness(100%) contrast(114%);
+  cursor: pointer;
+}
+button.order-remove {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
 }
 
 /* FORM INPUT BAGIAN BAWAH */
@@ -270,6 +298,10 @@ input.order-qty-input {
 
 .order-form-meja h3 {
   margin-right: 10px;
+}
+.order-form-meja h4 {
+  margin-left: 10px;
+  color: red;
 }
 .order-form-meja {
   display: flex;
@@ -403,15 +435,6 @@ input.order-qty-input {
     flex-direction: row;
     align-items: center;
     display: flex;
-  }
-
-  .order-qty-button {
-    font-size: 12px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    width: 50%;
   }
 
   input.order-qty-input {

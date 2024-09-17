@@ -1,34 +1,157 @@
+/* Navbar container */
 .navbar {
-  background-color: white;
+  background-color: #38220f;
+  color: #fff;
   display: flex;
-  justify-content: space-between; /* Adjust this if necessary */
+  flex-wrap: wrap;
   align-items: center;
+  min-height: 10vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 0.5s ease-in-out, position 0.5s ease-in-out;
+  padding: 0.5rem;
+}
+.reopen.closed {
+  background-color: #38220f;
+  color: white;
+  border-radius: 16px;
+  cursor: pointer;
+  position: fixed;
+  top: 1%;
+  /* left: 1%; */
+
+}
+.reopen.closed img {
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  display: flex;
+  filter: invert(95%) sepia(8%) saturate(1074%) hue-rotate(322deg)
+    brightness(98%) contrast(88%);
+}
+.reopen.open {
+  display: none;
 }
 
-.navbar li img {
+.navbar.closed {
+  position: fixed;
+  transform: translateY(-100%);
+  padding: 0;
+}
+
+.navbar.open {
+  position: relative;
+  transform: translateY(0);
+  padding: 0;
+}
+.close-button img {
   filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
     brightness(91%) contrast(89%);
-
-  width: 25px; /* Adjust the size as needed */
-  height: 25px;
-  display: block;
-  margin: auto;
-}
-
-/* Ensure nav-links are laid out horizontally */
-
-/* Style the list items */
-a li {
+  width: 20px;
+  height: 20px;
   display: flex;
-  flex-direction: column; /* Stack the image and text vertically */
-  align-items: center; /* Center items horizontally */
-  justify-content: center; /* Center items vertically */
-  padding: 10px; /* Adjust padding for better spacing */
 }
 
-/* Style the text */
-.nav-links li p {
+.close-button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  order: 1;
+}
+
+/* Logo styling */
+.logo a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-decoration: none;
+  order: 2;
+}
+.logo h3 {
+  margin: 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+.logo link{
+  display: flex;
+}
+
+.logo img {
+  height: 35px;
+  border-radius: 10px;
+}
+
+/* Nav links styling */
+.nav-links {
+  list-style: none;
   margin: 0;
-  font-size: 14px; /* Adjust font size as needed */
-  text-align: center;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  order: 3;
+}
+
+.nav-links li {
+  margin: 10px 0;
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Icon styles in nav-links */
+.nav-links li img {
+  filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
+    brightness(91%) contrast(89%);
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* Add hover effect */
+.nav-links li a:hover {
+  text-decoration: underline;
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+  .navbar {
+    flex-wrap: nowrap;
+  }
+
+  .close-button {
+    order: 1;
+  }
+
+  .logo {
+    order: 2;
+  }
+
+  .nav-links {
+    flex-direction: row;
+    width: auto;
+    order: 3;
+    margin-left: auto;
+  }
+
+  .nav-links li {
+    margin: 0 10px;
+  }
+
+  .nav-links li img {
+    width: 24px;
+    height: 24px;
+  }
 }

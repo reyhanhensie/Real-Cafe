@@ -1,4 +1,17 @@
 .home {
-    padding: 20px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
   }
+
+.home h1 {
+  text-align: center;
+  margin: 0%;
+  font-size: 48px;
+}
+.home h2 {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 32px;
+}
   

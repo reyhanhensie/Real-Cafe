@@ -1,9 +1,9 @@
-// src/pages/Auth/Login.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import URL_API from "../../apiconfig"; // Updated import path
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Cookies from "js-cookie";
+import "./Login.css"; // Import the new CSS file
 
 const Login = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -56,7 +56,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>

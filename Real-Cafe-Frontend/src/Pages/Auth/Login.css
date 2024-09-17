@@ -1,62 +1,75 @@
-/* src/pages/Login.css */
-
+/* Set up a flexbox container for centering */
 .login-container {
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  overflow-y: hidden;
+}
+
+/* Style the title (h1) */
+.login-container h2 {
+  top: 20%;
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+}
+
+/* Style the login form */
+form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
   background-color: #f9f9f9;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  border: 1px solid #ddd;
+  padding: 2rem;
   border-radius: 8px;
-  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input {
+/* Style the form labels and inputs */
+label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
-button {
-  padding: 10px 15px;
+input.login-container[type="text"],
+input.login-container[type="password"]{
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Style the submit button */
+button.login-container {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 4px;
-  background-color: #4e3928;
-  color: #fff;
-  font-weight: bold;
   cursor: pointer;
+  font-size: 1rem;
 }
 
-button:hover {
-  background-color: #3d2c1b;
+button:hover .login-container  {
+  background-color: #0056b3;
 }
 
-.error-message {
-  color: red;
-  font-weight: bold;
+/* Error and success messages */
+p {
+  margin-top: 1rem;
 }
 
-.success-message {
-  color: green;
-  font-weight: bold;
+p[style*="color: red"] {
+  color: #ff4d4d;
+}
+
+p[style*="color: green"] {
+  color: #28a745;
 }

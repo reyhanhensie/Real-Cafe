@@ -23,7 +23,8 @@
   flex-direction: row;
   position: relative; /* Needed to position Meja No at the top right */
 }
-h2 {
+
+.order-summary h2 {
   align-items: center;
   justify-content: center;
   text-align: center;

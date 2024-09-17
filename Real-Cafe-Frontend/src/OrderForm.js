@@ -69,9 +69,7 @@ const OrderForm = () => {
   };
   const [selectedValue, setSelectedValue] = useState("");
   // const nama_kasir = axios.get(`${API_URL}`);
-  const options = [
-{ value: 'Option 1', label: 'Option 1' },
-  ]
+  const options = [{ value: "Option 1", label: "Option 1" }];
 
   const handleRemoveItem = (id, type) => {
     const newOrderItems = orderItems.filter(
@@ -92,14 +90,26 @@ const OrderForm = () => {
   };
 
   const handleChangeQty = (index, qty) => {
-    if (!qty || qty <= 0) {
-      qty = 1;
-    }
+    // Ensure the input is a valid number and within the range [1, 99]
+    const sanitizedQty = qty.toString().replace(/[^0-9]/g, ""); // Allow only numeric characters
+
+    // Convert to a number and clamp between 1 and 99
+    const validQty = Math.max(1, Math.min(99, parseInt(sanitizedQty, 10) || 1));
+
+    // Create a copy of the orderItems to avoid mutating state directly
     const newOrderItems = [...orderItems];
-    newOrderItems[index].qty = qty;
+
+    // Update the quantity of the item at the given index
+    newOrderItems[index].qty = validQty;
+
+    // Update the order items state
     setOrderItems(newOrderItems);
+
+    // Recalculate the total price
     calculateTotalPrice(newOrderItems);
-    setError(null); // Clear the error if the quantity is valid
+
+    // Clear any error messages related to the quantity input
+    setError(null);
   };
 
   const calculateTotalPrice = (items) => {
@@ -251,7 +261,7 @@ const OrderForm = () => {
                     }
                   >
                     <img
-                      src="/icons/plus-solid.svg"
+                      src="/icons/plus-solid2.svg"
                       alt="Add Icon"
                       className="add-icon"
                     />
@@ -290,22 +300,20 @@ const OrderForm = () => {
                   className="order-qty-button"
                   onClick={() => handleChangeQty(index, item.qty - 1)}
                 >
-                  -
+                  <img src="/icons/minus-small.svg" alt="-"/>
                 </button>
                 <input
                   className="order-qty-input"
                   type="number"
                   value={item.qty}
                   min="1"
-                  onChange={(e) =>
-                    handleChangeQty(index, parseInt(e.target.value, 10))
-                  }
+                  onChange={(e) => handleChangeQty(index, e.target.value)}
                 />
                 <button
                   className="order-qty-button"
                   onClick={() => handleChangeQty(index, item.qty + 1)}
                 >
-                  +
+                  <img src="/icons/plus-small.svg" alt="+"/>
                 </button>
               </span>
 
@@ -316,7 +324,7 @@ const OrderForm = () => {
                 className="order-remove"
                 onClick={() => handleRemoveItem(item.id, item.type)}
               >
-                X
+               <img src="/icons/x-circle.svg" alt="X" /> 
               </button>
             </li>
           ))}
