@@ -25,12 +25,6 @@ const Navbar = () => {
         </div>
         <ul className="nav-links">
           <li>
-            <Link to="/">
-              <img src="/icons/home.svg" alt="Home" />
-              Home
-            </Link>
-          </li>
-          <li>
             <Link to="/order-form">
               <img src="/icons/point-sale-bill.svg" alt="Cashier" />
               Cashier

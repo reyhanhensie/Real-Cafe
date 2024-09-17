@@ -5,7 +5,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  min-height: 10vh;
+  min-height: 5vh;
+  max-height: 8vh;
   width: 100%;
   top: 0;
   left: 0;
@@ -21,7 +22,6 @@
   position: fixed;
   top: 1%;
   /* left: 1%; */
-
 }
 .reopen.closed img {
   width: 24px;
@@ -79,7 +79,7 @@
   text-decoration: none;
 }
 
-.logo link{
+.logo link {
   display: flex;
 }
 

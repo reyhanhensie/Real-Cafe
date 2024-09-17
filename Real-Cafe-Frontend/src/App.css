@@ -28,13 +28,16 @@ body::-webkit-scrollbar {
 
 .main-content {
   flex: 1; /* Allows it to grow and fill available space */
+  flex-grow: 1;
   box-sizing: border-box;
   margin: 0 ;
+  height: 100vh;
   /* overflow-x: hidden; */
-  overflow-y: hidden;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 5vh;
 }
 /* Hide scrollbar for Chrome, Safari and Opera */
 .main-content::-webkit-scrollbar {

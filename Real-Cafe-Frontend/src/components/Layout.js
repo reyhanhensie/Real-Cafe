@@ -9,7 +9,8 @@ const Layout = ({ children }) => (
     <main className="main-content">
       {children}
     </main>
-    <Footer className="footer" />
+    <Footer className="footer-fixed" />
+    {/* <Footer className="footer-relative" /> */}
   </div>
 );
 
