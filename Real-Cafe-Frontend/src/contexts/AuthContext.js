@@ -1,57 +1,46 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
-import URL_API from "../apiconfig";
+import React, { createContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import URL_API from "../apiconfig";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [User, setUser] = useState({});
-
-  const isTokenExpired = (token) => {
-    if (!token) return true; // No token present
-
-    const decoded = jwtDecode(token);
-    const currentTime = Date.now() / 1000; // Current time in seconds
-
-    // Check if the token has expired
-    return decoded.exp < currentTime;
-  };
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
-    const fetchUserRole = async () => {
+    const checkAuth = async () => {
       const token = Cookies.get("token");
-      try {
-        // Get token from cookies
+      if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-        if (token) {
+        try {
           const response = await axios.get(`${URL_API}/user`);
-          setUserRole(response.data); // Set the user data to state
-          console.log(response.data);
+          setUserRole(response.data.role);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error("Error fetching user role", error);
+          setIsAuthenticated(false);
+          Cookies.remove("token");
+          Cookies.remove("role");
+          navigate("/login");
         }
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-      }
-      if (isTokenExpired(token)) {
-        console.log("Token has expired. Redirect to login or refresh token.");
       } else {
-        console.log("Token is valid.");
+        setIsAuthenticated(false);
+        navigate("/login");
       }
     };
 
-    // Fetch only if userRole is still null
-    if (userRole === null) {
-      fetchUserRole();
-    } else {
-    }
-  });
+    checkAuth();
+  }, [navigate]);
 
   return (
-    <AuthContext.Provider value={{ userRole }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{ isAuthenticated, userRole, setIsAuthenticated }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

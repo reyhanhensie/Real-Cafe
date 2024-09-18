@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext,useState, useEffect } from "react";
 import axios from "axios";
 import URL_API from "../../apiconfig"; // Updated import path
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Cookies from "js-cookie";
+import { AuthContext } from "../../contexts/AuthContext";
 import "./Login.css"; // Import the new CSS file
 
 const Login = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [csrfToken, setCsrfToken] = useState("");
+  const { setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
@@ -40,11 +41,12 @@ const Login = () => {
         }
       );
       //set token on cookies
-      Cookies.set('token', response.data.token);
+      Cookies.set("token", response.data.token);
+      Cookies.set("role",response.data.user.role)
       console.log("Login response:", response.data);
-
       setIsAuthenticated(true);
-      navigate("/secret");
+
+      navigate("/");
     } catch (err) {
       console.error(
         "Login error:",

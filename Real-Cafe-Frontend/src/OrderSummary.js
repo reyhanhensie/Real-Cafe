@@ -12,13 +12,21 @@ const OrderSummary = () => {
     isOpen: false,
     orderId: null,
   });
+  const [soundAlertDialog, setSoundAlertDialog] = useState({
+    isOpen: true, // Show this on the first load
+    enabled: false, // Orders and API will not be fetched until this is true
+  });
   const audioRef = useRef(null);
   const previousOrdersCount = useRef(0);
   const [canPlaySound, setCanPlaySound] = useState(false);
 
   useEffect(() => {
+    if (!soundAlertDialog.enabled) return;
+
     const handleUserInteraction = () => {
-      setCanPlaySound(true); // Enable sound playback after user interaction
+      if (soundAlertDialog.enabled) {
+        setCanPlaySound(true); // Enable sound playback after user interaction
+      }
       window.removeEventListener("click", handleUserInteraction);
       window.removeEventListener("keydown", handleUserInteraction);
     };
@@ -31,15 +39,17 @@ const OrderSummary = () => {
       window.removeEventListener("click", handleUserInteraction);
       window.removeEventListener("keydown", handleUserInteraction);
     };
-  }, []);
+  }, [soundAlertDialog.enabled]);
 
   useEffect(() => {
+    if (!soundAlertDialog.enabled) return; // Skip fetching if sound alerts aren't enabled
+
     const fetchOrders = async () => {
       try {
         const response = await axios.get(`${API_URL}/live-orders`);
         setOrders(response.data);
         if (response.data.length > previousOrdersCount.current) {
-          // Play sound for new order
+          // Play sound for new order if enabled
           audioRef.current.play();
         }
         previousOrdersCount.current = response.data.length;
@@ -52,7 +62,7 @@ const OrderSummary = () => {
     fetchOrders();
     const intervalId = setInterval(fetchOrders, 30000);
     return () => clearInterval(intervalId);
-  }, [API_URL]);
+  }, [API_URL, soundAlertDialog.enabled]);
 
   const groupItemsByType = (items) => {
     return items.reduce((acc, item) => {
@@ -75,7 +85,6 @@ const OrderSummary = () => {
       );
       const response = await axios.get(`${API_URL}/live-orders`);
       setOrders(response.data);
-      // Subtract 1 from previousOrdersCount since one order has been completed
       previousOrdersCount.current = response.data.length;
     } catch (err) {
       console.error("Error completing the order:", err);
@@ -100,85 +109,121 @@ const OrderSummary = () => {
     });
   };
 
+  const enableSoundAlert = () => {
+    setSoundAlertDialog({ isOpen: false, enabled: true });
+  };
+
+  const disableSoundAlert = () => {
+    setSoundAlertDialog({ isOpen: false, enabled: false });
+  };
+
   return (
     <div className="order-summary">
-      <audio ref={audioRef} src={notification} />
-      <h2>ORDERS</h2>
-      {error && <p className="error">{error}</p>}
-      {orders.length === 0 ? (
-        <div className="empty-order">
-          <div className="empty-order-content">
-            <i className="fas fa-clipboard-list empty-order-icon"></i>
-            <h3>Tidak Ada Pesanan</h3>
-            <p>Nyantai Dulu</p>
+      {/* Only show the confirmation dialog if sound alerts are not yet enabled */}
+      {soundAlertDialog.isOpen && (
+        <div className="confirmation-dialog">
+          <p>ENABLE SOUND ALERT FIRST!</p>
+          <div className="confirmation-buttons">
+            <button onClick={enableSoundAlert} className="confirm-button">
+              OK
+            </button>
           </div>
         </div>
-      ) : (
-        <div className="orders-list">
-          {orders.map((order) => (
-            <div key={order.id} className="order-card">
-              <h3>Meja: {order.meja_no}</h3>
-              <h5>No Urut: {orders.indexOf(order) + 1}</h5>
-              <div className="List">
-                {Object.entries(groupItemsByType(order.items)).map(
-                  ([type, items]) => (
-                    <div key={type} className="order-category">
-                      <h6>{type.charAt(0).toUpperCase() + type.slice(1)}</h6>
-                      <ul>
-                        {items.map((item, index) => (
-                          <li key={index} className="order-item">
-                            <span
-                              className={`item-name ${
-                                (strokedItems[order.id] || []).includes(
-                                  item.item_name
-                                )
-                                  ? "stroked"
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                handleItemClick(order.id, item.item_name)
-                              }
-                            >
-                              {item.item_name}
-                            </span>
-                            <span className="item-qty">{item.quantity}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )
-                )}
+      )}
+
+      {/* Render content only if sound alerts are enabled */}
+      {!soundAlertDialog.isOpen && soundAlertDialog.enabled && (
+        <>
+          <audio ref={audioRef} src={notification} />
+          <h2>ORDERS</h2>
+          {error && <p className="error">{error}</p>}
+          {orders.length === 0 ? (
+            <div className="empty-order">
+              <div className="empty-order-content">
+                <i className="fas fa-clipboard-list empty-order-icon"></i>
+                <h3>Tidak Ada Pesanan</h3>
+                <p>Nyantai Dulu</p>
               </div>
-              {order.message && (
-                <div className="order-message">
-                  <strong>Catatan:</strong>
-                  <p>{order.message}</p>
+            </div>
+          ) : (
+            <div className="orders-list">
+              {orders.map((order) => (
+                <div key={order.id} className="order-card">
+                  <h3>Meja: {order.meja_no}</h3>
+                  <h5>No Urut: {orders.indexOf(order) + 1}</h5>
+                  <div className="List">
+                    {Object.entries(groupItemsByType(order.items)).map(
+                      ([type, items]) => (
+                        <div key={type} className="order-category">
+                          <h6>
+                            {type === "Minumanpanas"
+                              ? "Minuman Panas"
+                              : type === "MinumanDingin"
+                              ? "Minuman Dingin"
+                              : type.charAt(0).toUpperCase() + type.slice(1)}
+                          </h6>
+                          <ul>
+                            {items.map((item, index) => (
+                              <li key={index} className="order-item">
+                                <span
+                                  className={`item-name ${
+                                    (strokedItems[order.id] || []).includes(
+                                      item.item_name
+                                    )
+                                      ? "stroked"
+                                      : ""
+                                  }`}
+                                  onClick={() =>
+                                    handleItemClick(order.id, item.item_name)
+                                  }
+                                >
+                                  {item.item_name}
+                                </span>
+                                <span className="item-qty">
+                                  {item.quantity}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  {order.message && (
+                    <div className="order-message">
+                      <strong>Catatan:</strong>
+                      <p>{order.message}</p>
+                    </div>
+                  )}
+                  <div className="order-mark">
+                    <button
+                      className="Pesanan-button"
+                      onClick={() => handleCompleteOrder(order.id)}
+                    >
+                      Pesanan Selesai
+                    </button>
+                  </div>
                 </div>
-              )}
-              <div className="order-mark">
+              ))}
+            </div>
+          )}
+          {confirmationDialog.isOpen && (
+            <div className="confirmation-dialog">
+              <p>Apakah anda yakin?</p>
+              <div className="confirmation-buttons">
+                <button onClick={cancelCompleteOrder} className="cancel-button">
+                  Cancel
+                </button>
                 <button
-                  className="Pesanan-button"
-                  onClick={() => handleCompleteOrder(order.id)}
+                  onClick={confirmCompleteOrder}
+                  className="confirm-button"
                 >
-                  Pesanan Selesai
+                  Iya
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-      {confirmationDialog.isOpen && (
-        <div className="confirmation-dialog">
-          <p>Apakah anda yakin?</p>
-          <div className="confirmation-buttons">
-            <button onClick={cancelCompleteOrder} className="cancel-button">
-              Cancel
-            </button>
-            <button onClick={confirmCompleteOrder} className="confirm-button">
-              Iya
-            </button>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </div>
   );
