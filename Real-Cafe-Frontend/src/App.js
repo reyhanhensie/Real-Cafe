@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import OrderForm from './OrderForm';
 import OrderSummary from './OrderSummary';
+import Stock from './Stock';
 import Register from './pages/Auth/Register';
-import Secret from './pages/Secret/Secret';
 import Login from './pages/Auth/Login';
 import Layout from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
@@ -35,6 +35,12 @@ const App = () => {
             path="/order-summary" 
             element={
               <DapurRoute element={<Layout><OrderSummary /></Layout>} />
+            } 
+          />
+          <Route 
+            path="/stock-management" 
+            element={
+              <DapurRoute element={<Layout><Stock /></Layout>} />
             } 
           />
         </Routes>
