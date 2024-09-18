@@ -156,9 +156,9 @@ const OrderSummary = () => {
                       ([type, items]) => (
                         <div key={type} className="order-category">
                           <h6>
-                            {type === "Minumanpanas"
+                            {type === "minumanpanas"
                               ? "Minuman Panas"
-                              : type === "MinumanDingin"
+                              : type === "minumandingin"
                               ? "Minuman Dingin"
                               : type.charAt(0).toUpperCase() + type.slice(1)}
                           </h6>
