@@ -1,0 +1,62 @@
+.stockContainer {
+  display: flex;
+  margin: 1%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.navBar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 80%;
+  align-self: center;
+}
+
+.navButton {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 10px;
+  padding: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+  /* width: px; */
+  cursor: pointer;
+  border: none;
+  background-color: #4e3928;
+  color: #ece0d1;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  text-wrap: wrap;
+  text-align: center;
+  flex-direction: row;
+}
+
+.navButtonActive {
+  background-color: #ece0d1;
+  color: #4e3928;
+  font-weight: 600;
+}
+table {
+  justify-content: center;
+  align-self: center;
+  width: 90%;
+}
+th {
+  text-align: left;
+  font-size: 28px;
+}
+tr{
+  font-size: 18px;
+  font-weight: 600;
+}
+.stockList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 3;
+}
