@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MinumanPanas; // Import your model
+use Illuminate\Support\Facades\Log;
+
 
 class MinumanPanasController extends Controller
 {
@@ -28,24 +30,44 @@ class MinumanPanasController extends Controller
     }
 
     // Display the specified resource
-    public function show(MinumanPanas $MinumanPanas)
+    public function show($id)
     {
-        return $MinumanPanas;
+        $minumanPanas = MinumanPanas::find($id);
+        if (!$minumanPanas) {
+            return response()->json(['message' => 'Item not found'], 404);
+        }
+        return response()->json($minumanPanas);
     }
 
     // Update the specified resource in storage
-    public function update(Request $request, MinumanPanas $MinumanPanas)
+    public function update(Request $request, $id)
     {
+        // Validate the incoming request data
         $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'price' => 'sometimes|required|numeric',
-            'qty' => 'sometimes|required|integer',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'qty' => 'required|integer',
         ]);
 
-        $MinumanPanas->update($request->all());
+        // Find the specific resource by its ID
+        $data = MinumanPanas::findOrFail(id: $id);
 
-        return response()->json($MinumanPanas, 200);
+        // Update the resource with the validated data
+        $data->update($request->all());
+
+        // Log the updated data
+        Log::info('Update Request Data:', $data->toArray());
+
+        // Return a success response
+        return response()->json([
+            'data' => $data
+        ], 200);
     }
+
+
+
+
+
 
     // Remove the specified resource from storage
     public function destroy(MinumanPanas $MinumanPanas)

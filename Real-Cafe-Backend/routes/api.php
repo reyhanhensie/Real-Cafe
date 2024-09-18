@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\SecretController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuController;
@@ -22,12 +21,8 @@ Route::middleware('web')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-// Route::post('logout', [AuthController::class, 'logout']);
 Route::post('login', [AuthController::class, 'login']);
 
-// Route::group(['middleware' => 'auth:api'], function () {
-//     Route::get('/me', [AuthController::class, 'me']);
-// });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -45,9 +40,8 @@ Route::apiResource('Lalapan', LalapanController::class);
 Route::apiResource('Makanan', MakananController::class);
 Route::apiResource('Milkshake', MilkshakeController::class);
 Route::apiResource('MinumanDingin', MinumanDinginController::class);
-Route::apiResource('MinumanPanas', MinumanPanasController::class);
+Route::apiResource(name: 'MinumanPanas', controller: MinumanPanasController::class); 
 Route::apiResource('Spending', SpendingController::class);
-
 
 Route::get('Menu', [MenuController::class, 'index']);
 Route::get('/live-orders', [OrderController::class, 'live']); // Create an order

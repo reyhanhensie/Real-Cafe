@@ -28,23 +28,31 @@ class CoffeController extends Controller
     }
 
     // Display the specified resource
-    public function show(Coffe $Coffe)
+    public function show($id)
     {
-        return $Coffe;
+        return Coffe::findOrFail(id: $id);
     }
 
     // Update the specified resource in storage
-    public function update(Request $request, Coffe $Coffe)
+    public function update(Request $request, $id)
     {
+        // Validate the incoming request data
         $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'price' => 'sometimes|required|numeric',
-            'qty' => 'sometimes|required|integer',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'qty' => 'required|integer',
         ]);
 
-        $Coffe->update($request->all());
+        // Find the specific resource by its ID
+        $data = Coffe::findOrFail(id: $id);
 
-        return response()->json($Coffe, 200);
+        // Update the resource with the validated data
+        $data->update($request->all());
+
+        // Return a success response
+        return response()->json([
+            'data' => $data
+        ], 200);
     }
 
     // Remove the specified resource from storage

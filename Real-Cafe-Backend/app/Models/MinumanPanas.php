@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MinumanPanas extends Model
 {
+    use HasFactory;
     protected $table = 'minuman_panas';
     protected $fillable = ['name', 'price', 'qty'];
-    use HasFactory;
+    // If your primary key is not 'id', specify it here
 }

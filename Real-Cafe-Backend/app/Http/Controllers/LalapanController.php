@@ -28,23 +28,31 @@ class LalapanController extends Controller
     }
 
     // Display the specified resource
-    public function show(Lalapan $Lalapan)
+    public function show($id)
     {
-        return $Lalapan;
+        return Lalapan::findOrFail(id: $id);
     }
 
     // Update the specified resource in storage
-    public function update(Request $request, Lalapan $Lalapan)
+    public function update(Request $request, $id)
     {
+        // Validate the incoming request data
         $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'price' => 'sometimes|required|numeric',
-            'qty' => 'sometimes|required|integer',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'qty' => 'required|integer',
         ]);
 
-        $Lalapan->update($request->all());
+        // Find the specific resource by its ID
+        $data = Lalapan::findOrFail(id: $id);
 
-        return response()->json($Lalapan, 200);
+        // Update the resource with the validated data
+        $data->update($request->all());
+
+        // Return a success response
+        return response()->json([
+            'data' => $data
+        ], 200);
     }
 
     // Remove the specified resource from storage
