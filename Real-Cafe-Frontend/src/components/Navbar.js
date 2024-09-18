@@ -15,15 +15,15 @@ const Navbar = () => {
   const token = Cookies.get("token"); // Get the token from cookies
   const [Authority, setAuthority] = useState(null); // State for Authority
 
-
   useEffect(() => {
-
-    console.log("user Role :")
-    console.log(userRole);  
-    if (userRole === "user") {
-      setAuthority(1); 
-    } else if (userRole === "admin") {
+    console.log("user Role :");
+    console.log(userRole);
+    if (userRole === "kasir") {
+      setAuthority(1);
+    } else if (userRole === "dapur") {
       setAuthority(2);
+    } else if (userRole === "admin") {
+      setAuthority(3);
     } else {
       setAuthority(null);
     }

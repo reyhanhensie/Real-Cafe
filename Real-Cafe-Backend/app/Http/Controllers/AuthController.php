@@ -31,8 +31,10 @@ class AuthController extends Controller
         }
 
         // Determine the role based on the secret token
-        if ($request->secret_token === env('TOKEN_USER')) {
-            $role = User::ROLE_USER;
+        if ($request->secret_token === env('TOKEN_KASIR')) {
+            $role = User::ROLE_KASIR;
+        } elseif ($request->secret_token === env('TOKEN_DAPUR')) {
+            $role = User::ROLE_DAPUR;
         } elseif ($request->secret_token === env('TOKEN_ADMIN')) {
             $role = User::ROLE_ADMIN;
         } else {
@@ -143,15 +145,15 @@ class AuthController extends Controller
      * Handle user logout and session destruction.
      */
     public function logout(Request $request)
-    {        
+    {
         //remove token
         $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
 
-        if($removeToken) {
+        if ($removeToken) {
             //return response JSON
             return response()->json([
                 'success' => true,
-                'message' => 'Logout Berhasil!',  
+                'message' => 'Logout Berhasil!',
             ]);
         }
     }

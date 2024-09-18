@@ -25,7 +25,8 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
     ];
 
     // Add role constants for easier management
-    const ROLE_USER = 'user';
+    const ROLE_KASIR = 'kasir';
+    const ROLE_DAPUR = 'dapur';
     const ROLE_ADMIN = 'admin';
 
     /**
