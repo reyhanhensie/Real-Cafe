@@ -157,7 +157,7 @@ const OrderForm = () => {
       });
       // Generate a timestamp
       const timestamp = new Date()
-        .toISOString()
+        .toLocaleString("sv-SE", { timeZone: "Asia/Jakarta", hour12: false })
         .split(".")[0]
         .replace(/:/g, "_");
 
@@ -300,7 +300,7 @@ const OrderForm = () => {
                   className="order-qty-button"
                   onClick={() => handleChangeQty(index, item.qty - 1)}
                 >
-                  <img src="/icons/minus-small.svg" alt="-"/>
+                  <img src="/icons/minus-small.svg" alt="-" />
                 </button>
                 <input
                   className="order-qty-input"
@@ -313,7 +313,7 @@ const OrderForm = () => {
                   className="order-qty-button"
                   onClick={() => handleChangeQty(index, item.qty + 1)}
                 >
-                  <img src="/icons/plus-small.svg" alt="+"/>
+                  <img src="/icons/plus-small.svg" alt="+" />
                 </button>
               </span>
 
@@ -324,7 +324,7 @@ const OrderForm = () => {
                 className="order-remove"
                 onClick={() => handleRemoveItem(item.id, item.type)}
               >
-               <img src="/icons/x-circle.svg" alt="X" /> 
+                <img src="/icons/x-circle.svg" alt="X" />
               </button>
             </li>
           ))}

@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import OrderForm from './OrderForm';
 import OrderSummary from './OrderSummary';
 import Stock from './Stock';
+import Pengeluaran from './Pengeluaran';
+import Summary from './Summary';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import Layout from './components/Layout';
@@ -41,6 +43,18 @@ const App = () => {
             path="/stock-management" 
             element={
               <DapurRoute element={<Layout><Stock /></Layout>} />
+            } 
+          />
+            <Route 
+            path="/pengeluaran" 
+            element={
+              <DapurRoute element={<Layout><Pengeluaran /></Layout>} />
+            } 
+          />
+            <Route 
+            path="/summary" 
+            element={
+              <DapurRoute element={<Layout><Summary /></Layout>} />
             } 
           />
         </Routes>

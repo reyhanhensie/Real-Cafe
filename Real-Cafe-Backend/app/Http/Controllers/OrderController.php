@@ -30,11 +30,18 @@ class OrderController extends Controller
         $orders = Order::where('status', 'pending')->with('items')->get();
         return response()->json($orders);
     }
+    public function today()
+    {
+        $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
+        $time_stop = Carbon::now('Asia/Jakarta')->endOfDay();
+        $orders = Order::whereBetween('created_at',[$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
+        return response()->json($orders);
+    }
     // Store a newly created order in storage
     public function store(Request $request)
     {
         $request->validate([
-            'message'=> 'nullable',
+            'message' => 'nullable',
             'meja' => 'required|integer', // Validate meja_no
             'items' => 'required|array',
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
@@ -85,13 +92,13 @@ class OrderController extends Controller
 
         return response()->json($order->load('items'), 201);
     }
-     /**
+    /**
      * Generate a PDF for the specified order and save it to a directory.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   public function generatePdf($id)
+    public function generatePdf($id)
     {
         $order = Order::with('items')->findOrFail($id);
 
@@ -130,7 +137,7 @@ class OrderController extends Controller
         $timestamp = str_replace([':'], ['_'], $timestamp);
         $filename = "Order_{$timestamp}_ID-{$id}.pdf";
         $directory = "Receipt/{$year}/{$monthName}";
-        
+
         // Ensure the directory exists
         if (!Storage::exists($directory)) {
             Storage::makeDirectory($directory);
