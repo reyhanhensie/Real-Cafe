@@ -17,6 +17,7 @@ const categoryMap = {
 const MenuEditor = () => {
   const [menu, setMenu] = useState({});
   const [isEditing, setIsEditing] = useState(null); // Track which item is being edited
+  const [isAdding, setIsAdding] = useState(false); // Track whether we are adding a new item
   const [categories] = useState(Object.keys(categoryMap));
   const [selectedCategory, setSelectedCategory] = useState("Makanan"); // Default to Makanan
   const [form, setForm] = useState({ name: "", price: "", qty: "" });
@@ -44,11 +45,7 @@ const MenuEditor = () => {
     axios
       .put(`${API_URL}/${sanitizedCategory}/${id}`, updatedItem)
       .then((response) => {
-        // Use the response data (updated item) to update the state
         const updatedData = response.data.data || updatedItem;
-        console.log(`${API_URL}/${sanitizedCategory}/${id}`);
-        console.log(form);
-        console.log("API response:", response.data);
 
         // Update the state with the modified item
         setMenu((prevMenu) => ({
@@ -70,8 +67,10 @@ const MenuEditor = () => {
 
   const handleClose = () => {
     setIsEditing(null);
+    setIsAdding(false); // Close the add item modal as well
     setForm({ name: "", price: "", qty: "" });
   };
+
   const handleAddItem = () => {
     const sanitizedCategory = selectedCategory.replace(/\s+/g, "");
     const newItem = { ...form }; // Prepare the new item from the form data
@@ -113,7 +112,21 @@ const MenuEditor = () => {
       {/* Display menu items of the selected category */}
       {menu[selectedCategory] && menu[selectedCategory].length > 0 ? (
         <div className={styles.stockList}>
-          <h2>{selectedCategory}</h2>
+          <div className={styles.stockHeader}>
+            <h2 id={styles.categoryHeader}>{selectedCategory}</h2>
+
+            <h2>Tambah Item</h2>
+            <button
+              className={styles.addButton}
+              onClick={() => setIsAdding(true)}
+            >
+              <img
+                className={styles.addButton}
+                src="/icons/add-menu.svg"
+                alt="add menu"
+              />
+            </button>
+          </div>
           <table>
             <thead>
               <tr className={styles.itemstock}>
@@ -140,19 +153,20 @@ const MenuEditor = () => {
               ))}
             </tbody>
           </table>
+          {/* Add Item Button */}
         </div>
       ) : (
         <p>No items found for {selectedCategory}.</p>
       )}
 
       {/* Modal for editing item */}
-      {isEditing && (
+      {(isEditing || isAdding) && (
         <div className={styles.modal}>
           <div className={styles.modalHeader}>
             <span className={styles.modalClose} onClick={handleClose}>
-              <img src="/icons/x-circle.svg" alt="X" />
+              <img src="/icons/x-circle.svg" alt="Close" />
             </span>
-            Ubah Menu {form.name}
+            {isAdding ? "Add New Item" : `Ubah Menu ${form.name}`}
           </div>
           <div className={styles.modalContent}>
             <span className={styles.modalContentList}>
@@ -188,9 +202,13 @@ const MenuEditor = () => {
             </span>
             <button
               className={`${styles.modalButton} ${styles.modalButtonSave}`}
-              onClick={() => handleSave(isEditing.category, isEditing.id)}
+              onClick={
+                isAdding
+                  ? handleAddItem
+                  : () => handleSave(isEditing.category, isEditing.id)
+              }
             >
-              Save
+              {isAdding ? "Add" : "Save"}
             </button>
             <button
               className={`${styles.modalButton} ${styles.modalButtonCancel}`}

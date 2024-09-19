@@ -194,7 +194,6 @@ td.itemedit {
 
 .modalButton {
   padding: 10px 20px;
-  align-items: center;
   border-radius: 8px;
   margin: 5px;
   font-weight: 600;
@@ -203,6 +202,7 @@ td.itemedit {
 .modalButtonSave {
   background-color: #4e3928;
   color: #ece0d1;
+ text-align: center; 
   border: none;
   border-radius: 8px;
 }
@@ -211,4 +211,41 @@ td.itemedit {
   background-color: #dbc1ac;
   border: none;
   color: #4e3928;
+  text-align: center;
+}
+
+/* ADD BUTTON */
+.stockHeader #categoryHeader{
+  color: #4e3928;
+flex: 3;
+font-size: 30px;
+}
+.stockHeader{
+  display: flex;
+  flex-direction: row;
+  justify-items: auto;
+  font-size: 20px;
+}
+.stockHeader h2{
+  font-size: 18px;
+  margin: auto;
+  padding-right: 5px;
+}
+
+.addButton img {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
+    brightness(93%) contrast(85%);
+}
+.addButton{
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: auto;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
 }
