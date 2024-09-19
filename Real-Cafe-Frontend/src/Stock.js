@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import API_URL from "./apiconfig"; // Import the API_URL
+import styles from "./Stock.module.css"; // Import the CSS Module
 
 const categoryMap = {
   Camilan: "Camilan",
@@ -18,6 +19,7 @@ const MenuEditor = () => {
   const [isEditing, setIsEditing] = useState(null); // Track which item is being edited
   const [categories] = useState(Object.keys(categoryMap));
   const [selectedCategory, setSelectedCategory] = useState("Makanan"); // Default to Makanan
+  const [form, setForm] = useState({ name: "", price: "", qty: "" });
 
   useEffect(() => {
     // Fetch the menu data
@@ -30,44 +32,76 @@ const MenuEditor = () => {
   }, []);
 
   const handleEdit = (category, id) => {
+    const item = menu[category].find((item) => item.id === id);
     setIsEditing({ category, id });
+    setForm({ name: item.name, price: item.price, qty: item.qty });
   };
 
-  const handleSave = (category, id, updatedItem) => {
-    // Make API request to save the updated item
+  const handleSave = (category, id) => {
+    const sanitizedCategory = category.replace(/\s+/g, "");
+    const updatedItem = { ...form }; // Prepare the updated item from the form data
+
     axios
-      .put(`${API_URL}/${category}/${id}`, updatedItem)
+      .put(`${API_URL}/${sanitizedCategory}/${id}`, updatedItem)
       .then((response) => {
-        // Update state with the modified item
+        // Use the response data (updated item) to update the state
+        const updatedData = response.data.data || updatedItem;
+        console.log(`${API_URL}/${sanitizedCategory}/${id}`);
+        console.log(form);
+        console.log("API response:", response.data);
+
+        // Update the state with the modified item
         setMenu((prevMenu) => ({
           ...prevMenu,
           [category]: prevMenu[category].map((item) =>
-            item.id === id ? response.data : item
+            item.id === id ? { ...item, ...updatedData } : item
           ),
         }));
+
+        // Reset the editing state
         setIsEditing(null);
       })
       .catch((error) => console.error(error));
   };
 
-  const handleChange = (category, id, field, value) => {
-    setMenu((prevMenu) => ({
-      ...prevMenu,
-      [category]: prevMenu[category].map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      ),
-    }));
+  const handleChange = (field, value) => {
+    setForm((prevForm) => ({ ...prevForm, [field]: value }));
+  };
+
+  const handleClose = () => {
+    setIsEditing(null);
+    setForm({ name: "", price: "", qty: "" });
+  };
+  const handleAddItem = () => {
+    const sanitizedCategory = selectedCategory.replace(/\s+/g, "");
+    const newItem = { ...form }; // Prepare the new item from the form data
+
+    axios
+      .post(`${API_URL}/${sanitizedCategory}`, newItem)
+      .then((response) => {
+        const addedItem = response.data.data || newItem;
+
+        // Update the state with the new item
+        setMenu((prevMenu) => ({
+          ...prevMenu,
+          [selectedCategory]: [...prevMenu[selectedCategory], addedItem],
+        }));
+
+        // Reset the form and close the modal
+        handleClose();
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
-    <div>
+    <div className={styles.stockContainer}>
       {/* Navbar for category selection */}
-      <div className="nav-bar">
+      <div className={styles.navBar}>
         {categories.map((category) => (
           <button
             key={category}
-            className={`nav-button ${
-              selectedCategory === category ? "active" : ""
+            className={`${styles.navButton} ${
+              selectedCategory === category ? styles.navButtonActive : ""
             }`}
             onClick={() => setSelectedCategory(category)}
           >
@@ -77,73 +111,94 @@ const MenuEditor = () => {
       </div>
 
       {/* Display menu items of the selected category */}
-      {menu[selectedCategory] && (
-        <div>
+      {menu[selectedCategory] && menu[selectedCategory].length > 0 ? (
+        <div className={styles.stockList}>
           <h2>{selectedCategory}</h2>
-          <ul>
-            {menu[selectedCategory].map((item) => (
-              <li key={item.id}>
-                {isEditing &&
-                isEditing.category === selectedCategory &&
-                isEditing.id === item.id ? (
-                  <div>
-                    <input
-                      type="text"
-                      value={item.name}
-                      onChange={(e) =>
-                        handleChange(
-                          selectedCategory,
-                          item.id,
-                          "name",
-                          e.target.value
-                        )
-                      }
-                    />
-                    <input
-                      type="number"
-                      value={item.price}
-                      onChange={(e) =>
-                        handleChange(
-                          selectedCategory,
-                          item.id,
-                          "price",
-                          e.target.value
-                        )
-                      }
-                    />
-                    <input
-                      type="number"
-                      value={item.qty}
-                      onChange={(e) =>
-                        handleChange(
-                          selectedCategory,
-                          item.id,
-                          "qty",
-                          e.target.value
-                        )
-                      }
-                    />
-                    <button
-                      onClick={() => handleSave(selectedCategory, item.id, item)}
-                    >
-                      Save
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <span>
-                      {item.name} - {item.price} - {item.qty}
-                    </span>
-                    <button
+          <table>
+            <thead>
+              <tr className={styles.itemstock}>
+                <th className={styles.itemname}>Nama</th>
+                <th className={styles.itemprice}>Harga</th>
+                <th className={styles.itemqty}>Stock</th>
+                <th className={styles.itemedit}>Ubah</th>
+              </tr>
+            </thead>
+            <tbody>
+              {menu[selectedCategory].map((item) => (
+                <tr className={styles.itemstock} key={item.id}>
+                  <td className={styles.itemname}>{item.name}</td>
+                  <td className={styles.itemprice}>Rp. {item.price}</td>
+                  <td className={styles.itemqty}>{item.qty || "Habis"}</td>
+                  <td className={styles.itemedit}>
+                    <img
+                      src="/icons/edit.svg"
                       onClick={() => handleEdit(selectedCategory, item.id)}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
+                      alt="Edit"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p>No items found for {selectedCategory}.</p>
+      )}
+
+      {/* Modal for editing item */}
+      {isEditing && (
+        <div className={styles.modal}>
+          <div className={styles.modalHeader}>
+            <span className={styles.modalClose} onClick={handleClose}>
+              <img src="/icons/x-circle.svg" alt="X" />
+            </span>
+            Ubah Menu {form.name}
+          </div>
+          <div className={styles.modalContent}>
+            <span className={styles.modalContentList}>
+              <p>Nama :</p>
+              <input
+                className={styles.modalInput}
+                type="text"
+                value={form.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                placeholder="Name"
+              />
+            </span>
+            <span className={styles.modalContentList}>
+              <p>Harga :</p>
+              <p id={styles.rp}>Rp.</p>
+              <input
+                className={styles.modalInput}
+                type="number"
+                value={form.price}
+                onChange={(e) => handleChange("price", e.target.value)}
+                placeholder="Price"
+              />
+            </span>
+            <span className={styles.modalContentList}>
+              <p>Stock :</p>
+              <input
+                className={styles.modalInput}
+                type="number"
+                value={form.qty}
+                onChange={(e) => handleChange("qty", e.target.value)}
+                placeholder="Stock"
+              />
+            </span>
+            <button
+              className={`${styles.modalButton} ${styles.modalButtonSave}`}
+              onClick={() => handleSave(isEditing.category, isEditing.id)}
+            >
+              Save
+            </button>
+            <button
+              className={`${styles.modalButton} ${styles.modalButtonCancel}`}
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>

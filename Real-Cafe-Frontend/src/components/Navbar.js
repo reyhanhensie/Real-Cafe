@@ -38,7 +38,7 @@ const Navbar = () => {
       // Remove the token and reset user role
       Cookies.remove("token");
       Cookies.remove("role");
-      setAuthority(false); // Reset authority on logout
+      setAuthority(null); // Reset authority on logout
       navigate("/"); // Redirect to login after logout
     });
   };
@@ -81,6 +81,22 @@ const Navbar = () => {
               <Link to="/order-summary">
                 <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
                 Kitchen
+              </Link>
+            </li>
+          )}
+          {Authority >= 1 && (
+            <li>
+              <Link to="/summary">
+                <img src="/icons/bill.svg" alt="Summary" />
+                Tutup Kasir
+              </Link>
+            </li>
+          )}
+          {Authority >= 1 && (
+            <li>
+              <Link to="/spending">
+                <img src="/icons/spend.svg" alt="Pengeluaran" />
+                Pengeluaran
               </Link>
             </li>
           )}

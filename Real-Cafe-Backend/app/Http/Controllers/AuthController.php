@@ -16,12 +16,16 @@ class AuthController extends Controller
     /**
      * Handle the registration of a new user.
      */
+
     public function register(Request $request)
     {
+        $tokenKasir = env(key: 'TOKEN_KASIR');
+        $tokenDapur = env(key: 'TOKEN_DAPUR');
+        $tokenAdmin = "KJGI41";
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:5',
             'secret_token' => 'required|string',
         ]);
 
@@ -31,11 +35,11 @@ class AuthController extends Controller
         }
 
         // Determine the role based on the secret token
-        if ($request->secret_token === env('TOKEN_KASIR')) {
+        if ($request->secret_token === $tokenKasir) {
             $role = User::ROLE_KASIR;
-        } elseif ($request->secret_token === env('TOKEN_DAPUR')) {
+        } elseif ($request->secret_token === $tokenDapur) {
             $role = User::ROLE_DAPUR;
-        } elseif ($request->secret_token === env('TOKEN_ADMIN')) {
+        } elseif ($request->secret_token === $tokenAdmin) {
             $role = User::ROLE_ADMIN;
         } else {
             return response()->json(['error' => 'Invalid secret token.'], 401);

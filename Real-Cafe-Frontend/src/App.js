@@ -46,7 +46,7 @@ const App = () => {
             } 
           />
             <Route 
-            path="/pengeluaran" 
+            path="/spending" 
             element={
               <DapurRoute element={<Layout><Pengeluaran /></Layout>} />
             } 

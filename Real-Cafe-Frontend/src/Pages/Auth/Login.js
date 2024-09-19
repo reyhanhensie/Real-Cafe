@@ -15,14 +15,6 @@ const Login = () => {
   const { setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize useNavigate
 
-  useEffect(() => {
-    // Get the CSRF token from the meta tag after the component mounts
-    const token = document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute("content");
-    setCsrfToken(token || "");
-  }, []);
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -35,7 +27,6 @@ const Login = () => {
         },
         {
           headers: {
-            "X-CSRF-TOKEN": csrfToken,
             "Content-Type": "application/json",
           },
         }
