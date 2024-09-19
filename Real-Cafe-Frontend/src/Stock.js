@@ -17,6 +17,7 @@ const categoryMap = {
 const MenuEditor = () => {
   const [menu, setMenu] = useState({});
   const [isEditing, setIsEditing] = useState(null); // Track which item is being edited
+  const [isDeleting, setIsDeleting] = useState(null);
   const [isAdding, setIsAdding] = useState(false); // Track whether we are adding a new item
   const [categories] = useState(Object.keys(categoryMap));
   const [selectedCategory, setSelectedCategory] = useState("Makanan"); // Default to Makanan
@@ -36,6 +37,29 @@ const MenuEditor = () => {
     const item = menu[category].find((item) => item.id === id);
     setIsEditing({ category, id });
     setForm({ name: item.name, price: item.price, qty: item.qty });
+  };
+
+  const handleDelete = (category, id) => {
+    const item = menu[category].find((item) => item.id === id);
+    setForm({ name: item.name });
+    setIsDeleting({ category, id });
+  };
+
+  const handleConfirmDelete = (category, id) => {
+    const sanitizedCategory = category.replace(/\s+/g, "");
+    axios
+      .delete(`${API_URL}/${sanitizedCategory}/${id}`)
+      .then((response) => {
+        // Update the state with the modified item
+        setMenu((prevMenu) => ({
+          ...prevMenu,
+          [category]: prevMenu[category].filter((item) => item.id !== id),
+        }));
+
+        // Reset the editing state
+        handleClose(null);
+      })
+      .catch((error) => console.error(error));
   };
 
   const handleSave = (category, id) => {
@@ -68,6 +92,7 @@ const MenuEditor = () => {
   const handleClose = () => {
     setIsEditing(null);
     setIsAdding(false); // Close the add item modal as well
+    setIsDeleting(null);
     setForm({ name: "", price: "", qty: "" });
   };
 
@@ -142,11 +167,17 @@ const MenuEditor = () => {
                   <td className={styles.itemname}>{item.name}</td>
                   <td className={styles.itemprice}>Rp. {item.price}</td>
                   <td className={styles.itemqty}>{item.qty || "Habis"}</td>
-                  <td className={styles.itemedit}>
+                  <td className={styles.itemAction}>
                     <img
                       src="/icons/edit.svg"
                       onClick={() => handleEdit(selectedCategory, item.id)}
                       alt="Edit"
+                    />
+                    <img
+                      className={styles.itemdelete}
+                      src="icons/x-circle.svg"
+                      alt="delete"
+                      onClick={() => handleDelete(selectedCategory, item.id)}
                     />
                   </td>
                 </tr>
@@ -158,6 +189,26 @@ const MenuEditor = () => {
       ) : (
         <p>No items found for {selectedCategory}.</p>
       )}
+      {isDeleting && (
+        <div className={styles.deleteBox}>
+          <div className={styles.deleteHeader}>
+            <h2>Yakin Hapus Menu {form.name} ?</h2>
+            <div className={styles.deleteConfirmation}>
+              <button
+                className={styles.deleteYes}
+                onClick={() =>
+                  handleConfirmDelete(isDeleting.category, isDeleting.id)
+                }
+              >
+                <img src="/icons/checkmark.svg" alt="YES" />
+              </button>
+              <button className={styles.deleteNo} onClick={() => handleClose()}>
+                <img src="/icons/x-circle.svg" alt="NO" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal for editing item */}
       {(isEditing || isAdding) && (
@@ -166,7 +217,7 @@ const MenuEditor = () => {
             <span className={styles.modalClose} onClick={handleClose}>
               <img src="/icons/x-circle.svg" alt="Close" />
             </span>
-            {isAdding ? "Add New Item" : `Ubah Menu ${form.name}`}
+            {isAdding ? "Tambah Menu" : `Ubah Menu ${form.name}`}
           </div>
           <div className={styles.modalContent}>
             <span className={styles.modalContentList}>
@@ -176,7 +227,7 @@ const MenuEditor = () => {
                 type="text"
                 value={form.name}
                 onChange={(e) => handleChange("name", e.target.value)}
-                placeholder="Name"
+                placeholder="Nama Menu"
               />
             </span>
             <span className={styles.modalContentList}>
@@ -187,7 +238,7 @@ const MenuEditor = () => {
                 type="number"
                 value={form.price}
                 onChange={(e) => handleChange("price", e.target.value)}
-                placeholder="Price"
+                placeholder="Harga"
               />
             </span>
             <span className={styles.modalContentList}>
@@ -197,7 +248,7 @@ const MenuEditor = () => {
                 type="number"
                 value={form.qty}
                 onChange={(e) => handleChange("qty", e.target.value)}
-                placeholder="Stock"
+                placeholder="Stok"
               />
             </span>
             <button
@@ -208,13 +259,13 @@ const MenuEditor = () => {
                   : () => handleSave(isEditing.category, isEditing.id)
               }
             >
-              {isAdding ? "Add" : "Save"}
+              {isAdding ? "Tambah" : "Save"}
             </button>
             <button
               className={`${styles.modalButton} ${styles.modalButtonCancel}`}
               onClick={handleClose}
             >
-              Cancel
+              Batal
             </button>
           </div>
         </div>
