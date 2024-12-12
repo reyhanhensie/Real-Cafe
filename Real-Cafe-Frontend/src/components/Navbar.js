@@ -28,9 +28,8 @@ const Navbar = () => {
     await axios.post(`${URL_API}/logout`).then(() => {
       // Remove the token and reset user role
       Cookies.remove("token");
-      Cookies.remove("role");
       // setAuthority(null); // Reset authority on logout
-      navigate("/login");
+      navigate("/");
     });
   };
 
@@ -80,6 +79,14 @@ const Navbar = () => {
                   </Link>
                 </li>
               )}
+              {Authority >= 2 && (
+                <li>
+                  <Link to="/stock-management">
+                    <img src="/icons/stock.svg" alt="Stock" />
+                    Stock
+                  </Link>
+                </li>
+              )}
               {Authority >= 1 && (
                 <li>
                   <Link to="/order-summary-drink">
@@ -96,14 +103,7 @@ const Navbar = () => {
                   </Link>
                 </li>
               )}
-              {Authority >= 2 && (
-                <li>
-                  <Link to="/stock-management">
-                    <img src="/icons/stock.svg" alt="Stock" />
-                    Stock
-                  </Link>
-                </li>
-              )}
+
               {Authority >= 1 && (
                 <li>
                   <Link to="/order-summary">
