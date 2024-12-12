@@ -78,7 +78,7 @@ const Pengeluaran = () => {
   // Handle delete spending
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${API_URL}//Spending/${id}`);
+      await axios.delete(`${API_URL}/Spending/${id}`);
       setSpending((prevSpending) =>
         prevSpending.filter((item) => item.id !== id)
       );
