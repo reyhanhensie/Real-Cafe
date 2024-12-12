@@ -48,7 +48,7 @@ class OrderController extends Controller
     }
     public function live_drink()
     {
-        $orders = Order::where('status_makanan', 'pending')
+        $orders = Order::where('status_minuman', 'pending')
             ->whereHas('items', function ($query) {
                 $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas']);
             })
@@ -225,7 +225,7 @@ class OrderController extends Controller
 
         // Check if the current order has pending food items
         $hasPendingDrinkItems = $order->items()
-            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','camilan', 'lalapan', 'makanan'])
+            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas'])
             ->exists(); // Check only the related items for the given order
 
         // If no pending food items exist, mark 'status_minuman' as completed for the current order
