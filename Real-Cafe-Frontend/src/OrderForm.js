@@ -25,8 +25,10 @@ const OrderForm = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [addedItems, setAddedItems] = useState({});
   const [mejaNo, setMejaNo] = useState("");
+  const [Bayar, setBayar] = useState("");
   const [message, setMessage] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
+  const [Kembalian, setKembalian] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -120,6 +122,15 @@ const OrderForm = () => {
     const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
     setTotalPrice(total);
   };
+  useEffect(() => {
+    // Recalculate Kembalian whenever totalPrice or Bayar changes
+    calculateKembalian();
+  }, [totalPrice, Bayar]);
+
+  const calculateKembalian = () => {
+    const kembalian = Math.max(0, parseInt(Bayar || 0, 10) - totalPrice);
+    setKembalian(kembalian);
+  };
   const PriceFormat = (price) => {
     if (price == null) return ""; // Handle null or undefined prices
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -132,6 +143,14 @@ const OrderForm = () => {
       ? Math.min(99, Math.max(1, parseInt(value, 10)))
       : "";
     setMejaNo(numberValue.toString());
+  };
+  const handleBayar = (event) => {
+    let value = event.target.value;
+    value = value.replace(/[^0-9]/g, "");
+    const numberValue = value
+      ? Math.min(10000000, Math.max(1, parseInt(value, 10)))
+      : "";
+    setBayar(numberValue.toString());
   };
 
   // const saveAsPDF = () => {
@@ -190,6 +209,10 @@ const OrderForm = () => {
 
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
+    if (!SelectedCashier) {
+      setError("Pilih nama kasir terlebih dahulu!");
+      return;
+    }
     if (isNaN(mejaNoNumber)) {
       setError("Masukkan Nomor Meja Terlebih Dahulu!");
       return;
@@ -229,6 +252,7 @@ const OrderForm = () => {
 
   const isMinimalOrder = orderItems.length !== 0;
   const isMejaNoValid = mejaNo.trim() !== "";
+  const isBayarValid = Bayar.trim() >= totalPrice;
   return (
     <div className="order-form">
       <div className="menu-container">
@@ -289,10 +313,13 @@ const OrderForm = () => {
       <div className="order-summary">
         <span className="header">
           <h3>Your Order</h3>
-          <h3 id="kasir">Kasir :</h3>
+          <h3 id="kasir">Kasir : </h3>
           <select
             value={SelectedCashier}
-            onChange={(e) => setSelectedCashier(e.target.value)}
+            onChange={(e) => {
+              setSelectedCashier(e.target.value);
+              setError(null); // Clear error when kasir is selected
+            }}
           >
             <option value="" disabled>
               Pilih kasir
@@ -366,13 +393,24 @@ const OrderForm = () => {
               onChange={handleMejaNoChange}
               placeholder="Nomor"
             />
-            {isMejaNoValid ? <h2></h2> : <h4>masukkan nomor meja !</h4>}
+            {isMejaNoValid ? <h2></h2> : <h4>Masukkan Nomor Meja !</h4>}
+          </div>
+          <div className="order-form-bayar">
+            <h3>Bayar :</h3>
+            <input
+              type="text"
+              value={Bayar}
+              onChange={handleBayar}
+              placeholder="Rp. "
+            />
+            {isBayarValid ? <h2></h2> : <h4>Uang Kurang !</h4>}
           </div>
 
           <h3>Total Price: Rp. {PriceFormat(totalPrice)}</h3>
+          <h3>Kembalian: Rp. {PriceFormat(Kembalian)}</h3>
           {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
-          {isMejaNoValid && isMinimalOrder ? (
+          {isMejaNoValid && isMinimalOrder && isBayarValid ? (
             <ReactToPrint
               trigger={() => <button>Kirim Ke Dapur</button>}
               content={() => printRef.current}

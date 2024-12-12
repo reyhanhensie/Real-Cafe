@@ -154,8 +154,37 @@ span.header-add {
   overflow-x: visible;
 }
 .order-summary .header {
+  text-align: center;
   display: flex;
   flex-direction: row;
+}
+.header {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 20px;
+  padding-top: 0%;
+}
+.header select {
+  background-color: #ecd9c4;
+  border-color: #4e3928;
+  border-radius: 8px;
+  /* width: 120px; */
+  /* height: 100%; */
+  color: black;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  /* position: relative; */
+  justify-content: center;
+  font-size: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  /* padding-right: 5px; */
+  display: inline-block;
+  white-space: wrap; /* Prevent text from wrapping */
+  overflow: visible; /* Hide overflow content */
 }
 #kasir {
   flex: 1;
@@ -314,6 +343,37 @@ button.order-remove {
   border-color: #4e3928;
   border-radius: 8px;
   width: 60px;
+  height: 100%;
+  align-items: center;
+  position: relative;
+  font-size: 20px;
+  padding-top: 5px;
+  text-align: center;
+  padding-right: 5px;
+  margin-top: 15px;
+  display: inline-block;
+  white-space: wrap; /* Prevent text from wrapping */
+  overflow: visible; /* Hide overflow content */
+}
+
+.order-form-bayar h3 {
+  margin-right: 10px;
+}
+.order-form-bayar h4 {
+  margin-left: 10px;
+  color: red;
+}
+.order-form-bayar {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.order-form-bayar input {
+  background-color: #ecd9c4;
+  border-color: #4e3928;
+  border-radius: 8px;
+  width: 120px;
   height: 100%;
   align-items: center;
   position: relative;
