@@ -70,7 +70,8 @@ class OrderController extends Controller
     {
         $request->validate([
             'message' => 'nullable',
-            'meja' => 'required|integer', // Validate meja_no
+            'meja' => 'required|integer', // Validate meja_no\
+            'kasir' => 'required',
             'items' => 'required|array',
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
             'items.*.id' => 'required|integer',
@@ -112,7 +113,8 @@ class OrderController extends Controller
         $order = Order::create([
             'total_price' => $totalPrice,
             'meja_no' => $request->meja, // Add meja_no here
-            'message' => $request->message
+            'message' => $request->message,
+            'kasir' => $request->kasir
         ]);
 
         // Save order items

@@ -67,7 +67,7 @@ const OrderForm = () => {
       [type]: new Set([...(prevAddedItems[type] || []), id]),
     }));
   };
-  const [selectedValue, setSelectedValue] = useState("");
+  const [SelectedCashier, setSelectedCashier] = useState("");
   // const nama_kasir = axios.get(`${API_URL}`);
   const options = [
     { value: "Risma", label: "Risma" },
@@ -209,6 +209,7 @@ const OrderForm = () => {
 
       const response = await axios.post(`${API_URL}/send-order`, {
         meja: mejaNoNumber,
+        kasir: SelectedCashier,
         message: message,
         items: formattedItems,
       });
@@ -290,15 +291,21 @@ const OrderForm = () => {
           <h3>Your Order</h3>
           <h3 id="kasir">Kasir :</h3>
           <select
-            value={selectedValue}
-            onChange={(e) => setSelectedValue(e.target.value)}
+            value={SelectedCashier}
+            onChange={(e) => setSelectedCashier(e.target.value)}
           >
+            <option value="" disabled>
+              Pilih kasir
+            </option>
             {options.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
+          {error && error.includes("kasir") && (
+            <p className="error-message">Pilih nama kasir terlebih dahulu!</p>
+          )}
         </span>
 
         <ul>
