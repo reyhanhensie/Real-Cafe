@@ -72,7 +72,7 @@ const Navbar = () => {
             <li>
               <Link to="/order-summary-drink">
                 <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
-                Kitchen Drink
+                Dapur Minum
               </Link>
             </li>
           )}
@@ -80,7 +80,7 @@ const Navbar = () => {
             <li>
               <Link to="/order-summary-food">
                 <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
-                Kitchen Food
+                Dapur Makan
               </Link>
             </li>
           )}
@@ -96,7 +96,7 @@ const Navbar = () => {
             <li>
               <Link to="/order-summary">
                 <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
-                Kitchen
+                Dapur
               </Link>
             </li>
           )}
@@ -104,7 +104,7 @@ const Navbar = () => {
             <li>
               <Link to="/summary">
                 <img src="/icons/bill.svg" alt="Summary" />
-                Tutup Kasir
+                Laporan
               </Link>
             </li>
           )}
@@ -120,7 +120,7 @@ const Navbar = () => {
             <li>
               <Link to="/order-form">
                 <img src="/icons/point-sale-bill.svg" alt="Cashier" />
-                Cashier
+                Kasir
               </Link>
             </li>
           )}
