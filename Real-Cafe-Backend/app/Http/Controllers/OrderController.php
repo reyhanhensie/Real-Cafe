@@ -215,7 +215,11 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         // Update the status to 'completed'
-        $order->update(['status' => 'completed']);
+        $order->update([
+            'status' => 'completed',
+            'status_makanan' => 'completed',
+            'status_minuman' => 'completed'
+        ]);
 
         return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
     }
