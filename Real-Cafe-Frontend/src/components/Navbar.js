@@ -68,18 +68,26 @@ const Navbar = () => {
           </Link>
         </div>
         <ul className="nav-links">
-          {Authority >= 2 && (
+          {Authority >= 3 && (
             <li>
               <Link to="/order-summary-drink">
-                <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
+                <img src="/icons/finance.svg" alt="Kitchen Order" />
+                Finance
+              </Link>
+            </li>
+          )}
+          {Authority >= 1 && (
+            <li>
+              <Link to="/order-summary-drink">
+                <img src="/icons/minuman.svg" alt="Kitchen Order" />
                 Dapur Minum
               </Link>
             </li>
           )}
-          {Authority >= 2 && (
+          {Authority >= 1 && (
             <li>
               <Link to="/order-summary-food">
-                <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
+                <img src="/icons/food.svg" alt="Kitchen Order" />
                 Dapur Makan
               </Link>
             </li>
@@ -92,7 +100,7 @@ const Navbar = () => {
               </Link>
             </li>
           )}
-          {Authority >= 2 && (
+          {Authority >= 1 && (
             <li>
               <Link to="/order-summary">
                 <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />

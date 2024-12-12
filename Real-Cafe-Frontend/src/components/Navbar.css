@@ -133,6 +133,7 @@
 
 .nav-links li {
   margin: 10px 0;
+  display: flex;
 }
 
 .nav-links li a {
