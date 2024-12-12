@@ -60,6 +60,7 @@ const Summary = () => {
             <th>Meja No</th>
             <th>Total Harga</th>
             <th>Keterangan</th>
+            <th>Kasir</th>
             <th>Jam Pesan</th>
             <th>Jam Selesai</th>
           </tr>
@@ -72,6 +73,7 @@ const Summary = () => {
                 <td>{order.meja_no}</td>
                 <td>{PriceFormat(order.total_price)}</td>
                 <td>{order.message || "-"}</td>
+                <td>{order.kasir}</td>
                 <td>{FormatDate(order.created_at)}</td>
                 <td>{FormatDate(order.updated_at)}</td>
               </tr>
