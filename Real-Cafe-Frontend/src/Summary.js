@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import URL_API from "./apiconfig";
+import styles from "./summary.module.css"; // Import the CSS Module
 
 const Summary = () => {
   const [orders, setOrders] = useState([]);
@@ -51,9 +52,9 @@ const Summary = () => {
   };
 
   return (
-    <div>
-      <h1>Today's Orders Summary</h1>
-      <table>
+    <div className={styles.SummaryContent}>
+      <h1 className={styles.Title}>Today's Orders Summary</h1>
+      <table className={styles.Table}>
         <thead>
           <tr>
             <th>ID</th>
@@ -79,12 +80,21 @@ const Summary = () => {
               </tr>
               {expandedOrderId === order.id && (
                 <tr>
-                  <td colSpan="4">
+                  <td colSpan="6">
                     <ul>
                       {order.items.map((item) => (
-                        <li key={item.id}>
-                          {item.item_name} - Qty: {item.quantity}, Price: Rp. {" "}
-                          {PriceFormat(item.price)}
+                        <li className={styles.ExpandList} key={item.id}>
+                          <span className={styles.ExpandDot}>•</span>
+                          <span className={styles.ExpandName}>
+                            {item.item_name}
+                          </span>
+                          <span className={styles.ExpandQty}>
+                            Qty: {item.quantity}
+                          </span>
+                          <span className={styles.ExpandPrice}>Price: </span>
+                          <span className={styles.ExpandPriceValue}>
+                            Rp. {PriceFormat(item.price)}
+                          </span>
                         </li>
                       ))}
                     </ul>
