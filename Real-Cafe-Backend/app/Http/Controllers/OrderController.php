@@ -34,6 +34,30 @@ class OrderController extends Controller
         $orders = Order::where('status', 'pending')->with('items')->get();
         return response()->json($orders);
     }
+    public function live_food()
+    {
+        $orders = Order::where('status_makanan', 'pending')
+            ->whereHas('items', function ($query) {
+                $query->whereIn('item_type', ['camilan', 'lalapan', 'makanan']);
+            })
+            ->with(['items' => function ($query) {
+                $query->whereIn('item_type', ['camilan', 'lalapan', 'makanan']);
+            }])
+            ->get();
+        return response()->json($orders);
+    }
+    public function live_drink()
+    {
+        $orders = Order::where('status_makanan', 'pending')
+            ->whereHas('items', function ($query) {
+                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas']);
+            })
+            ->with(['items' => function ($query) {
+                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas']);
+            }])
+            ->get();
+        return response()->json($orders);
+    }
     public function today()
     {
         $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
@@ -195,6 +219,59 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
     }
+    public function markAsCompletedFood($id)
+    {
+        $order = Order::findOrFail($id);
+
+        // Check if the current order has pending food items
+        $hasPendingDrinkItems = $order->items()
+            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','camilan', 'lalapan', 'makanan'])
+            ->exists(); // Check only the related items for the given order
+
+        // If no pending food items exist, mark 'status_minuman' as completed for the current order
+        if (!$hasPendingDrinkItems) {
+            $order->update(['status_minuman' => 'completed']);
+        }
+
+        // Update the status of the current order
+        if ($order->status_minuman === 'completed') {
+            $order->update([
+                'status' => 'completed',
+                'status_makanan' => 'completed',
+            ]);
+        } else {
+            $order->update(['status_makanan' => 'completed']);
+        }
+
+        return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
+    }
+    public function markAsCompletedDrink($id)
+    {
+        $order = Order::findOrFail($id);
+
+        // Check if the current order has pending food items
+        $hasPendingFoodItems = $order->items()
+            ->whereIn('item_type', ['camilan', 'lalapan', 'makanan'])
+            ->exists(); // Check only the related items for the given order
+
+        // If no pending food items exist, mark 'status_makanan' as completed for the current order
+        if (!$hasPendingFoodItems) {
+            $order->update(['status_makanan' => 'completed']);
+        }
+
+        // Update the status of the current order
+        if ($order->status_makanan === 'completed') {
+            $order->update([
+                'status' => 'completed',
+                'status_minuman' => 'completed',
+            ]);
+        } else {
+            $order->update(['status_minuman' => 'completed']);
+        }
+
+        return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
+    }
+
 
 
 

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import OrderForm from './OrderForm';
 import OrderSummary from './OrderSummary';
+import OrderSummaryFood from './OrderSummaryFood';
+import OrderSummaryDrink from './OrderSummaryDrink';
 import Stock from './Stock';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
@@ -55,6 +57,18 @@ const App = () => {
             path="/summary" 
             element={
               <DapurRoute element={<Layout><Summary /></Layout>} />
+            } 
+          />
+            <Route 
+            path="/order-summary-food" 
+            element={
+              <DapurRoute element={<Layout><OrderSummaryFood /></Layout>} />
+            } 
+          />
+            <Route 
+            path="/order-summary-drink" 
+            element={
+              <DapurRoute element={<Layout><OrderSummaryDrink /></Layout>} />
             } 
           />
         </Routes>

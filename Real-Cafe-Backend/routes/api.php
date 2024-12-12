@@ -45,9 +45,13 @@ Route::apiResource('Spending', SpendingController::class);
 
 Route::get('Menu', [MenuController::class, 'index']);
 Route::get('/live-orders', [OrderController::class, 'live']); // Create an order
+Route::get('/live-food', [OrderController::class, 'live_food']); // Create an order
+Route::get('/live-drink', [OrderController::class, 'live_drink']); // Create an order
 Route::get('/orders', [OrderController::class, 'index']); // Create an order
 Route::get('/today-orders', [OrderController::class, 'today']); // Create an order
 Route::get('/receipt/{id}', [OrderController::class, 'generatePdf']);
 Route::post('/send-order', [OrderController::class, 'store']); // Create an order
 Route::get('/order/{id}', [OrderController::class, 'show']); // Retrieve an order
 Route::patch('/order/{id}/complete', [OrderController::class, 'markAsCompleted']);
+Route::patch('/order/{id}/complete/food', [OrderController::class, 'markAsCompletedFood']);
+Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompletedDrink']);

@@ -69,7 +69,11 @@ const OrderForm = () => {
   };
   const [selectedValue, setSelectedValue] = useState("");
   // const nama_kasir = axios.get(`${API_URL}`);
-  const options = [{ value: "Option 1", label: "Option 1" }];
+  const options = [
+    { value: "Risma", label: "Risma" },
+    { value: "Ryan", label: "Ryan" },
+    { value: "Putri", label: "Putri" },
+  ];
 
   const handleRemoveItem = (id, type) => {
     const newOrderItems = orderItems.filter(
@@ -254,7 +258,9 @@ const OrderForm = () => {
               <li key={item.id} className="menu-item">
                 <span className="item-stock">{item.qty || "Habis"}</span>
                 <span className="item-name">{item.name}</span>
-                <span className="item-price">Rp. {PriceFormat(item.price)}</span>
+                <span className="item-price">
+                  Rp. {PriceFormat(item.price)}
+                </span>
                 {!addedItems[
                   selectedCategory.toLowerCase().replace(/\s+/g, "")
                 ]?.has(item.id) ? (

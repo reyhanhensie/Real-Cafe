@@ -70,6 +70,22 @@ const Navbar = () => {
         <ul className="nav-links">
           {Authority >= 2 && (
             <li>
+              <Link to="/order-summary-drink">
+                <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
+                Kitchen Drink
+              </Link>
+            </li>
+          )}
+          {Authority >= 2 && (
+            <li>
+              <Link to="/order-summary-food">
+                <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
+                Kitchen Food
+              </Link>
+            </li>
+          )}
+          {Authority >= 2 && (
+            <li>
               <Link to="/stock-management">
                 <img src="/icons/stock.svg" alt="Stock" />
                 Stock
