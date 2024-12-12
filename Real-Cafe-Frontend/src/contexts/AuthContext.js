@@ -13,6 +13,10 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation(); // Get the current route
   const isOnRegisterPage = location.pathname === "/register";
   useEffect(() => {
+    const logout = () => {
+      setIsAuthenticated(false);
+      setUserRole(null); // Clear user role
+    };
     const checkAuth = async () => {
       if (!isOnRegisterPage) {
         const token = Cookies.get("token");
@@ -40,9 +44,7 @@ export const AuthProvider = ({ children }) => {
   }, [navigate]);
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, userRole, setIsAuthenticated }}
-    >
+    <AuthContext.Provider value={{ userRole, setIsAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

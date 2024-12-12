@@ -11,25 +11,16 @@ import { AuthContext } from "../contexts/AuthContext"; // Import AuthContext
 const Navbar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
-  const { isAuthenticated, userRole, logout } = useContext(AuthContext); // Access userRole from context
+  const { userRole } = useContext(AuthContext); // Access userRole from context
   const token = Cookies.get("token"); // Get the token from cookies
-  const [Authority, setAuthority] = useState(null); // State for Authority
-
-  useEffect(() => {
-    console.log("user Role :");
-    console.log(userRole);
-    if (userRole === "kasir") {
-      setAuthority(1);
-    } else if (userRole === "dapur") {
-      setAuthority(2);
-    } else if (userRole === "admin") {
-      setAuthority(3);
-    } else {
-      setAuthority(null);
-    }
-
-    console.log(Authority);
-  }, [userRole]);
+  const Authority =
+    userRole === "kasir"
+      ? 1
+      : userRole === "dapur"
+      ? 2
+      : userRole === "admin"
+      ? 3
+      : null;
 
   const logoutHandler = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -38,8 +29,8 @@ const Navbar = () => {
       // Remove the token and reset user role
       Cookies.remove("token");
       Cookies.remove("role");
-      setAuthority(null); // Reset authority on logout
-      navigate("/"); // Redirect to login after logout
+      // setAuthority(null); // Reset authority on logout
+      navigate("/login");
     });
   };
 
@@ -68,70 +59,6 @@ const Navbar = () => {
           </Link>
         </div>
         <ul className="nav-links">
-          {Authority >= 3 && (
-            <li>
-              <Link to="/order-summary-drink">
-                <img src="/icons/finance.svg" alt="Kitchen Order" />
-                Finance
-              </Link>
-            </li>
-          )}
-          {Authority >= 1 && (
-            <li>
-              <Link to="/order-summary-drink">
-                <img src="/icons/minuman.svg" alt="Kitchen Order" />
-                Dapur Minum
-              </Link>
-            </li>
-          )}
-          {Authority >= 1 && (
-            <li>
-              <Link to="/order-summary-food">
-                <img src="/icons/food.svg" alt="Kitchen Order" />
-                Dapur Makan
-              </Link>
-            </li>
-          )}
-          {Authority >= 2 && (
-            <li>
-              <Link to="/stock-management">
-                <img src="/icons/stock.svg" alt="Stock" />
-                Stock
-              </Link>
-            </li>
-          )}
-          {Authority >= 1 && (
-            <li>
-              <Link to="/order-summary">
-                <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
-                Dapur
-              </Link>
-            </li>
-          )}
-          {Authority >= 1 && (
-            <li>
-              <Link to="/summary">
-                <img src="/icons/bill.svg" alt="Summary" />
-                Laporan
-              </Link>
-            </li>
-          )}
-          {Authority >= 1 && (
-            <li>
-              <Link to="/spending">
-                <img src="/icons/spend.svg" alt="Pengeluaran" />
-                Pengeluaran
-              </Link>
-            </li>
-          )}
-          {Authority >= 1 && (
-            <li>
-              <Link to="/order-form">
-                <img src="/icons/point-sale-bill.svg" alt="Cashier" />
-                Kasir
-              </Link>
-            </li>
-          )}
           {!token ? ( // Show login if the token is not present
             <li>
               <Link to="/login">
@@ -144,17 +71,82 @@ const Navbar = () => {
               </Link>
             </li>
           ) : (
-            // Show logout if token exists
-            <li>
-              <Link to="/" onClick={logoutHandler}>
-                <img
-                  src="/icons/logout.svg"
-                  alt="logout"
-                  className="logout-icon"
-                />
-                Logout
-              </Link>
-            </li>
+            <>
+              {Authority >= 3 && (
+                <li>
+                  <Link to="/order-summary-drink">
+                    <img src="/icons/finance.svg" alt="Kitchen Order" />
+                    Finance
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
+                  <Link to="/order-summary-drink">
+                    <img src="/icons/minuman.svg" alt="Kitchen Order" />
+                    Dapur Minum
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
+                  <Link to="/order-summary-food">
+                    <img src="/icons/food.svg" alt="Kitchen Order" />
+                    Dapur Makan
+                  </Link>
+                </li>
+              )}
+              {Authority >= 2 && (
+                <li>
+                  <Link to="/stock-management">
+                    <img src="/icons/stock.svg" alt="Stock" />
+                    Stock
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
+                  <Link to="/order-summary">
+                    <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
+                    Dapur
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
+                  <Link to="/summary">
+                    <img src="/icons/bill.svg" alt="Summary" />
+                    Laporan
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
+                  <Link to="/spending">
+                    <img src="/icons/spend.svg" alt="Pengeluaran" />
+                    Pengeluaran
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
+                  <Link to="/order-form">
+                    <img src="/icons/point-sale-bill.svg" alt="Cashier" />
+                    Kasir
+                  </Link>
+                </li>
+              )}
+              <li>
+                <Link to="/" onClick={logoutHandler}>
+                  <img
+                    src="/icons/logout.svg"
+                    alt="logout"
+                    className="logout-icon"
+                  />
+                  Logout
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </nav>
