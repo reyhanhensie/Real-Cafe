@@ -6,6 +6,20 @@ const Summary = () => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [total, setTotal] = useState(0);
+  const FormatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = {
+      year: "2-digit",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    return date.toLocaleString("en-GB", options).replace(",", "");
+  };
 
   useEffect(() => {
     // Fetch orders from the API
@@ -40,8 +54,10 @@ const Summary = () => {
           <tr>
             <th>ID</th>
             <th>Meja No</th>
-            <th>Total Price</th>
-            <th>Message</th>
+            <th>Total Harga</th>
+            <th>Keterangan</th>
+            <th>Jam Pesan</th>
+            <th>Jam Selesai</th>
           </tr>
         </thead>
         <tbody>
@@ -52,6 +68,8 @@ const Summary = () => {
                 <td>{order.meja_no}</td>
                 <td>{order.total_price}</td>
                 <td>{order.message || "-"}</td>
+                <td>{FormatDate(order.created_at)}</td>
+                <td>{FormatDate(order.updated_at)}</td>
               </tr>
               {expandedOrderId === order.id && (
                 <tr>
@@ -59,7 +77,7 @@ const Summary = () => {
                     <ul>
                       {order.items.map((item) => (
                         <li key={item.id}>
-                          {item.item_name} - Quantity: {item.quantity}, Price:{" "}
+                          {item.item_name} - Qty: {item.quantity}, Price:{" "}
                           {item.price}
                         </li>
                       ))}
