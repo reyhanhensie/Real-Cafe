@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pengeluaran', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
-            $table->string('deskripsi'); // Food name
-            $table->decimal('total', 8, 0); // Price with 8 digits total and 2 decimals
+            $table->text('deskripsi'); // Food name
+            $table->decimal('total', 10, 0); // Price with 8 digits total and 2 decimals
             $table->timestamps(); // Created at and updated at timestamps
         });
     }

@@ -16,6 +16,10 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Receipt;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Illuminate\Support\Facades\Log;
+
 
 class OrderController extends Controller
 {
@@ -34,7 +38,7 @@ class OrderController extends Controller
     {
         $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
         $time_stop = Carbon::now('Asia/Jakarta')->endOfDay();
-        $orders = Order::whereBetween('created_at',[$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
+        $orders = Order::whereBetween('created_at', [$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
         return response()->json($orders);
     }
     // Store a newly created order in storage
@@ -149,11 +153,38 @@ class OrderController extends Controller
         Storage::put($path, $pdf->output());
 
         Receipt::generateAndSavePdf($order);
+        // Print the PDF (optional)
+        $this->printPdf(storage_path("app/{$path}"));
 
         return $pdf->download($filename);
 
         // return response()->json(['message' => 'PDF saved successfully', 'path' => $path], 200);
     }
+    protected function printPdf($filePath)
+    {
+        try {
+            // Log a debug message
+            Log::info("wakwaw - Printing initiated");
+            // Ensure the file exists
+            if (!file_exists($filePath)) {
+                throw new \Exception("PDF file not found at {$filePath}");
+            }
+
+            // Connect to the printer
+            $connector = new FilePrintConnector("/dev/usb/lp0"); // Adjust path to printer
+            $printer = new Printer($connector);
+
+            // Print the file content (convert PDF to plain text if necessary)
+            $fileContent = file_get_contents($filePath);
+
+            // Print the file content
+            $printer->text($fileContent);
+            $printer->cut();
+            $printer->close();
+        } catch (\Exception $e) {
+        }
+    }
+
 
     public function markAsCompleted($id)
     {
