@@ -116,6 +116,10 @@ const MenuEditor = () => {
       })
       .catch((error) => console.error(error));
   };
+  const PriceFormat = (price) => {
+    if (price == null) return ""; // Handle null or undefined prices
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   return (
     <div className={styles.stockContainer}>
@@ -165,7 +169,7 @@ const MenuEditor = () => {
               {menu[selectedCategory].map((item) => (
                 <tr className={styles.itemstock} key={item.id}>
                   <td className={styles.itemname}>{item.name}</td>
-                  <td className={styles.itemprice}>Rp. {item.price}</td>
+                  <td className={styles.itemprice}>Rp. {PriceFormat(item.price)}</td>
                   <td className={styles.itemqty}>{item.qty || "Habis"}</td>
                   <td className={styles.itemAction}>
                     <img

@@ -116,6 +116,10 @@ const OrderForm = () => {
     const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
     setTotalPrice(total);
   };
+  const PriceFormat = (price) => {
+    if (price == null) return ""; // Handle null or undefined prices
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   const handleMejaNoChange = (event) => {
     let value = event.target.value;
@@ -250,7 +254,7 @@ const OrderForm = () => {
               <li key={item.id} className="menu-item">
                 <span className="item-stock">{item.qty || "Habis"}</span>
                 <span className="item-name">{item.name}</span>
-                <span className="item-price">Rp. {item.price}</span>
+                <span className="item-price">Rp. {PriceFormat(item.price)}</span>
                 {!addedItems[
                   selectedCategory.toLowerCase().replace(/\s+/g, "")
                 ]?.has(item.id) ? (
@@ -318,7 +322,7 @@ const OrderForm = () => {
               </span>
 
               <span className="order-price">
-                - Rp. {item.price * item.qty}{" "}
+                - Rp. {PriceFormat(item.price * item.qty)}{" "}
               </span>
               <button
                 className="order-remove"
@@ -352,7 +356,7 @@ const OrderForm = () => {
             {isMejaNoValid ? <h2></h2> : <h4>masukkan nomor meja !</h4>}
           </div>
 
-          <h3>Total Price: Rp. {totalPrice}</h3>
+          <h3>Total Price: Rp. {PriceFormat(totalPrice)}</h3>
           {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
           {isMejaNoValid && isMinimalOrder ? (

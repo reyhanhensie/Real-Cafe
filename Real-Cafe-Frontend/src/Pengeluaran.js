@@ -106,6 +106,10 @@ const Pengeluaran = () => {
 
     return date.toLocaleString("en-GB", options).replace(",", "");
   };
+  const PriceFormat = (price) => {
+    if (price == null) return ""; // Handle null or undefined prices
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
   const handleClose = () => {
     setIsAdding(null);
     setIsEditing(null);
@@ -116,7 +120,7 @@ const Pengeluaran = () => {
   return (
     <div className={style.pengeluaran}>
       <h1>Pengeluaran</h1>
-      <h2>Total - Rp. {total}</h2>
+      <h2>Total - Rp. {PriceFormat(total)}</h2>
       {/* Spending Form */}
       {(isAdding || isEditing) && (
         <div className={style.form}>
@@ -170,7 +174,7 @@ const Pengeluaran = () => {
           {spending.map((item) => (
             <tr key={item.id}>
               <td>{item.deskripsi}</td>
-              <td>{item.total}</td>
+              <td>RP. {PriceFormat(item.total)}</td>
               <td>{FormatDate(item.created_at)}</td>
               <td>
                 <button onClick={() => handleEdit(item)}>Edit</button>
@@ -185,7 +189,7 @@ const Pengeluaran = () => {
               <strong>Total</strong>
             </td>
             <td>
-              <strong>{total}</strong>
+              <strong>Rp. {PriceFormat(total)}</strong>
             </td>
             <td></td>
           </tr>

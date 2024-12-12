@@ -45,6 +45,10 @@ const Summary = () => {
   const toggleOrderItems = (orderId) => {
     setExpandedOrderId(orderId === expandedOrderId ? null : orderId);
   };
+  const PriceFormat = (price) => {
+    if (price == null) return ""; // Handle null or undefined prices
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   return (
     <div>
@@ -66,7 +70,7 @@ const Summary = () => {
               <tr onClick={() => toggleOrderItems(order.id)}>
                 <td>{order.id}</td>
                 <td>{order.meja_no}</td>
-                <td>{order.total_price}</td>
+                <td>{PriceFormat(order.total_price)}</td>
                 <td>{order.message || "-"}</td>
                 <td>{FormatDate(order.created_at)}</td>
                 <td>{FormatDate(order.updated_at)}</td>
@@ -77,8 +81,8 @@ const Summary = () => {
                     <ul>
                       {order.items.map((item) => (
                         <li key={item.id}>
-                          {item.item_name} - Qty: {item.quantity}, Price:{" "}
-                          {item.price}
+                          {item.item_name} - Qty: {item.quantity}, Price: Rp. {" "}
+                          {PriceFormat(item.price)}
                         </li>
                       ))}
                     </ul>
@@ -94,7 +98,7 @@ const Summary = () => {
               <strong>Total</strong>
             </td>
             <td colSpan="2">
-              <strong>{total}</strong>
+              <strong>Rp. {PriceFormat(total)}</strong>
             </td>
           </tr>
         </tfoot>
