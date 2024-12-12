@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Spending;
+use Carbon\Carbon;
 
 class SpendingController extends Controller
 {
     public function index()
     {
-        return Spending::all();
+        $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
+        $time_stop = Carbon::now('Asia/Jakarta')->endOfDay();
+        $Spending = Spending::whereBetween('created_at', [$time_start, $time_stop])->get();
+        return response()->json($Spending);
     }
 
     public function store(Request $request)
