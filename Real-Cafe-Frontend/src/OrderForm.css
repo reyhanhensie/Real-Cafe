@@ -316,6 +316,7 @@ button.order-remove {
   justify-content: center;
   border-color: #4e3928;
   border-radius: 12px;
+  border-style: solid;
   font-size: 16px;
   text-indent: 10px;
   margin-top: 10px; /* Add margin on top to separate from Meja No */

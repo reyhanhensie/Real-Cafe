@@ -10,10 +10,14 @@ const Pengeluaran = () => {
     deskripsi: "",
     total: "",
   });
-  const [isEditing, setIsEditing] = useState(null);
-  const [isAdding, setIsAdding] = useState(null);
+  const [editData, setEditData] = useState({
+    deskripsi: "",
+    total: "",
+  });
+
   const [editingId, setEditingId] = useState(null); // Track which item is being edited
   const [error, setError] = useState(null);
+  const [editingItem, setEditingItem] = useState(null); // Track which item is being edited
 
   useEffect(() => {
     // Fetch spending data from the API
@@ -89,8 +93,8 @@ const Pengeluaran = () => {
 
   // Handle edit spending
   const handleEdit = (item) => {
-    setFormData({ deskripsi: item.deskripsi, total: item.total });
-    setEditingId(item.id);
+    setEditData({ deskripsi: item.deskripsi, total: item.total });
+    setEditingItem(item);
   };
   const FormatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -106,60 +110,78 @@ const Pengeluaran = () => {
 
     return date.toLocaleString("en-GB", options).replace(",", "");
   };
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await axios.put(
+        `${API_URL}/Spending/${editingItem.id}`,
+        editData
+      );
+      setSpending((prevSpending) =>
+        prevSpending.map((item) =>
+          item.id === editingItem.id ? response.data : item
+        )
+      );
+      setEditingItem(null); // Close modal
+      setFormData({ deskripsi: "", total: "" });
+    } catch (error) {
+      setError("Error updating the item. Please try again.");
+      console.error("Error updating spending:", error);
+    }
+  };
+
+  const handleCloseEdit = () => {
+    setEditingItem(null);
+    setFormData({ deskripsi: "", total: "" });
+  };
   const PriceFormat = (price) => {
     if (price == null) return ""; // Handle null or undefined prices
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
-  const handleClose = () => {
-    setIsAdding(null);
-    setIsEditing(null);
-
-    setFormData({ deskripsi: "", total: "" });
-  };
 
   return (
     <div className={style.pengeluaran}>
-      <h1>Pengeluaran</h1>
-      <h2>Total - Rp. {PriceFormat(total)}</h2>
-      {/* Spending Form */}
-      {(isAdding || isEditing) && (
-        <div className={style.form}>
-          <div className={style.formHeader}>
-            <span className={style.formClose} onClick={handleClose}></span>
-            <img src="/icons/x-circle.svg" alt="Close" />
-            {isAdding ? "Tambah Pengeluaran" : "Ubah Pengeluaran"}
-          </div>
-        </div>
-      )}
-      <form onSubmit={handleSubmit}>
+      <div className={style.Header}>
         <div>
-          <label>Deskripsi:</label>
-          <input
-            type="text"
-            name="deskripsi"
-            value={formData.deskripsi}
-            onChange={handleInputChange}
-            required
-          />
+          <h1>Pengeluaran</h1>
+          <h2>Total - Rp. {PriceFormat(total)}</h2>
         </div>
-        <div>
-          <label>Total:</label>
-          <input
-            type="number"
-            name="total"
-            value={formData.total}
-            onChange={handleInputChange}
-            required
-          />
+        <div className={style.Form}>
+          <form className={style.FormHeader} onSubmit={handleSubmit}>
+            <div className={style.FormDescription}>
+              <label>Deskripsi :</label>
+              <input
+                type="text"
+                name="deskripsi"
+                value={formData.deskripsi}
+                placeholder="Masukkan Deskripsi"
+                onChange={handleInputChange}
+                required
+                autoComplete="off"
+              />
+            </div>
+            <div className={style.FormTotal}>
+              <label>Total :</label>
+              <p className={style.FormInputNominal}>
+                Rp.
+                <input
+                  type="number"
+                  name="total"
+                  value={formData.total}
+                  placeholder="Masukkan Nominal"
+                  onChange={handleInputChange}
+                  required
+                  autoComplete="off"
+                />{" "}
+              </p>
+            </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <button type="submit">Tambah Pengeluaran</button>
+          </form>
         </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">
-          {editingId ? "Update" : "Tambah Pengeluaran"}
-        </button>
-        {editingId && (
-          <button onClick={() => setEditingId(null)}>Cancel Edit</button>
-        )}
-      </form>
+      </div>
 
       <table>
         <thead>
@@ -195,6 +217,50 @@ const Pengeluaran = () => {
           </tr>
         </tfoot>
       </table>
+      {/* Modal for Editing */}
+      {editingItem && (
+        <div className={style.modalOverlay}>
+          <div className={style.modalContent}>
+            <h3>Edit Pengeluaran</h3>
+            <form className={style.ModalForm} onSubmit={handleEditSubmit}>
+              <div className={style.ModalFormDescription}>
+                <label>Deskripsi :</label>
+                <input
+                  type="text"
+                  name="deskripsi"
+                  value={editData.deskripsi}
+                  onChange={(e) =>
+                    setEditData({ ...editData, deskripsi: e.target.value })
+                  }
+                  required
+                  autoComplete="off"
+                />
+              </div>
+              <div className={style.ModalFormTotal}>
+                <label>Total :</label>
+                <p>
+                  Rp.{" "}
+                  <input
+                    type="number"
+                    name="total"
+                    value={editData.total}
+                    onChange={(e) =>
+                      setEditData({ ...editData, total: e.target.value })
+                    }
+                    required
+                    autoComplete="off"
+                  />
+                </p>
+              </div>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+              <button type="submit">Update</button>
+              <button type="button" onClick={handleCloseEdit}>
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

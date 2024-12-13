@@ -53,7 +53,8 @@ const Summary = () => {
 
   return (
     <div className={styles.SummaryContent}>
-      <h1 className={styles.Title}>Today's Orders Summary</h1>
+      <h1 className={styles.Title}>Laporan Keuangan Hari Ini</h1>
+      <h2>{"> Kasir"}</h2>
       <table className={styles.Table}>
         <thead>
           <tr>
@@ -107,10 +108,10 @@ const Summary = () => {
         <tfoot>
           <tr>
             <td colSpan="2">
-              <strong>Total</strong>
+              <h2>Total</h2>
             </td>
             <td colSpan="2">
-              <strong>Rp. {PriceFormat(total)}</strong>
+              <h2>Rp. {PriceFormat(total)}</h2>
             </td>
           </tr>
         </tfoot>
