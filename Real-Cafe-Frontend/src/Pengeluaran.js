@@ -200,7 +200,7 @@ const Pengeluaran = () => {
               <td>{FormatDate(item.created_at)}</td>
               <td>
                 <button onClick={() => handleEdit(item)}>Edit</button>
-                <button onClick={() => handleDelete(item.id)}>Delete</button>
+                <button onClick={() => handleDelete(item.id)}>Hapus</button>
               </td>
             </tr>
           ))}

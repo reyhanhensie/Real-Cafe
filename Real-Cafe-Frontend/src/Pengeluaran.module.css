@@ -3,6 +3,8 @@
   flex-direction: column;
   height: 100vh;
   overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .Header {
@@ -20,8 +22,11 @@
 }
 
 .FormHeader {
+  font-size: 18px;
+  /* width: 100%; */
   margin: 10px;
   background-color: #ecd9c4;
+  padding: 5px;
   border-color: #4e3928;
   border-radius: 12px;
   border-width: 1px;
@@ -38,8 +43,12 @@
   margin-top: 0;
   margin-bottom: 5px;
 }
+.FormDescription label {
+  font-size: 18px;
+  font-weight: 600;
+}
 .FormDescription input {
-  width: 100%;
+  width: 95%;
   height: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -57,9 +66,14 @@
   flex-direction: column;
   margin-bottom: 10px;
 }
+.FormTotal label {
+  font-size: 18px;
+  font-weight: 600;
+}
 .FormInputNominal {
   display: flex;
   font-size: 18px;
+  font-weight: 600;
   margin: 0px;
 }
 .FormTotal input {
@@ -76,6 +90,19 @@
   border-color: transparent;
   border-width: 1px;
   border-radius: 8px;
+}
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  background-color: #4e3928;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button::hover {
+  background-color: #3a2a20;
 }
 
 .modalOverlay {
@@ -113,7 +140,7 @@
 .ModalFormDescription {
   margin-bottom: 10px;
 }
-.ModalFormTotal p{
+.ModalFormTotal p {
   font-size: 18px;
   font-weight: 600;
   justify-content: center;
