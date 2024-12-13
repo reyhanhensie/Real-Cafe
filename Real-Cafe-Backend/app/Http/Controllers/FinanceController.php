@@ -16,7 +16,7 @@ class FinanceController extends Controller
         $time_low = Carbon::parse($time_low)->startOfDay();
         $time_high = Carbon::parse($time_high)->endOfDay();
 
-        if (($menu != "all") && ($item != "all")) {
+        if (($menu != "All") && ($item != "All")) {
             $orders = Order::whereBetween('created_at', [$time_low, $time_high])
                 ->whereHas('items', function ($query) use ($item) {
                     $query->whereIn('item_name', [$item]);
@@ -26,7 +26,7 @@ class FinanceController extends Controller
                 }])
                 ->whereBetween('created_at', [$time_low, $time_high])
                 ->get();
-        } else if (($menu != "all") && ($item === "all")) {
+        } else if (($menu != "All") && ($item === "All")) {
             $orders = Order::whereBetween('created_at', [$time_low, $time_high])
                 ->whereHas('items', function ($query) use ($menu) {
                     $query->whereIn('item_type', [$menu]);
@@ -36,35 +36,40 @@ class FinanceController extends Controller
                 }])
                 ->whereBetween('created_at', [$time_low, $time_high])
                 ->get();
-        } else if (($menu === "all") && ($item === "all")) {
+        } else if (($menu === "All") && ($item === "All")) {
             $orders = Order::whereBetween('created_at', [$time_low, $time_high])->get();
         }
 
         switch ($period) {
-            case 'hourly':
+            case 'Free':
+                $groupedData = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at); // Group by date
+                });
+                break;
+            case 'Hourly':
                 $groupedData = $orders->groupBy(function ($order) {
                     return Carbon::parse($order->created_at)->startOfHour(); // Group by date
                 });
                 break;
-            case 'daily':
+            case 'Daily':
                 // Group the orders by the day
                 $groupedData = $orders->groupBy(function ($order) {
                     return Carbon::parse($order->created_at)->toDateString(); // Group by date
                 });
                 break;
 
-            case 'weekly':
+            case 'Weekly':
                 // Group the orders by the week (start of the week)
                 $groupedData = $orders->groupBy(function ($order) {
                     return Carbon::parse($order->created_at)->startOfWeek()->toDateString(); // Group by the start of the week
                 });
                 break;
-            case 'monthly':
+            case 'Monthly':
                 $groupedData = $orders->groupBy(function ($order) {
                     return Carbon::parse($order->created_at)->startOfMonth()->toDateString(); // Group by the start of the week
                 });
                 break;
-            case 'yearly':
+            case 'Yearly':
                 $groupedData = $orders->groupBy(function ($order) {
                     return Carbon::parse($order->created_at)->startOfYear()->toDateString(); // Group by the start of the week
                 });
@@ -79,8 +84,8 @@ class FinanceController extends Controller
 
         // Process data based on the type ('revenue' or 'sales')
         switch ($type) {
-            case 'revenue':
-                if (($menu != "all") || ($item != "all")) {
+            case 'Revenue':
+                if (($menu != "All") || ($item != "All")) {
                     $groupedData = $groupedData->map(function ($group) {
                         return $group->sum(function ($order) {
                             return $order->items->sum('price'); // Sum of total_price for each order
@@ -94,8 +99,8 @@ class FinanceController extends Controller
                 }
                 break;
 
-            case 'sales':
-                if (($menu != "all") || ($item != "all")) {
+            case 'Sales':
+                if (($menu != "All") || ($item != "All")) {
                     $groupedData = $groupedData->map(function ($group) {
                         return $group->sum(function ($order) {
                             return $order->items->sum('quantity'); // Sum of total_price for each order
