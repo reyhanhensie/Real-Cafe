@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CamilanController;
 use App\Http\Controllers\CoffeController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\JusController;
 use App\Http\Controllers\LalapanController;
@@ -55,3 +56,6 @@ Route::get('/order/{id}', [OrderController::class, 'show']); // Retrieve an orde
 Route::patch('/order/{id}/complete', [OrderController::class, 'markAsCompleted']);
 Route::patch('/order/{id}/complete/food', [OrderController::class, 'markAsCompletedFood']);
 Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompletedDrink']);
+
+
+Route::get('/finance/{menu}/{item}/{type}/{period}',[FinanceController::class,'index']);
