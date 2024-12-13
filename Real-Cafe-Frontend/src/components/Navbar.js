@@ -73,7 +73,7 @@ const Navbar = () => {
             <>
               {Authority >= 3 && (
                 <li>
-                  <Link to="/order-summary-drink">
+                  <Link to="/finance">
                     <img src="/icons/finance.svg" alt="Kitchen Order" />
                     Finance
                   </Link>

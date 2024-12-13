@@ -6,6 +6,7 @@ import OrderSummary from './OrderSummary';
 import OrderSummaryFood from './OrderSummaryFood';
 import OrderSummaryDrink from './OrderSummaryDrink';
 import Stock from './Stock';
+import Finance from './Finance';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
 import Register from './pages/Auth/Register';
@@ -69,6 +70,12 @@ const App = () => {
             path="/order-summary-drink" 
             element={
               <DapurRoute element={<Layout><OrderSummaryDrink /></Layout>} />
+            } 
+          />
+               <Route 
+            path="/finance" 
+            element={
+              <DapurRoute element={<Layout><Finance/></Layout>} />
             } 
           />
         </Routes>
