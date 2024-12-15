@@ -161,7 +161,7 @@ const MenuDropdown = () => {
     labels: apiResponse ? Object.keys(apiResponse) : [],
     datasets: [
       {
-        label: selectedType === "Revenue" ? "Revenue (Rp)" : "Sales (Qty)",
+        label: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
         data: apiResponse ? Object.values(apiResponse) : [],
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
@@ -197,151 +197,148 @@ const MenuDropdown = () => {
 
   return (
     <div className={style.Finance}>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* Left Panel: Categories */}
+      <div className={style.leftPanel}>
+        <button onClick={addCategory}>Add Category</button>
+        {selectedCategories.map((category, categoryIndex) => (
+          <div key={categoryIndex} className={style.categoryContainer}>
+            <h4>Category {categoryIndex + 1}</h4>
+            <label htmlFor={`category-${categoryIndex}`}>
+              Select Category:
+            </label>
+            <select
+              id={`category-${categoryIndex}`}
+              value={category}
+              onChange={(e) =>
+                handleCategoryChange(categoryIndex, e.target.value)
+              }
+            >
+              {Object.keys(menuData).map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
 
-      {/* Dropdown for Type */}
-      <label htmlFor="type">Select Type:</label>
-      <select id="type" value={selectedType} onChange={handleTypeChange}>
-        <option value="Revenue">Revenue</option>
-        <option value="Sales">Sales</option>
-      </select>
+            {/* Remove Category */}
+            <button onClick={() => removeCategory(categoryIndex)}>
+              Remove Category
+            </button>
 
-      {/* Add Categories */}
-      <button onClick={addCategory}>Add Category</button>
-      {selectedCategories.map((category, categoryIndex) => (
-        <div key={categoryIndex}>
-          <label htmlFor={`category-${categoryIndex}`}>Select Category:</label>
-          <select
-            id={`category-${categoryIndex}`}
-            value={category}
-            onChange={(e) =>
-              handleCategoryChange(categoryIndex, e.target.value)
-            }
-          >
-            {Object.keys(menuData).map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+            {/* Add Items */}
+            <button onClick={() => addItem(categoryIndex)}>Add Item</button>
 
-          {/* Remove Category Button */}
-          <button onClick={() => removeCategory(categoryIndex)}>
-            Remove Category
-          </button>
-
-          {/* Add Item Button */}
-          <button onClick={() => addItem(categoryIndex)}>Add Item</button>
-
-          {/* Item Dropdowns (only show if items are explicitly added) */}
-{selectedItems[categoryIndex]?.length > 0 &&
-  selectedItems[categoryIndex].map((item, itemIndex) => (
-    <div key={itemIndex}>
-      <label>Select Item:</label>
-      <select
-        value={item}
-        onChange={(e) =>
-          handleItemChange(categoryIndex, itemIndex, e.target.value)
-        }
-      >
-        {menuData[category]?.map((menuItem) => (
-          <option key={menuItem.name} value={menuItem.name}>
-            {menuItem.name}
-          </option>
+            {/* Items Selection */}
+            <div className={style.itemsContainer}>
+              {selectedItems[categoryIndex]?.length > 0 &&
+                selectedItems[categoryIndex].map((item, itemIndex) => (
+                  <div key={itemIndex}>
+                    <label>Select Item:</label>
+                    <select
+                      value={item}
+                      onChange={(e) =>
+                        handleItemChange(
+                          categoryIndex,
+                          itemIndex,
+                          e.target.value
+                        )
+                      }
+                    >
+                      {menuData[category]?.map((menuItem) => (
+                        <option key={menuItem.name} value={menuItem.name}>
+                          {menuItem.name}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Remove Item */}
+                    <button
+                      onClick={() => removeItem(categoryIndex, itemIndex)}
+                    >
+                      Remove Item
+                    </button>
+                  </div>
+                ))}
+            </div>
+          </div>
         ))}
-      </select>
-      {/* Remove Item Button */}
-      <button
-        onClick={() => removeItem(categoryIndex, itemIndex)}
-        style={{ marginLeft: "10px" }}
-      >
-        Remove Item
-      </button>
-    </div>
-  ))}
+      </div>
 
+      {/* Right Panel: Filters and Chart */}
+      <div className={style.rightPanel}>
+        {/* Filters Row */}
+        <div className={style.filters}>
+          <div>
+            <label htmlFor="type">Tipe :</label>
+            <select id="type" value={selectedType} onChange={handleTypeChange}>
+              <option value="Revenue">Omset</option>
+              <option value="Sales">Penjualan</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="period">Periode :</label>
+            <select
+              id="period"
+              value={selectedPeriod}
+              onChange={handlePeriodChange}
+            >
+              <option value="Free">Bebas</option>
+              <option value="Hourly">Per-Jam</option>
+              <option value="Daily">Harian</option>
+              <option value="Weekly">Mingguan</option>
+              <option value="Monthly">Bulanan</option>
+              <option value="Yearly">Tahunan</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="timeStart">Mulai :</label>
+            <input
+              type="date"
+              id="timeStart"
+              value={timeStart}
+              onChange={(e) => setTimeStart(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="timeEnd">Selesai :</label>
+            <input
+              type="date"
+              id="timeEnd"
+              value={timeEnd}
+              onChange={(e) => setTimeEnd(e.target.value)}
+            />
+          </div>
+          {/* Generate API */}
+          <button className={style.Apply} onClick={generateApiUrl}>
+            Apply
+          </button>
         </div>
-      ))}
 
-      {/* Dropdown for Period */}
-      <label htmlFor="period">Select Period:</label>
-      <select id="period" value={selectedPeriod} onChange={handlePeriodChange}>
-        <option value="Free">Free</option>
-        <option value="Hourly">Hourly</option>
-        <option value="Daily">Daily</option>
-        <option value="Weekly">Weekly</option>
-        <option value="Monthly">Monthly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-
-      {/* Time Start and Time End */}
-      <label htmlFor="timeStart">Time Start:</label>
-      <input
-        type="date"
-        id="timeStart"
-        value={timeStart}
-        onChange={(e) => setTimeStart(e.target.value)}
-      />
-
-      <label htmlFor="timeEnd">Time End:</label>
-      <input
-        type="date"
-        id="timeEnd"
-        value={timeEnd}
-        onChange={(e) => setTimeEnd(e.target.value)}
-      />
-
-      {/* Generate API Button */}
-      <button onClick={generateApiUrl}>Generate API</button>
-
-      {/* Display Generated API */}
-      {/* {generatedApi && (
+        {/* Display Generated API */}
+        {/* {generatedApi && (
         <div>
           <h3>Generated API:</h3>
           <p>{generatedApi}</p>
         </div>
       )} */}
 
-      {/* Display API Response */}
-      {/* {apiResponse && (
+        {/* Display API Response */}
+        {/* {apiResponse && (
         <div>
           <h3>API Response:</h3>
           <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
         </div>
       )} */}
 
-      {/* Display Bar Chart */}
-      {apiResponse && (
-        <div>
-          <h3>Bar Chart:</h3>
-          <Bar data={chartData} options={chartOptions} />
-        </div>
-      )}
-
-      {/* Display Selected Filters */}
-      <div>
-        {/* <h3>Selected Filters:</h3>
-        <p>
-          Type: {selectedType} <br />
-          Categories: {selectedCategories.filter(Boolean).join(", ") ||
-            "All"}{" "}
-          <br />
-          Items:{" "}
-          {selectedItems
-            .flatMap((itemArray, index) =>
-              itemArray.length > 0
-                ? itemArray
-                    .filter(Boolean)
-                    .map((item) => `${selectedCategories[index]}:${item}`)
-                : [`${selectedCategories[index]}`]
-            )
-            .filter(Boolean)
-            .join(", ") || "All"}{" "}
-          <br />
-          Period: {selectedPeriod || "Free"} <br />
-          Time Start: {timeStart} <br />
-          Time End: {timeEnd}
-        </p> */}
+        {/* Chart Section */}
+        {apiResponse && (
+          <div className={style.chartContainer}>
+            <h3>Bar Chart</h3>
+            <Bar data={chartData} options={chartOptions} />
+          </div>
+        )}
       </div>
     </div>
   );
