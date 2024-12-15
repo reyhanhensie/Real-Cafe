@@ -36,7 +36,6 @@ class FinanceController extends Controller
                 }])
                 ->whereBetween('created_at', [$time_low, $time_high])
                 ->get();
-
         } else if (($menu != "All") && ($item === "All")) {
             $menuTypes = explode(separator: ',', string: $menu);
             $orders = Order::whereBetween('created_at', [$time_low, $time_high])
@@ -153,28 +152,6 @@ class FinanceController extends Controller
                     'price' => $group->sum('price'), // Sum the prices
                 ];
             })->values(); // Reset the keys to be numeric
-        } else if ($menu != 'All' && $item === 'All') {
-            $menuTypes = explode(',', $menu);
-
-            $orders = Order::whereBetween('created_at', [$time_low, $time_high])
-                ->with(['items' => function ($query) use ($menuTypes) {
-                    if ($menuTypes) {
-                        $query->whereIn('item_type', $menuTypes); // Filter by menu types if provided
-                    }
-                }])
-                ->get()
-                ->pluck('items')
-                ->flatten();
-
-            // Group by 'item_name'
-            $data = $orders->groupBy('item_name')->map(function ($group, $itemName) {
-                return [
-                    'item_type' => $group->first()['item_type'], // Take the item_type from the first occurrence
-                    'item_name' => $itemName,
-                    'quantity' => $group->sum('quantity'), // Sum the quantities
-                    'price' => $group->sum('price'), // Sum the prices
-                ];
-            })->values();
         } else if ($menu != 'All' && $item != 'All') {
             $menuTypes = explode(',', $menu);
             $itemTypes = explode(',', $item);
