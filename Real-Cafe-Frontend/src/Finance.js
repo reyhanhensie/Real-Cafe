@@ -75,9 +75,9 @@ const MenuDropdown = () => {
     updatedCategories[index] = value;
     setSelectedCategories(updatedCategories);
 
-    // Don't automatically fetch items for the selected category, items will only appear when user adds them manually
+    // When a new category is selected, initialize the items to an empty array
     const updatedItems = [...selectedItems];
-    updatedItems[index] = []; // Clear items for now
+    updatedItems[index] = []; // Reset items for the newly selected category
     setSelectedItems(updatedItems);
   };
 
