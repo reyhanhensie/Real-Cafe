@@ -37,10 +37,9 @@ const MenuDropdown = () => {
         const response = await axios.get(`${API_URL}/Menu`);
         setMenuData(response.data);
       } catch (err) {
-        setError("Error fetching menu items");
+        console.error("Error fetching menu items:", err);
       }
     };
-
     fetchMenuItems();
   }, []);
 
@@ -61,29 +60,26 @@ const MenuDropdown = () => {
     setSelectedItems(updatedItems);
   };
 
-  const addItem = (categoryIndex) => {
+  const addItem = (index) => {
     const updatedItems = [...selectedItems];
-    updatedItems[categoryIndex] = [
-      ...(updatedItems[categoryIndex] || []), // Ensure the array exists
-      "", // Add an empty string to represent a new item
-    ];
+    updatedItems[index].push(""); // Add an empty item to the specific category
     setSelectedItems(updatedItems);
   };
 
-  const handleCategoryChange = (index, value) => {
+  const handleCategoryChange = (index, category) => {
     const updatedCategories = [...selectedCategories];
-    updatedCategories[index] = value;
+    updatedCategories[index] = category;
     setSelectedCategories(updatedCategories);
 
-    // When a new category is selected, initialize the items to an empty array
+    // Reset items when the category changes
     const updatedItems = [...selectedItems];
-    updatedItems[index] = []; // Reset items for the newly selected category
+    updatedItems[index] = []; // Reset items for the specific category
     setSelectedItems(updatedItems);
   };
 
   const handleItemChange = (categoryIndex, itemIndex, value) => {
     const updatedItems = [...selectedItems];
-    updatedItems[categoryIndex][itemIndex] = value;
+    updatedItems[categoryIndex][itemIndex] = value; // Update only the selected item in the specific category
     setSelectedItems(updatedItems);
   };
 
@@ -102,28 +98,30 @@ const MenuDropdown = () => {
         ? selectedCategories.filter(Boolean).join(",")
         : "All"; // Set to "All" if no categories are selected
 
-    // If no items are selected, set items to "All"
+    // Generate the items for each category. If no items are selected, use all items from the category.
     const items =
       selectedItems.length > 0 &&
       selectedItems.some((itemArray) => itemArray.length > 0)
         ? selectedItems
-            .flatMap((itemArray, index) =>
-              itemArray.length > 0
-                ? itemArray.includes("All") // If "All" is selected, replace it with all items from that category
-                  ? menuData[selectedCategories[index]]?.map(
-                      (menuItem) => menuItem.name
-                    ) || []
-                  : itemArray.filter(Boolean) // Otherwise, use selected items
-                : []
-            )
+            .map((itemArray, index) => {
+              // If items are selected for a category, include only those items
+              if (itemArray.length > 0) {
+                return itemArray.filter(Boolean).join(",");
+              }
+              // If no items are selected for a category, include all items from that category
+              return menuData[selectedCategories[index]]
+                ?.map((menuItem) => menuItem.name)
+                .join(",");
+            })
+            .filter(Boolean)
             .join(",")
         : selectedCategories
-            .map(
-              (category, index) =>
-                menuData[category]?.map((item) => item.name).join(",")
-            )
+            .map((category, index) => {
+              // Include all items if no items are selected for a category
+              return menuData[category]?.map((item) => item.name).join(",");
+            })
             .filter(Boolean)
-            .join(",") || "All"; // If no items are selected, include all items from the category in the URL
+            .join(",") || "All"; // If no items are selected, include all items
 
     // Default period is "Free" if not selected
     const period = selectedPeriod || "Free";
@@ -212,7 +210,9 @@ const MenuDropdown = () => {
           </select>
 
           {/* Remove Category Button */}
-          <button onClick={() => removeCategory(categoryIndex)}>Remove Category</button>
+          <button onClick={() => removeCategory(categoryIndex)}>
+            Remove Category
+          </button>
 
           {/* Add Item Button */}
           <button onClick={() => addItem(categoryIndex)}>Add Item</button>
@@ -315,7 +315,8 @@ const MenuDropdown = () => {
                 : [`${selectedCategories[index]}`]
             )
             .filter(Boolean)
-            .join(", ") || "All"} <br />
+            .join(", ") || "All"}{" "}
+          <br />
           Period: {selectedPeriod || "Free"} <br />
           Time Start: {timeStart} <br />
           Time End: {timeEnd}
