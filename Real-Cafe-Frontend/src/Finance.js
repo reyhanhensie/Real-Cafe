@@ -75,9 +75,9 @@ const MenuDropdown = () => {
     updatedCategories[index] = value;
     setSelectedCategories(updatedCategories);
 
-    // Fetch the items associated with the selected category
+    // Don't automatically fetch items for the selected category, items will only appear when user adds them manually
     const updatedItems = [...selectedItems];
-    updatedItems[index] = menuData[value]?.map((item) => item.name) || []; // Get item names for the category
+    updatedItems[index] = []; // Clear items for now
     setSelectedItems(updatedItems);
   };
 
@@ -102,7 +102,7 @@ const MenuDropdown = () => {
         ? selectedCategories.filter(Boolean).join(",")
         : "All"; // Set to "All" if no categories are selected
 
-    // If no items are selected, or if categories have "All", set items to "All"
+    // If no items are selected, set items to "All"
     const items =
       selectedItems.length > 0 &&
       selectedItems.some((itemArray) => itemArray.length > 0)
@@ -117,7 +117,13 @@ const MenuDropdown = () => {
                 : []
             )
             .join(",")
-        : "All"; // Set to "All" if no items are selected or categories are all
+        : selectedCategories
+            .map(
+              (category, index) =>
+                menuData[category]?.map((item) => item.name).join(",")
+            )
+            .filter(Boolean)
+            .join(",") || "All"; // If no items are selected, include all items from the category in the URL
 
     // Default period is "Free" if not selected
     const period = selectedPeriod || "Free";
@@ -211,27 +217,28 @@ const MenuDropdown = () => {
           {/* Add Item Button */}
           <button onClick={() => addItem(categoryIndex)}>Add Item</button>
 
-          {/* Item Dropdowns */}
-          {selectedItems[categoryIndex]?.map((item, itemIndex) => (
-            <div key={itemIndex}>
-              <label>Select Item:</label>
-              <select
-                value={item}
-                onChange={(e) =>
-                  handleItemChange(categoryIndex, itemIndex, e.target.value)
-                }
-              >
-                <option value="">-- Select Item --</option>
-                {menuData[selectedCategories[categoryIndex]]?.map(
-                  (menuItem) => (
-                    <option key={menuItem.name} value={menuItem.name}>
-                      {menuItem.name}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
-          ))}
+          {/* Item Dropdowns (only show if items are explicitly added) */}
+          {selectedItems[categoryIndex]?.length > 0 &&
+            selectedItems[categoryIndex].map((item, itemIndex) => (
+              <div key={itemIndex}>
+                <label>Select Item:</label>
+                <select
+                  value={item}
+                  onChange={(e) =>
+                    handleItemChange(categoryIndex, itemIndex, e.target.value)
+                  }
+                >
+                  <option value="">-- Select Item --</option>
+                  {menuData[selectedCategories[categoryIndex]]?.map(
+                    (menuItem) => (
+                      <option key={menuItem.name} value={menuItem.name}>
+                        {menuItem.name}
+                      </option>
+                    )
+                  )}
+                </select>
+              </div>
+            ))}
         </div>
       ))}
 
@@ -296,7 +303,8 @@ const MenuDropdown = () => {
         <p>
           Type: {selectedType} <br />
           Categories: {selectedCategories.filter(Boolean).join(", ") ||
-            "All"}{" "}<br />
+            "All"}{" "}
+          <br />
           Items:{" "}
           {selectedItems
             .flatMap((itemArray, index) =>
