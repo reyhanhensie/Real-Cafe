@@ -304,6 +304,29 @@ const MenuDropdown = () => {
               color: "black", // Black text for x-axis
               font: { weight: "bold" },
             },
+            callback: function (value, index, ticks) {
+              // Dynamic formatting based on selectedPeriod
+              const dateLabel = this.getLabelForValue(value); // Original label
+              const date = new Date(dateLabel);
+              switch (selectedPeriod) {
+                case "Free":
+                  return date.toISOString().slice(0, 19).replace("T", " ");
+                case "Hourly":
+                  return new Date(dateLabel)
+                    .toISOString()
+                    .slice(0, 16)
+                    .replace("T", " ");
+                case "Daily":
+                case "Weekly":
+                  return new Date(dateLabel).toISOString().slice(0, 10);
+                case "Monthly":
+                  return new Date(dateLabel).toISOString().slice(0, 7);
+                case "Yearly":
+                  return new Date(dateLabel).toISOString().slice(0, 4);
+                default: // Free
+                  return new Date(dateLabel).toISOString();
+              }
+            },
           },
           y: {
             ticks: {

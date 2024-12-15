@@ -59,3 +59,4 @@ Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompl
 
 
 Route::get('/finance/{menu}/{item}/{type}/{period}',[FinanceController::class,'index']);
+Route::get('/traffic/{menu}/{item}',[FinanceController::class,'traffic']);

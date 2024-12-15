@@ -9,9 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import style from "./Finance.module.css";
-import { useRef } from "react";
-import { Chart } from "chart.js";
+import style from "./Traffic.module.css";
 
 import API_URL from "./apiconfig"; // Import the API_URL
 
@@ -168,8 +166,8 @@ const MenuDropdown = () => {
       {
         label: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
         data: apiResponse ? Object.values(apiResponse) : [],
-        backgroundColor: "#3A5568",
-        borderColor: "#3A5568 ",
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
@@ -180,24 +178,8 @@ const MenuDropdown = () => {
     plugins: {
       legend: {
         position: "top",
-        labels: {
-          color: "#000", // Black text
-          font: {
-            weight: "bold", // Bold text
-            size: 18, // Optional: Adjust font size
-          },
-        },
       },
       tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark background for tooltip
-        titleColor: "#FFFFFF", // Black title text
-        titleFont: {
-          weight: "bold", // Bold tooltip title
-        },
-        bodyColor: "#FFFFFF", // Black body text
-        bodyFont: {
-          weight: "bold", // Bold tooltip body
-        },
         callbacks: {
           label: function (context) {
             let value = context.raw;
@@ -210,137 +192,10 @@ const MenuDropdown = () => {
       },
     },
     scales: {
-      x: {
-        ticks: {
-          color: "#000", // Black text for X-axis labels
-          font: {
-            weight: "bold", // Bold X-axis labels
-            size: 14, // Optional: Adjust font size
-          },
-          callback: function (value, index, ticks) {
-            // Dynamic formatting based on selectedPeriod
-            const dateLabel = this.getLabelForValue(value); // Original label
-            const date = new Date(dateLabel);
-            switch (selectedPeriod) {
-              case "Free":
-                return date.toISOString().slice(0, 19).replace("T", " ");
-              case "Hourly":
-                return new Date(dateLabel)
-                  .toISOString()
-                  .slice(0, 16)
-                  .replace("T", " ");
-              case "Daily":
-              case "Weekly":
-                return new Date(dateLabel).toISOString().slice(0, 10);
-              case "Monthly":
-                return new Date(dateLabel).toISOString().slice(0, 7);
-              case "Yearly":
-                return new Date(dateLabel).toISOString().slice(0, 4);
-              default: // Free
-                return new Date(dateLabel).toISOString();
-            }
-          },
-        },
-        title: {
-          display: true,
-          text: "Waktu", // Optional: Add title for X-axis
-          color: "#000", // Black text for X-axis title
-          font: {
-            weight: "bold", // Bold title
-            size: 18, // Optional: Adjust font size
-          },
-        },
-      },
       y: {
         beginAtZero: true,
-        ticks: {
-          color: "#000", // Black text for Y-axis labels
-          font: {
-            weight: "bold", // Bold Y-axis labels
-            size: 14, // Optional: Adjust font size
-          },
-        },
-        title: {
-          display: true,
-          text: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)", // Dynamic title
-          color: "#000", // Black text for Y-axis title
-          font: {
-            weight: "bold", // Bold title
-            size: 14, // Optional: Adjust font size
-          },
-        },
       },
     },
-  };
-  const chartRef = useRef(null);
-
-  const downloadChart = () => {
-    if (chartRef.current) {
-      const downloadData = {
-        ...chartData,
-        datasets: [
-          {
-            ...chartData.datasets[0],
-            backgroundColor: "blue", // Blue bars for the downloaded chart
-            borderColor: "blue",
-          },
-        ],
-      };
-
-      const downloadOptions = {
-        ...chartOptions,
-        plugins: {
-          ...chartOptions.plugins,
-          legend: {
-            labels: {
-              color: "black", // Black text for legend
-              font: { weight: "bold" },
-            },
-          },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: "black", // Black text for x-axis
-              font: { weight: "bold" },
-            },
-          },
-          y: {
-            ticks: {
-              color: "black", // Black text for y-axis
-              font: { weight: "bold" },
-            },
-          },
-        },
-      };
-
-      // Create an off-screen canvas
-      const canvas = document.createElement("canvas");
-      canvas.width = 800;
-      canvas.height = 600;
-      const ctx = canvas.getContext("2d");
-
-      // Fill the background with white
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Render the chart on the off-screen canvas
-      new Chart(ctx, {
-        type: "bar",
-        data: downloadData,
-        options: {
-          ...downloadOptions,
-          responsive: false, // Ensure static rendering for export
-          animation: false, // Disable animations for faster rendering
-        },
-      });
-
-      // Convert the canvas to an image and trigger the download
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = "chart.png";
-      link.click();
-    }
   };
 
   return (
@@ -486,9 +341,6 @@ const MenuDropdown = () => {
           <button className={style.Apply} onClick={generateApiUrl}>
             Apply
           </button>
-          <button className={style.downloadButton} onClick={downloadChart}>
-            Download Chart
-          </button>
         </div>
 
         {/* Display Generated API */}
@@ -500,18 +352,18 @@ const MenuDropdown = () => {
         )} */}
 
         {/* Display API Response */}
-        {apiResponse && (
+        {/* {apiResponse && (
         <div>
           <h3>API Response:</h3>
           <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
         </div>
-      )}
+      )} */}
 
         {/* Chart Section */}
         {apiResponse && (
           <div className={style.chartContainer}>
             <h3>Bar Chart</h3>
-            <Bar ref={chartRef} data={chartData} options={chartOptions} />
+            <Bar data={chartData} options={chartOptions} />
           </div>
         )}
       </div>
