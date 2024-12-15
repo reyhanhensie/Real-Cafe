@@ -78,6 +78,11 @@ const MenuDropdown = () => {
     ); // Add the first item of the category
     setSelectedItems(updatedItems);
   };
+  const removeItem = (categoryIndex, itemIndex) => {
+    const updatedItems = [...selectedItems];
+    updatedItems[categoryIndex].splice(itemIndex, 1); // Remove the specific item
+    setSelectedItems(updatedItems);
+  };
 
   const handleCategoryChange = (index, category) => {
     const updatedCategories = [...selectedCategories];
@@ -229,24 +234,32 @@ const MenuDropdown = () => {
           <button onClick={() => addItem(categoryIndex)}>Add Item</button>
 
           {/* Item Dropdowns (only show if items are explicitly added) */}
-          {selectedItems[categoryIndex]?.length > 0 &&
-            selectedItems[categoryIndex].map((item, itemIndex) => (
-              <div key={itemIndex}>
-                <label>Select Item:</label>
-                <select
-                  value={item}
-                  onChange={(e) =>
-                    handleItemChange(categoryIndex, itemIndex, e.target.value)
-                  }
-                >
-                  {menuData[category]?.map((menuItem) => (
-                    <option key={menuItem.name} value={menuItem.name}>
-                      {menuItem.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
+{selectedItems[categoryIndex]?.length > 0 &&
+  selectedItems[categoryIndex].map((item, itemIndex) => (
+    <div key={itemIndex}>
+      <label>Select Item:</label>
+      <select
+        value={item}
+        onChange={(e) =>
+          handleItemChange(categoryIndex, itemIndex, e.target.value)
+        }
+      >
+        {menuData[category]?.map((menuItem) => (
+          <option key={menuItem.name} value={menuItem.name}>
+            {menuItem.name}
+          </option>
+        ))}
+      </select>
+      {/* Remove Item Button */}
+      <button
+        onClick={() => removeItem(categoryIndex, itemIndex)}
+        style={{ marginLeft: "10px" }}
+      >
+        Remove Item
+      </button>
+    </div>
+  ))}
+
         </div>
       ))}
 
@@ -282,20 +295,20 @@ const MenuDropdown = () => {
       <button onClick={generateApiUrl}>Generate API</button>
 
       {/* Display Generated API */}
-      {generatedApi && (
+      {/* {generatedApi && (
         <div>
           <h3>Generated API:</h3>
           <p>{generatedApi}</p>
         </div>
-      )}
+      )} */}
 
       {/* Display API Response */}
-      {apiResponse && (
+      {/* {apiResponse && (
         <div>
           <h3>API Response:</h3>
           <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
         </div>
-      )}
+      )} */}
 
       {/* Display Bar Chart */}
       {apiResponse && (
@@ -307,7 +320,7 @@ const MenuDropdown = () => {
 
       {/* Display Selected Filters */}
       <div>
-        <h3>Selected Filters:</h3>
+        {/* <h3>Selected Filters:</h3>
         <p>
           Type: {selectedType} <br />
           Categories: {selectedCategories.filter(Boolean).join(", ") ||
@@ -328,7 +341,7 @@ const MenuDropdown = () => {
           Period: {selectedPeriod || "Free"} <br />
           Time Start: {timeStart} <br />
           Time End: {timeEnd}
-        </p>
+        </p> */}
       </div>
     </div>
   );
