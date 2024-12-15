@@ -18,7 +18,10 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 const MenuDropdown = () => {
   const [menuData, setMenuData] = useState({});
   const [selectedType, setSelectedType] = useState("Revenue"); // Default type
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(() => {
+    const firstCategory = Object.keys(menuData)[0] || ""; // Get the first category name from the menuData or default to an empty string
+    return firstCategory ? [firstCategory] : []; // Return an array with the first category if it exists
+  });
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [timeStart, setTimeStart] = useState(
@@ -44,10 +47,10 @@ const MenuDropdown = () => {
   }, []);
 
   const addCategory = () => {
-    setSelectedCategories([...selectedCategories, ""]);
-    setSelectedItems([...selectedItems, []]); // Initialize empty array for new category
+    const firstCategory = Object.keys(menuData)[0]; // Get the first category from menuData
+    setSelectedCategories([...selectedCategories, firstCategory]); // Add it to the selectedCategories state
+    setSelectedItems([...selectedItems, []]); // Initialize empty array for the new category
   };
-
   const removeCategory = (categoryIndex) => {
     const updatedCategories = selectedCategories.filter(
       (category, index) => index !== categoryIndex
@@ -201,8 +204,8 @@ const MenuDropdown = () => {
               handleCategoryChange(categoryIndex, e.target.value)
             }
           >
-            <option value="">-- Select Category --</option>
-            {Object.keys(menuData).map((cat) => (
+            {/* Remove the '-- Select Category --' option and set default to the first item */}
+            {Object.keys(menuData).map((cat, index) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>
