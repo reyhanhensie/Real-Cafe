@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   Chart as ChartJS,
@@ -10,7 +10,6 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import style from "./Traffic.module.css";
-import { useRef } from "react";
 import { Chart } from "chart.js";
 
 import API_URL from "./apiconfig"; // Import the API_URL
@@ -29,7 +28,7 @@ const MenuDropdown = () => {
     const firstCategory = Object.keys(menuData)[0]; // Get the first category from the menuData
     if (firstCategory) {
       // Set the first item of the first category as the default selected item
-      return [[menuData[firstCategory]?.[0]?.name || ""]];
+      return [[menuData[firstCategory]?.[0]?.name || ""]]; // Set default item to first item in category
     }
     return []; // Return an empty array if no category exists
   });
@@ -162,18 +161,26 @@ const MenuDropdown = () => {
 
   // Prepare data for Bar Chart
   const chartData = {
-    labels: apiResponse ? Object.keys(apiResponse) : [],
+    labels: apiResponse
+      ? apiResponse.map((item) => item.item_name) // Extract item names for the X axis
+      : [],
+
     datasets: [
       {
-        label: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
-        data: apiResponse ? Object.values(apiResponse) : [],
-        backgroundColor: "#3A5568",
-        borderColor: "#3A5568 ",
+        label: selectedType === "Revenue" ? "Revenue (Rp)" : "Sales (Qty)",
+        data: apiResponse
+          ? apiResponse.map((item) =>
+              selectedType === "Revenue" ? item.price : item.quantity
+            ) // Use price for revenue, quantity for sales
+          : [],
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
   };
 
+  // Chart options for customization
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -218,7 +225,7 @@ const MenuDropdown = () => {
         },
         title: {
           display: true,
-          text: "Waktu",
+          text: "Menu",
           color: "#000",
           font: {
             weight: "bold",
@@ -279,11 +286,10 @@ const MenuDropdown = () => {
             ticks: {
               color: "black",
               font: { weight: "bold" },
-
             },
             title: {
               display: true,
-              text: "Waktu",
+              text: "Menu",
               color: "black",
               font: {
                 weight: "bold",
@@ -339,9 +345,6 @@ const MenuDropdown = () => {
         {selectedCategories.map((category, categoryIndex) => (
           <div key={categoryIndex} className={style.CategoryContainer}>
             <h4>Tipe Menu {categoryIndex + 1}</h4>
-            {/* <label htmlFor={`category-${categoryIndex}`}>
-              Tipe Menu :
-            </label> */}
 
             <div className={style.CategoryOption}>
               {/* Remove Category */}
@@ -433,7 +436,6 @@ const MenuDropdown = () => {
             </select>
           </div>
 
-
           <div>
             <label htmlFor="timeStart">Mulai :</label>
             <input
@@ -462,21 +464,13 @@ const MenuDropdown = () => {
           </button>
         </div>
 
-        {/* Display Generated API */}
-        {/* {generatedApi && (
-          <div>
-            <h3>Generated API:</h3>
-            <p>{generatedApi}</p>
-          </div>
-        )} */}
-
         {/* Display API Response */}
-        {apiResponse && (
+        {/* {apiResponse && (
           <div>
             <h3>API Response:</h3>
             <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
           </div>
-        )}
+        )} */}
 
         {/* Chart Section */}
         {apiResponse && (
