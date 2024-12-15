@@ -62,9 +62,9 @@ const MenuDropdown = () => {
   };
 
   const generateApiUrl = async () => {
-    const category = selectedCategory || "All";
+    const category = selectedCategory ? selectedCategory.replace(/\s+/g, "") : "All";
     const item = selectedCategory && selectedItem ? selectedItem : "All";
-    const period = selectedPeriod;
+    const period = selectedPeriod || "Free";
     const apiUrl = `${API_URL}/finance/${category}/${item}/${selectedType}/${period}?time_low=${timeStart}&time_high=${timeEnd}`;
     setGeneratedApi(apiUrl);
 
@@ -150,7 +150,7 @@ const MenuDropdown = () => {
         disabled={!selectedCategory}
       >
         <option value="">
-          {selectedCategory ? "All" : "Select a category first"}
+          {selectedCategory ? "All" : "Pilih Kategori"}
         </option>
         {selectedCategory &&
           menuData[selectedCategory]?.map((item) => (
@@ -222,7 +222,7 @@ const MenuDropdown = () => {
           Type: {selectedType} <br />
           Category: {selectedCategory || "All"} <br />
           Item: {selectedItem || "All"} <br />
-          Period: {selectedPeriod || "Not Selected"} <br />
+          Period: {selectedPeriod || "Free"} <br />
           Time Start: {timeStart} <br />
           Time End: {timeEnd}
         </p>
