@@ -33,7 +33,7 @@ const MenuDropdown = () => {
     }
     return []; // Return an empty array if no category exists
   });
-  const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState("Free");
   const [timeStart, setTimeStart] = useState(
     () => new Date().toISOString().split("T")[0]
   );
@@ -220,15 +220,37 @@ const MenuDropdown = () => {
           callback: function (value, index, ticks) {
             // Dynamic formatting based on selectedPeriod
             const dateLabel = this.getLabelForValue(value); // Original label
-            const date = new Date(dateLabel);
             switch (selectedPeriod) {
               case "Free":
-                return date.toISOString().slice(0, 19).replace("T", " ");
+                return new Date(dateLabel)
+                  .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" }) // Use Asia/Bangkok for GMT+7
+                  .replace(", ", " ") // Remove the comma between date and time
+                  .replace(/\//g, "-") // Replace slashes with dashes for the date part
+                  .split(" ") // Split into date and time
+                  .map((part, index) => {
+                    if (index === 0) {
+                      const [day, month, year] = part.split("-"); // Split the date part into day, month, and year
+                      return `${year}-${month}-${day}`; // Reformat to YYYY-MM-DD
+                    }
+                    return part; // Leave time as is
+                  })
+                  .join(" "); // Join the date and time parts together
+
               case "Hourly":
                 return new Date(dateLabel)
-                  .toISOString()
-                  .slice(0, 16)
-                  .replace("T", " ");
+                  .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" }) // Use Asia/Bangkok for GMT+7
+                  .replace(", ", " ") // Remove the comma between date and time
+                  .replace(/\//g, "-") // Replace slashes with dashes for the date part
+                  .split(" ") // Split into date and time
+                  .map((part, index) => {
+                    if (index === 0) {
+                      const [day, month, year] = part.split("-"); // Split the date part into day, month, and year
+                      return `${year}-${month}-${day}`; // Reformat to YYYY-MM-DD
+                    }
+                    return part.slice(0, 5); // Truncate time to remove seconds (HH:mm)
+                  })
+                  .join(" "); // Join the date and time parts together
+
               case "Daily":
               case "Weekly":
                 return new Date(dateLabel).toISOString().slice(0, 10);
@@ -303,6 +325,52 @@ const MenuDropdown = () => {
             ticks: {
               color: "black", // Black text for x-axis
               font: { weight: "bold" },
+            },
+            callback: function (value, index, ticks) {
+              // Dynamic formatting based on selectedPeriod
+              const dateLabel = this.getLabelForValue(value); // Original label
+              const date = new Date(dateLabel);
+              switch (selectedPeriod) {
+                case "Free":
+                  return new Date(dateLabel)
+                    .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" }) // Use Asia/Bangkok for GMT+7
+                    .replace(", ", " ") // Remove the comma between date and time
+                    .replace(/\//g, "-") // Replace slashes with dashes for the date part
+                    .split(" ") // Split into date and time
+                    .map((part, index) => {
+                      if (index === 0) {
+                        const [day, month, year] = part.split("-"); // Split the date part into day, month, and year
+                        return `${year}-${month}-${day}`; // Reformat to YYYY-MM-DD
+                      }
+                      return part; // Leave time as is
+                    })
+                    .join(" "); // Join the date and time parts together
+
+                case "Hourly":
+                  return new Date(dateLabel)
+                    .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" }) // Use Asia/Bangkok for GMT+7
+                    .replace(", ", " ") // Remove the comma between date and time
+                    .replace(/\//g, "-") // Replace slashes with dashes for the date part
+                    .split(" ") // Split into date and time
+                    .map((part, index) => {
+                      if (index === 0) {
+                        const [day, month, year] = part.split("-"); // Split the date part into day, month, and year
+                        return `${year}-${month}-${day}`; // Reformat to YYYY-MM-DD
+                      }
+                      return part.slice(0, 5); // Truncate time to remove seconds (HH:mm)
+                    })
+                    .join(" "); // Join the date and time parts together
+
+                case "Daily":
+                case "Weekly":
+                  return new Date(dateLabel).toISOString().slice(0, 10);
+                case "Monthly":
+                  return new Date(dateLabel).toISOString().slice(0, 7);
+                case "Yearly":
+                  return new Date(dateLabel).toISOString().slice(0, 4);
+                default: // Free
+                  return new Date(dateLabel).toISOString();
+              }
             },
           },
           y: {
@@ -501,11 +569,11 @@ const MenuDropdown = () => {
 
         {/* Display API Response */}
         {apiResponse && (
-        <div>
-          <h3>API Response:</h3>
-          <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
-        </div>
-      )}
+          <div>
+            <h3>API Response:</h3>
+            <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+          </div>
+        )}
 
         {/* Chart Section */}
         {apiResponse && (
