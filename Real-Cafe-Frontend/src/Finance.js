@@ -18,8 +18,8 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 const MenuDropdown = () => {
   const [menuData, setMenuData] = useState({});
   const [selectedType, setSelectedType] = useState("Revenue"); // Default type
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [timeStart, setTimeStart] = useState(
     () => new Date().toISOString().split("T")[0]
@@ -44,17 +44,51 @@ const MenuDropdown = () => {
     fetchMenuItems();
   }, []);
 
+  const addCategory = () => {
+    setSelectedCategories([...selectedCategories, ""]);
+    setSelectedItems([...selectedItems, []]); // Initialize empty array for new category
+  };
+
+  const removeCategory = (categoryIndex) => {
+    const updatedCategories = selectedCategories.filter(
+      (category, index) => index !== categoryIndex
+    );
+    const updatedItems = selectedItems.filter(
+      (itemArray, index) => index !== categoryIndex
+    );
+
+    setSelectedCategories(updatedCategories);
+    setSelectedItems(updatedItems);
+  };
+
+  const addItem = (categoryIndex) => {
+    const updatedItems = [...selectedItems];
+    updatedItems[categoryIndex] = [
+      ...(updatedItems[categoryIndex] || []), // Ensure the array exists
+      "", // Add an empty string to represent a new item
+    ];
+    setSelectedItems(updatedItems);
+  };
+
+  const handleCategoryChange = (index, value) => {
+    const updatedCategories = [...selectedCategories];
+    updatedCategories[index] = value;
+    setSelectedCategories(updatedCategories);
+
+    // Fetch the items associated with the selected category
+    const updatedItems = [...selectedItems];
+    updatedItems[index] = menuData[value]?.map((item) => item.name) || []; // Get item names for the category
+    setSelectedItems(updatedItems);
+  };
+
+  const handleItemChange = (categoryIndex, itemIndex, value) => {
+    const updatedItems = [...selectedItems];
+    updatedItems[categoryIndex][itemIndex] = value;
+    setSelectedItems(updatedItems);
+  };
+
   const handleTypeChange = (e) => {
     setSelectedType(e.target.value);
-  };
-
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-    setSelectedItem(""); // Reset selected item when category changes
-  };
-
-  const handleItemChange = (e) => {
-    setSelectedItem(e.target.value);
   };
 
   const handlePeriodChange = (e) => {
@@ -62,15 +96,40 @@ const MenuDropdown = () => {
   };
 
   const generateApiUrl = async () => {
-    const category = selectedCategory ? selectedCategory.replace(/\s+/g, "") : "All";
-    const item = selectedCategory && selectedItem ? selectedItem : "All";
+    // If no categories are selected, use "All"
+    const categories =
+      selectedCategories.length > 0
+        ? selectedCategories.filter(Boolean).join(",")
+        : "All"; // Set to "All" if no categories are selected
+
+    // If no items are selected, or if categories have "All", set items to "All"
+    const items =
+      selectedItems.length > 0 &&
+      selectedItems.some((itemArray) => itemArray.length > 0)
+        ? selectedItems
+            .flatMap((itemArray, index) =>
+              itemArray.length > 0
+                ? itemArray.includes("All") // If "All" is selected, replace it with all items from that category
+                  ? menuData[selectedCategories[index]]?.map(
+                      (menuItem) => menuItem.name
+                    ) || []
+                  : itemArray.filter(Boolean) // Otherwise, use selected items
+                : []
+            )
+            .join(",")
+        : "All"; // Set to "All" if no items are selected or categories are all
+
+    // Default period is "Free" if not selected
     const period = selectedPeriod || "Free";
-    const apiUrl = `${API_URL}/finance/${category}/${item}/${selectedType}/${period}?time_low=${timeStart}&time_high=${timeEnd}`;
-    setGeneratedApi(apiUrl);
+
+    // Construct API URL with selected parameters
+    const apiUrl = `${API_URL}/finance/${categories}/${items}/${selectedType}/${period}?time_low=${timeStart}&time_high=${timeEnd}`;
+    setGeneratedApi(apiUrl); // Update the state with the generated API URL
 
     try {
+      // Make the API request
       const response = await axios.get(apiUrl);
-      setApiResponse(response.data);
+      setApiResponse(response.data); // Update the state with the API response
     } catch (err) {
       setApiResponse("Error fetching data from API");
     }
@@ -126,39 +185,55 @@ const MenuDropdown = () => {
         <option value="Sales">Sales</option>
       </select>
 
-      {/* Dropdown for Categories */}
-      <label htmlFor="category">Select Category:</label>
-      <select
-        id="category"
-        value={selectedCategory}
-        onChange={handleCategoryChange}
-      >
-        <option value="">All</option>
-        {Object.keys(menuData).map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
+      {/* Add Categories */}
+      <button onClick={addCategory}>Add Category</button>
+      {selectedCategories.map((category, categoryIndex) => (
+        <div key={categoryIndex}>
+          <label htmlFor={`category-${categoryIndex}`}>Select Category:</label>
+          <select
+            id={`category-${categoryIndex}`}
+            value={category}
+            onChange={(e) =>
+              handleCategoryChange(categoryIndex, e.target.value)
+            }
+          >
+            <option value="">-- Select Category --</option>
+            {Object.keys(menuData).map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
 
-      {/* Dropdown for Items */}
-      <label htmlFor="item">Select Item:</label>
-      <select
-        id="item"
-        value={selectedItem}
-        onChange={handleItemChange}
-        disabled={!selectedCategory}
-      >
-        <option value="">
-          {selectedCategory ? "All" : "Pilih Kategori"}
-        </option>
-        {selectedCategory &&
-          menuData[selectedCategory]?.map((item) => (
-            <option key={item.id} value={item.name}>
-              {item.name}
-            </option>
+          {/* Remove Category Button */}
+          <button onClick={() => removeCategory(categoryIndex)}>Remove Category</button>
+
+          {/* Add Item Button */}
+          <button onClick={() => addItem(categoryIndex)}>Add Item</button>
+
+          {/* Item Dropdowns */}
+          {selectedItems[categoryIndex]?.map((item, itemIndex) => (
+            <div key={itemIndex}>
+              <label>Select Item:</label>
+              <select
+                value={item}
+                onChange={(e) =>
+                  handleItemChange(categoryIndex, itemIndex, e.target.value)
+                }
+              >
+                <option value="">-- Select Item --</option>
+                {menuData[selectedCategories[categoryIndex]]?.map(
+                  (menuItem) => (
+                    <option key={menuItem.name} value={menuItem.name}>
+                      {menuItem.name}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
           ))}
-      </select>
+        </div>
+      ))}
 
       {/* Dropdown for Period */}
       <label htmlFor="period">Select Period:</label>
@@ -220,8 +295,19 @@ const MenuDropdown = () => {
         <h3>Selected Filters:</h3>
         <p>
           Type: {selectedType} <br />
-          Category: {selectedCategory || "All"} <br />
-          Item: {selectedItem || "All"} <br />
+          Categories: {selectedCategories.filter(Boolean).join(", ") ||
+            "All"}{" "}<br />
+          Items:{" "}
+          {selectedItems
+            .flatMap((itemArray, index) =>
+              itemArray.length > 0
+                ? itemArray
+                    .filter(Boolean)
+                    .map((item) => `${selectedCategories[index]}:${item}`)
+                : [`${selectedCategories[index]}`]
+            )
+            .filter(Boolean)
+            .join(", ") || "All"} <br />
           Period: {selectedPeriod || "Free"} <br />
           Time Start: {timeStart} <br />
           Time End: {timeEnd}
