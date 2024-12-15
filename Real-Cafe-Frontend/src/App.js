@@ -7,6 +7,8 @@ import OrderSummaryFood from './OrderSummaryFood';
 import OrderSummaryDrink from './OrderSummaryDrink';
 import Stock from './Stock';
 import Finance from './Finance';
+import Sale_Revenue from './Sale_Revenue';
+import Traffic from './Traffic';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
 import Register from './pages/Auth/Register';
@@ -76,6 +78,18 @@ const App = () => {
             path="/finance" 
             element={
               <DapurRoute element={<Layout><Finance/></Layout>} />
+            } 
+          />
+                <Route 
+            path="/sale-revenue" 
+            element={
+              <DapurRoute element={<Layout><Sale_Revenue/></Layout>} />
+            } 
+          />
+                <Route 
+            path="/traffic" 
+            element={
+              <DapurRoute element={<Layout><Traffic/></Layout>} />
             } 
           />
         </Routes>

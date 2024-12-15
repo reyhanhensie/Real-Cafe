@@ -10,6 +10,8 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import style from "./Traffic.module.css";
+import { useRef } from "react";
+import { Chart } from "chart.js";
 
 import API_URL from "./apiconfig"; // Import the API_URL
 
@@ -31,7 +33,7 @@ const MenuDropdown = () => {
     }
     return []; // Return an empty array if no category exists
   });
-  const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState("Free");
   const [timeStart, setTimeStart] = useState(
     () => new Date().toISOString().split("T")[0]
   );
@@ -144,10 +146,9 @@ const MenuDropdown = () => {
             .join(",") || "All"; // If no items are selected, include all items
 
     // Default period is "Free" if not selected
-    const period = selectedPeriod || "Free";
 
     // Construct API URL with selected parameters
-    const apiUrl = `${API_URL}/finance/${categories}/${items}/${selectedType}/${period}?time_low=${timeStart}&time_high=${timeEnd}`;
+    const apiUrl = `${API_URL}/traffic/${categories}/${items}/?time_low=${timeStart}&time_high=${timeEnd}`;
     setGeneratedApi(apiUrl); // Update the state with the generated API URL
 
     try {
@@ -166,8 +167,8 @@ const MenuDropdown = () => {
       {
         label: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
         data: apiResponse ? Object.values(apiResponse) : [],
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "#3A5568",
+        borderColor: "#3A5568 ",
         borderWidth: 1,
       },
     ],
@@ -178,24 +179,154 @@ const MenuDropdown = () => {
     plugins: {
       legend: {
         position: "top",
+        labels: {
+          color: "#000",
+          font: {
+            weight: "bold",
+            size: 18,
+          },
+        },
       },
       tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        titleColor: "#FFFFFF",
+        titleFont: {
+          weight: "bold",
+        },
+        bodyColor: "#FFFFFF",
+        bodyFont: {
+          weight: "bold",
+        },
         callbacks: {
           label: function (context) {
             let value = context.raw;
-            if (selectedType === "Revenue") {
-              return `Rp ${value.toLocaleString("id-ID")}`;
-            }
-            return `${value} Qty`;
+            return selectedType === "Revenue"
+              ? `Rp ${value.toLocaleString("id-ID")}`
+              : `${value} Qty`;
           },
         },
       },
     },
     scales: {
+      x: {
+        ticks: {
+          color: "#000",
+          font: {
+            weight: "bold",
+            size: 14,
+          },
+        },
+        title: {
+          display: true,
+          text: "Waktu",
+          color: "#000",
+          font: {
+            weight: "bold",
+            size: 18,
+          },
+        },
+      },
       y: {
         beginAtZero: true,
+        ticks: {
+          color: "#000",
+          font: {
+            weight: "bold",
+            size: 14,
+          },
+        },
+        title: {
+          display: true,
+          text: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
+          color: "#000",
+          font: {
+            weight: "bold",
+            size: 14,
+          },
+        },
       },
     },
+  };
+
+  const chartRef = useRef(null);
+
+  const downloadChart = () => {
+    if (chartRef.current) {
+      const downloadData = {
+        ...chartData,
+        datasets: [
+          {
+            ...chartData.datasets[0],
+            backgroundColor: "blue", // Blue bars for the downloaded chart
+            borderColor: "blue",
+          },
+        ],
+      };
+
+      const downloadOptions = {
+        ...chartOptions,
+        plugins: {
+          ...chartOptions.plugins,
+          legend: {
+            labels: {
+              color: "black",
+              font: { weight: "bold" },
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: "black",
+              font: { weight: "bold" },
+
+            },
+            title: {
+              display: true,
+              text: "Waktu",
+              color: "black",
+              font: {
+                weight: "bold",
+                size: 18,
+              },
+            },
+          },
+          y: {
+            ticks: {
+              color: "black",
+              font: { weight: "bold" },
+            },
+          },
+        },
+      };
+
+      // Create an off-screen canvas
+      const canvas = document.createElement("canvas");
+      canvas.width = 800;
+      canvas.height = 600;
+      const ctx = canvas.getContext("2d");
+
+      // Fill the background with white
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render the chart on the off-screen canvas
+      new Chart(ctx, {
+        type: "bar",
+        data: downloadData,
+        options: {
+          ...downloadOptions,
+          responsive: false, // Ensure static rendering for export
+          animation: false, // Disable animations for faster rendering
+        },
+      });
+
+      // Convert the canvas to an image and trigger the download
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "chart.png";
+      link.click();
+    }
   };
 
   return (
@@ -302,21 +433,6 @@ const MenuDropdown = () => {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="period">Periode :</label>
-            <select
-              id="period"
-              value={selectedPeriod}
-              onChange={handlePeriodChange}
-            >
-              <option value="Free">Bebas</option>
-              <option value="Hourly">Per-Jam</option>
-              <option value="Daily">Harian</option>
-              <option value="Weekly">Mingguan</option>
-              <option value="Monthly">Bulanan</option>
-              <option value="Yearly">Tahunan</option>
-            </select>
-          </div>
 
           <div>
             <label htmlFor="timeStart">Mulai :</label>
@@ -341,6 +457,9 @@ const MenuDropdown = () => {
           <button className={style.Apply} onClick={generateApiUrl}>
             Apply
           </button>
+          <button className={style.downloadButton} onClick={downloadChart}>
+            Download Chart
+          </button>
         </div>
 
         {/* Display Generated API */}
@@ -352,18 +471,18 @@ const MenuDropdown = () => {
         )} */}
 
         {/* Display API Response */}
-        {/* {apiResponse && (
-        <div>
-          <h3>API Response:</h3>
-          <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
-        </div>
-      )} */}
+        {apiResponse && (
+          <div>
+            <h3>API Response:</h3>
+            <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+          </div>
+        )}
 
         {/* Chart Section */}
         {apiResponse && (
           <div className={style.chartContainer}>
             <h3>Bar Chart</h3>
-            <Bar data={chartData} options={chartOptions} />
+            <Bar ref={chartRef} data={chartData} options={chartOptions} />
           </div>
         )}
       </div>

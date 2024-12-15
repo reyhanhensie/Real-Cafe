@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import style from "./Finance.module.css";
+import style from "./Sale_Revenue.module.css";
 import { useRef } from "react";
 import { Chart } from "chart.js";
 
@@ -33,7 +33,7 @@ const MenuDropdown = () => {
     }
     return []; // Return an empty array if no category exists
   });
-  const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState("Free");
   const [timeStart, setTimeStart] = useState(
     () => new Date().toISOString().split("T")[0]
   );
@@ -160,6 +160,48 @@ const MenuDropdown = () => {
       setApiResponse("Error fetching data from API");
     }
   };
+  const formatTime = (dateLabel) => {
+    const date = new Date(dateLabel);
+    switch (selectedPeriod) {
+      case "Free":
+        return new Date(dateLabel)
+          .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
+          .replace(", ", " ")
+          .replace(/\//g, "-")
+          .split(" ")
+          .map((part, index) => {
+            if (index === 0) {
+              const [day, month, year] = part.split("-");
+              return `${year}-${month}-${day}`;
+            }
+            return part;
+          })
+          .join(" ");
+      case "Hourly":
+        return new Date(dateLabel)
+          .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
+          .replace(", ", " ")
+          .replace(/\//g, "-")
+          .split(" ")
+          .map((part, index) => {
+            if (index === 0) {
+              const [day, month, year] = part.split("-");
+              return `${year}-${month}-${day}`;
+            }
+            return part.slice(0, 5); // Only display hour and minute
+          })
+          .join(" ");
+      case "Daily":
+      case "Weekly":
+        return new Date(dateLabel).toISOString().slice(0, 10);
+      case "Monthly":
+        return new Date(dateLabel).toISOString().slice(0, 7);
+      case "Yearly":
+        return new Date(dateLabel).toISOString().slice(0, 4);
+      default:
+        return new Date(dateLabel).toISOString();
+    }
+  };
 
   // Prepare data for Bar Chart
   const chartData = {
@@ -181,30 +223,29 @@ const MenuDropdown = () => {
       legend: {
         position: "top",
         labels: {
-          color: "#000", // Black text
+          color: "#000",
           font: {
-            weight: "bold", // Bold text
-            size: 18, // Optional: Adjust font size
+            weight: "bold",
+            size: 18,
           },
         },
       },
       tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark background for tooltip
-        titleColor: "#FFFFFF", // Black title text
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        titleColor: "#FFFFFF",
         titleFont: {
-          weight: "bold", // Bold tooltip title
+          weight: "bold",
         },
-        bodyColor: "#FFFFFF", // Black body text
+        bodyColor: "#FFFFFF",
         bodyFont: {
-          weight: "bold", // Bold tooltip body
+          weight: "bold",
         },
         callbacks: {
           label: function (context) {
             let value = context.raw;
-            if (selectedType === "Revenue") {
-              return `Rp ${value.toLocaleString("id-ID")}`;
-            }
-            return `${value} Qty`;
+            return selectedType === "Revenue"
+              ? `Rp ${value.toLocaleString("id-ID")}`
+              : `${value} Qty`;
           },
         },
       },
@@ -212,66 +253,47 @@ const MenuDropdown = () => {
     scales: {
       x: {
         ticks: {
-          color: "#000", // Black text for X-axis labels
+          color: "#000",
           font: {
-            weight: "bold", // Bold X-axis labels
-            size: 14, // Optional: Adjust font size
+            weight: "bold",
+            size: 14,
           },
           callback: function (value, index, ticks) {
-            // Dynamic formatting based on selectedPeriod
-            const dateLabel = this.getLabelForValue(value); // Original label
-            const date = new Date(dateLabel);
-            switch (selectedPeriod) {
-              case "Free":
-                return date.toISOString().slice(0, 19).replace("T", " ");
-              case "Hourly":
-                return new Date(dateLabel)
-                  .toISOString()
-                  .slice(0, 16)
-                  .replace("T", " ");
-              case "Daily":
-              case "Weekly":
-                return new Date(dateLabel).toISOString().slice(0, 10);
-              case "Monthly":
-                return new Date(dateLabel).toISOString().slice(0, 7);
-              case "Yearly":
-                return new Date(dateLabel).toISOString().slice(0, 4);
-              default: // Free
-                return new Date(dateLabel).toISOString();
-            }
+            return formatTime(this.getLabelForValue(value)); // Use shared function
           },
         },
         title: {
           display: true,
-          text: "Waktu", // Optional: Add title for X-axis
-          color: "#000", // Black text for X-axis title
+          text: "Waktu",
+          color: "#000",
           font: {
-            weight: "bold", // Bold title
-            size: 18, // Optional: Adjust font size
+            weight: "bold",
+            size: 18,
           },
         },
       },
       y: {
         beginAtZero: true,
         ticks: {
-          color: "#000", // Black text for Y-axis labels
+          color: "#000",
           font: {
-            weight: "bold", // Bold Y-axis labels
-            size: 14, // Optional: Adjust font size
+            weight: "bold",
+            size: 14,
           },
         },
         title: {
           display: true,
-          text: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)", // Dynamic title
-          color: "#000", // Black text for Y-axis title
+          text: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
+          color: "#000",
           font: {
-            weight: "bold", // Bold title
-            size: 14, // Optional: Adjust font size
+            weight: "bold",
+            size: 14,
           },
         },
       },
     },
   };
+
   const chartRef = useRef(null);
 
   const downloadChart = () => {
@@ -293,7 +315,7 @@ const MenuDropdown = () => {
           ...chartOptions.plugins,
           legend: {
             labels: {
-              color: "black", // Black text for legend
+              color: "black",
               font: { weight: "bold" },
             },
           },
@@ -301,36 +323,25 @@ const MenuDropdown = () => {
         scales: {
           x: {
             ticks: {
-              color: "black", // Black text for x-axis
+              color: "black",
               font: { weight: "bold" },
+              callback: function (value, index, ticks) {
+                return formatTime(this.getLabelForValue(value)); // Use shared function
+              },
             },
-            callback: function (value, index, ticks) {
-              // Dynamic formatting based on selectedPeriod
-              const dateLabel = this.getLabelForValue(value); // Original label
-              const date = new Date(dateLabel);
-              switch (selectedPeriod) {
-                case "Free":
-                  return date.toISOString().slice(0, 19).replace("T", " ");
-                case "Hourly":
-                  return new Date(dateLabel)
-                    .toISOString()
-                    .slice(0, 16)
-                    .replace("T", " ");
-                case "Daily":
-                case "Weekly":
-                  return new Date(dateLabel).toISOString().slice(0, 10);
-                case "Monthly":
-                  return new Date(dateLabel).toISOString().slice(0, 7);
-                case "Yearly":
-                  return new Date(dateLabel).toISOString().slice(0, 4);
-                default: // Free
-                  return new Date(dateLabel).toISOString();
-              }
+            title: {
+              display: true,
+              text: "Waktu",
+              color: "black",
+              font: {
+                weight: "bold",
+                size: 18,
+              },
             },
           },
           y: {
             ticks: {
-              color: "black", // Black text for y-axis
+              color: "black",
               font: { weight: "bold" },
             },
           },
@@ -524,11 +535,11 @@ const MenuDropdown = () => {
 
         {/* Display API Response */}
         {apiResponse && (
-        <div>
-          <h3>API Response:</h3>
-          <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
-        </div>
-      )}
+          <div>
+            <h3>API Response:</h3>
+            <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+          </div>
+        )}
 
         {/* Chart Section */}
         {apiResponse && (
