@@ -22,7 +22,15 @@ const MenuDropdown = () => {
     const firstCategory = Object.keys(menuData)[0] || ""; // Get the first category name from the menuData or default to an empty string
     return firstCategory ? [firstCategory] : []; // Return an array with the first category if it exists
   });
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(() => {
+    // Initialize selectedItems as an empty array
+    const firstCategory = Object.keys(menuData)[0]; // Get the first category from the menuData
+    if (firstCategory) {
+      // Set the first item of the first category as the default selected item
+      return [[menuData[firstCategory]?.[0]?.name || ""]];
+    }
+    return []; // Return an empty array if no category exists
+  });
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [timeStart, setTimeStart] = useState(
     () => new Date().toISOString().split("T")[0]
@@ -65,7 +73,9 @@ const MenuDropdown = () => {
 
   const addItem = (index) => {
     const updatedItems = [...selectedItems];
-    updatedItems[index].push(""); // Add an empty item to the specific category
+    updatedItems[index].push(
+      menuData[selectedCategories[index]]?.[0]?.name || ""
+    ); // Add the first item of the category
     setSelectedItems(updatedItems);
   };
 
@@ -74,12 +84,11 @@ const MenuDropdown = () => {
     updatedCategories[index] = category;
     setSelectedCategories(updatedCategories);
 
-    // Reset items when the category changes
+    // Set the first item of the newly selected category as the default
     const updatedItems = [...selectedItems];
-    updatedItems[index] = []; // Reset items for the specific category
+    updatedItems[index] = [menuData[category]?.[0]?.name || ""]; // Default to the first item in the selected category
     setSelectedItems(updatedItems);
   };
-
   const handleItemChange = (categoryIndex, itemIndex, value) => {
     const updatedItems = [...selectedItems];
     updatedItems[categoryIndex][itemIndex] = value; // Update only the selected item in the specific category
@@ -204,8 +213,7 @@ const MenuDropdown = () => {
               handleCategoryChange(categoryIndex, e.target.value)
             }
           >
-            {/* Remove the '-- Select Category --' option and set default to the first item */}
-            {Object.keys(menuData).map((cat, index) => (
+            {Object.keys(menuData).map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>
@@ -231,14 +239,11 @@ const MenuDropdown = () => {
                     handleItemChange(categoryIndex, itemIndex, e.target.value)
                   }
                 >
-                  <option value="">-- Select Item --</option>
-                  {menuData[selectedCategories[categoryIndex]]?.map(
-                    (menuItem) => (
-                      <option key={menuItem.name} value={menuItem.name}>
-                        {menuItem.name}
-                      </option>
-                    )
-                  )}
+                  {menuData[category]?.map((menuItem) => (
+                    <option key={menuItem.name} value={menuItem.name}>
+                      {menuItem.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             ))}
