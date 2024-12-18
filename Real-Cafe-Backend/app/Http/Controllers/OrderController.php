@@ -20,7 +20,7 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Illuminate\Support\Facades\Log;
 //PRINT
-
+use App\Services\PrinterService;
 
 class OrderController extends Controller
 {
@@ -148,7 +148,7 @@ class OrderController extends Controller
 
             foreach ($orderItems as $item) {
                 $printer->text(sprintf(
-                    "%-10s %3d %8.2f %10.2f\n",
+                    "%-10s %3d %8 %10\n",
                     $item['item_name'],
                     $item['quantity'],
                     $menuItem->price,
@@ -157,9 +157,9 @@ class OrderController extends Controller
             }
 
             $printer->text("-----------------------------\n");
-            $printer->text(sprintf("Total Qty: %-10d %10.2f\n", $totalQty, $totalPrice));
-            $printer->text(sprintf("Bayar: %-16s %10.2f\n", "", $bayar));
-            $printer->text(sprintf("Kembali: %-14s %10.2f\n", "", $kembalian));
+            $printer->text(sprintf("Total Qty: %-10d %10\n", $totalQty, $totalPrice));
+            $printer->text(sprintf("Bayar: %-16s %10\n", "", $bayar));
+            $printer->text(sprintf("Kembali: %-14s %10\n", "", $kembalian));
             $printer->text("================\n");
             $printer->text("TERIMA KASIH\n");
             $printer->text("ATAS KUNJUNGANNYA\n");
@@ -362,5 +362,11 @@ class OrderController extends Controller
             default:
                 abort(404, 'Model not found');
         }
+    }
+    protected $printService;
+
+    public function __construct(PrinterService $printerService)
+    {
+        $this->printService = $printerService;
     }
 }
