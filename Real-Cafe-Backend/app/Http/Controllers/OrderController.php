@@ -77,7 +77,7 @@ class OrderController extends Controller
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
             'items.*.id' => 'required|integer',
             'items.*.qty' => 'required|integer|min:1',
-            'bayar' => 'required|numeric|min:0', // Payment amount
+            'bayar' => 'required|integer', // Payment amount
         ]);
 
         $totalPrice = 0;

@@ -150,7 +150,7 @@ const OrderForm = () => {
     const numberValue = value
       ? Math.min(10000000, Math.max(1, parseInt(value, 10)))
       : "";
-    setBayar(numberValue());
+    setBayar(numberValue.toString());
   };
 
   // const saveAsPDF = () => {
