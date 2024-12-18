@@ -163,13 +163,13 @@ class OrderController extends Controller
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
                     $printer->text(
                         sprintf(
-                            " -%-20s Rp.%8.0f\n",
+                            " -%-20s Rp.%d\n",
                             $item['item_name'],
                             $item['price'] * $item['quantity']
                         )
                     );
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(sprintf("  %2d X Rp.%8.0f\n", $item['quantity'], $item['price']));
+                    $printer->text(sprintf("  %2d X Rp.%d\n", $item['quantity'], $item['price']));
 
                 }
             }
