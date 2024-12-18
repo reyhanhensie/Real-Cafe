@@ -19,6 +19,7 @@ use App\Models\Receipt;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Illuminate\Support\Facades\Log;
+//PRINT
 
 
 class OrderController extends Controller
@@ -76,10 +77,12 @@ class OrderController extends Controller
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
             'items.*.id' => 'required|integer',
             'items.*.qty' => 'required|integer|min:1',
+            'bayar' => 'required|numeric|min:0', // Payment amount
         ]);
 
         $totalPrice = 0;
         $orderItems = [];
+        $totalQty = 0;
 
         foreach ($request->items as $item) {
             $model = $this->getModel($item['type']);
@@ -93,6 +96,7 @@ class OrderController extends Controller
             // Calculate price and update total
             $itemPrice = $menuItem->price * $item['qty'];
             $totalPrice += $itemPrice;
+            $totalQty += $item['qty'];
 
             // Prepare order item data
             $orderItems[] = [
@@ -106,6 +110,9 @@ class OrderController extends Controller
             // Subtract the quantity from the stock
             $menuItem->decrement('qty', $item['qty']);
         }
+        // Calculate change
+        $bayar = $request->bayar;
+        $kembalian = $bayar - $totalPrice;
 
 
 
@@ -119,6 +126,49 @@ class OrderController extends Controller
 
         // Save order items
         $order->items()->createMany($orderItems);
+
+        // Format timestamp
+        $timestamp = Carbon::now()->format('Y-m-d H:i:s');
+
+        // Print receipt
+        try {
+            $connector = new FilePrintConnector("/dev/usb/lp0");
+            $printer = new Printer($connector);
+
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("REAL CAFE JATIROTO\n");
+            $printer->text("================\n");
+            $printer->text("$timestamp\n");
+            $printer->text("Order ID: {$order->id}\n");
+            $printer->text("Kasir: {$request->kasir}\n");
+            $printer->text("================\n");
+
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("Menu       Qty   Harga     Total\n");
+
+            foreach ($orderItems as $item) {
+                $printer->text(sprintf(
+                    "%-10s %3d %8.2f %10.2f\n",
+                    $item['item_name'],
+                    $item['quantity'],
+                    $menuItem->price,
+                    $item['price']
+                ));
+            }
+
+            $printer->text("-----------------------------\n");
+            $printer->text(sprintf("Total Qty: %-10d %10.2f\n", $totalQty, $totalPrice));
+            $printer->text(sprintf("Bayar: %-16s %10.2f\n", "", $bayar));
+            $printer->text(sprintf("Kembali: %-14s %10.2f\n", "", $kembalian));
+            $printer->text("================\n");
+            $printer->text("TERIMA KASIH\n");
+            $printer->text("ATAS KUNJUNGANNYA\n");
+
+            $printer->cut();
+            $printer->close();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Printing failed: ' . $e->getMessage()], 500);
+        }
 
         return response()->json($order->load('items'), 201);
     }
