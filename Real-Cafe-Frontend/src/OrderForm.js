@@ -217,7 +217,6 @@ const OrderForm = () => {
       setMessage("");
       setAddedItems({});
       setBayar("")
-      downloadPDF(response.data.id);
     } catch (err) {
       setError("Error, Stock Habis");
     }
