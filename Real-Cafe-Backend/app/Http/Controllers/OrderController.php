@@ -166,8 +166,10 @@ class OrderController extends Controller
                             $item['item_name'],  // Item name
                             $item['quantity'],   // Quantity
                             $item['price']
-                        )); 
-$printer->text(sprintf("%-14s Rp. %10.0f\n",$item['price'] * $item['quantity']));
+                        )
+                    );
+                    $printer->text(sprintf("%-14s Rp. %10.0f\n", $item['price'] * $item['quantity']));
+                }
             }
 
 
