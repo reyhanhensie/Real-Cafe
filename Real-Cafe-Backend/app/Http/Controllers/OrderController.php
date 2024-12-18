@@ -77,7 +77,7 @@ class OrderController extends Controller
             'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas',
             'items.*.id' => 'required|integer',
             'items.*.qty' => 'required|integer|min:1',
-            'bayar' => 'required|integer', // Payment amount
+            'bayar' => 'required|integer|:0', // Payment amount
         ]);
 
         $totalPrice = 0;
@@ -148,7 +148,7 @@ class OrderController extends Controller
 
             foreach ($orderItems as $item) {
                 $printer->text(sprintf(
-                    "%-10s %3d %8 %10\n",
+                    "%-10s %3d %8 %10f\n",
                     $item['item_name'],
                     $item['quantity'],
                     $menuItem->price,
@@ -157,9 +157,10 @@ class OrderController extends Controller
             }
 
             $printer->text("-----------------------------\n");
-            $printer->text(sprintf("Total Qty: %-10d %10\n", $totalQty, $totalPrice));
-            $printer->text(sprintf("Bayar: %-16s %10\n", "", $bayar));
-            $printer->text(sprintf("Kembali: %-14s %10\n", "", $kembalian));
+            $printer->text(sprintf("Total Qty: %-10d %10f\n", $totalQty, $totalPrice));
+            $printer->text(sprintf("Bayar: %-16s %10f\n", "", $bayar));
+            $printer->text(sprintf("Kembali: %-14s %10f\n", "", $kembalian));
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================\n");
             $printer->text("TERIMA KASIH\n");
             $printer->text("ATAS KUNJUNGANNYA\n");
