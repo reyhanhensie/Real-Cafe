@@ -6,7 +6,7 @@ import ReactToPrint from "react-to-print";
 import PrintableOrder from "./PrintableOrder"; // Import the printable component
 
 const OrderForm = () => {
-  const printRef = useRef(null); // Reference to the print section
+  // const printRef = useRef(null); // Reference to the print section
 
   const categoryMap = {
     Camilan: "Camilan",

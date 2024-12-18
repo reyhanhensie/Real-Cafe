@@ -160,14 +160,14 @@ class OrderController extends Controller
 
                 // Loop through items in the category
                 foreach ($items as $item) {
-                    $printer->text(sprintf(
-                        "- %-20s %3d %8.0f %10.0f\n", // Adjusted the width for item names and quantities
-                        $item['item_name'],  // Item name
-                        $item['quantity'],   // Quantity
-                        $item['price'],      // Price per item (without decimals)
-                        $item['price'] * $item['quantity'] // Total price for the item (without decimals)
-                    ));
-                }
+                    $printer->text(
+                        sprintf(
+                            " - %-20s x%3d %8.0f\n", // Adjusted the width for item names and quantities
+                            $item['item_name'],  // Item name
+                            $item['quantity'],   // Quantity
+                            $item['price']
+                        )); 
+$printer->text(sprintf("%-14s Rp. %10.0f\n",$item['price'] * $item['quantity']));
             }
 
 
@@ -178,7 +178,7 @@ class OrderController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================\n");
             $printer->text("TERIMA KASIH\n");
-            $printer->text("ATAS KUNJUNGANNYA\n");
+            $printer->text("ATAS KUNJUNGANNYA\n\n\n");
 
             $printer->cut();
             $printer->close();
