@@ -389,7 +389,7 @@ const OrderForm = () => {
             //   // onBeforePrint={saveAsPDF}
             //   onAfterPrint={handleSubmit}
             // />
-            <button>Kirim Ke Dapur</button>
+            <button onClick={handleSubmit}>Kirim Ke Dapur</button>
           ) : (
             <button disabled>Kirim Ke Dapur</button>
           )}
