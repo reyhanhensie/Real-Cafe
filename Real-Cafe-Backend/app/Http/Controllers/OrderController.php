@@ -141,9 +141,9 @@ class OrderController extends Controller
             $printer->text("$timestamp\n");
             $printer->text("Order ID: {$order->id}\n");
             $printer->text("Kasir: {$request->kasir}\n");
-            $printer->text("================\n");
+            $printer->text("======================\n");
 
-            $printer->text("Menu             Total\n");
+            $printer->text("Menu                 Total\n");
 
             // Group items by category
             $groupedItems = [];
@@ -163,13 +163,14 @@ class OrderController extends Controller
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
                     $printer->text(
                         sprintf(
-                            " -%-20s Rp. %8.0f\n",
+                            " -%-20s Rp.%8.0f\n",
                             $item['item_name'],
                             $item['price'] * $item['quantity']
                         )
                     );
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(sprintf("  %2d X Rp. %8.0f\n", $item['quantity'], $item['price']));
+                    $printer->text(sprintf("  %2d X Rp.%8.0f\n", $item['quantity'], $item['price']));
+
                 }
             }
 
