@@ -155,10 +155,12 @@ class OrderController extends Controller
             // Loop through categories and print each category with its items
             foreach ($groupedItems as $category => $items) {
                 // Print category header (e.g., "Makanan", "Jus")
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
                 $printer->text("\n> " . ucfirst($category) . "\n");
 
                 // Loop through items in the category
                 foreach ($items as $item) {
+                    $printer->setJustification(Printer::JUSTIFY_LEFT);
                     $printer->text(
                         sprintf(
                             " -%-20s Rp. %8.0f\n",
