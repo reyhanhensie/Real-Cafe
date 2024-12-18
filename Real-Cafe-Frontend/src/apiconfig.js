@@ -1,10 +1,10 @@
 // src/apiConfig.js
 let API_URL;
 
-if (process.env.NODE_ENV === 'development') {
-    API_URL = 'http://127.0.0.1:8000/api'; // Local development API
+if (process.env.NODE_ENV === "development") {
+  API_URL = "http://192.168.100.100/api"; // Local development API
 } else {
-    API_URL = '/api'; // Production API (relative path)
+  API_URL = "/api"; // Production API (relative path)
 }
 
 export default API_URL;
