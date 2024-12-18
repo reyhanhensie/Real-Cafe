@@ -177,35 +177,6 @@ const OrderForm = () => {
   //       element.style.display = originalDisplay;
   //     });
   // };
-  const downloadPDF = async (orderId) => {
-    try {
-      const response = await axios.get(`${API_URL}/receipt/${orderId}`, {
-        responseType: "blob", // Set the response type to blob to handle binary data
-      });
-      // Generate a timestamp
-      const timestamp = new Date()
-        .toLocaleString("sv-SE", { timeZone: "Asia/Jakarta", hour12: false })
-        .split(".")[0]
-        .replace(/:/g, "_");
-
-      // Create a link element
-      const link = document.createElement("a");
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      link.href = url;
-      // link.setAttribute('download', `order_${orderId}.pdf`);
-      link.setAttribute("download", `Order_${timestamp}_ID-${orderId}.pdf`);
-
-      // Append the link to the body
-      document.body.appendChild(link);
-      link.click();
-
-      // Clean up
-      link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Error downloading PDF", err);
-    }
-  };
 
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
@@ -235,6 +206,7 @@ const OrderForm = () => {
         kasir: SelectedCashier,
         message: message,
         items: formattedItems,
+        bayar: Bayar
       });
 
       alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
