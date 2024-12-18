@@ -165,11 +165,11 @@ class OrderController extends Controller
                         sprintf(
                             " -%-21s Rp.%d\n",
                             $item['item_name'],
-                            $item['price'] * $item['quantity']
+                            $item['price']
                         )
                     );
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['price']));
+                    $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['quantity'] / $item['price']));
                 }
             }
             $NotaTotal = "Rp." . $totalPrice;
