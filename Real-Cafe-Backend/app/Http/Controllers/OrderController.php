@@ -140,6 +140,7 @@ class OrderController extends Controller
             $printer->text("================================\n");
             $printer->text("$timestamp\n");
             $printer->text("Order ID: {$order->id}\n");
+            $printer->text("Meja No: {$request->meja}\n");
             $printer->text("Kasir: {$request->kasir}\n");
             $printer->text("================================\n");
             $printer->text("Menu                       Total\n");
