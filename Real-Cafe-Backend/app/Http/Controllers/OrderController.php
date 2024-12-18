@@ -136,7 +136,7 @@ class OrderController extends Controller
             $printer = new Printer($connector);
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("REAL CAFE JATIROTO\n");
+            $printer->text("\nREAL CAFE JATIROTO\n");
             $printer->text("================================\n");
             $printer->text("$timestamp\n");
             $printer->text("Order ID: {$order->id}\n");
