@@ -146,20 +146,33 @@ class OrderController extends Controller
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $printer->text("Menu       Qty   Harga     Total\n");
 
+            // Group items by category
+            $groupedItems = [];
             foreach ($orderItems as $item) {
-                $printer->text(sprintf(
-                    "%-10s %3d %8.0f %10.0f\n",
-                    $item['item_name'],
-                    $item['quantity'],
-                    $menuItem->price,
-                    $item['price']
-                ));
+                $groupedItems[$item['type']][] = $item; // Group by item type (e.g., Makanan, Jus)
+            }
+
+            // Loop through categories and print each category with its items
+            foreach ($groupedItems as $category => $items) {
+                // Print category header (e.g., "Makanan", "Jus")
+                $printer->text("\n> $category\n");
+
+                // Loop through items in the category
+                foreach ($items as $item) {
+                    $printer->text(sprintf(
+                        "- %-20s %3d %8.0f %10.0f\n", // Adjusted the width for item names and quantities
+                        $item['item_name'],  // Item name
+                        $item['quantity'],   // Quantity
+                        $item['price'],      // Price per item (without decimals)
+                        $item['price'] * $item['quantity'] // Total price for the item (without decimals)
+                    ));
+                }
             }
 
             $printer->text("-----------------------------\n");
-            $printer->text(sprintf("Total Qty: %-10d %10.0f\n", $totalQty, $totalPrice));
-            $printer->text(sprintf("Bayar: %-16s %10.0f\n", "", $bayar));
-            $printer->text(sprintf("Kembali: %-14s %10.0f\n", "", $kembalian));
+            $printer->text(sprintf("Jumlah Menu Pesanan: %-10d %10.0f\n", $totalQty, $totalPrice));
+            $printer->text(sprintf("Bayar: %-14s %10.0f\n", "", $bayar));
+            $printer->text(sprintf("Kembali: %-12s %10.0f\n", "", $kembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================\n");
             $printer->text("TERIMA KASIH\n");
