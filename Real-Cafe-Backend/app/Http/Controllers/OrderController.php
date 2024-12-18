@@ -149,13 +149,14 @@ class OrderController extends Controller
             // Group items by category
             $groupedItems = [];
             foreach ($orderItems as $item) {
-                $groupedItems[$item['type']][] = $item; // Group by item type (e.g., Makanan, Jus)
+                // Group by 'item_type' (e.g., 'makanan', 'jus', etc.)
+                $groupedItems[$item['item_type']][] = $item;
             }
 
             // Loop through categories and print each category with its items
             foreach ($groupedItems as $category => $items) {
                 // Print category header (e.g., "Makanan", "Jus")
-                $printer->text("\n> $category\n");
+                $printer->text("\n> " . ucfirst($category) . "\n");
 
                 // Loop through items in the category
                 foreach ($items as $item) {
@@ -168,6 +169,7 @@ class OrderController extends Controller
                     ));
                 }
             }
+
 
             $printer->text("-----------------------------\n");
             $printer->text(sprintf("Jumlah Menu Pesanan: %-10d %10.0f\n", $totalQty, $totalPrice));

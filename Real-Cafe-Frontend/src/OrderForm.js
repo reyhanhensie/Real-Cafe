@@ -206,7 +206,7 @@ const OrderForm = () => {
         kasir: SelectedCashier,
         message: message,
         items: formattedItems,
-        bayar: parseInt(Bayar, 10)
+        bayar: parseInt(Bayar, 10),
       });
 
       alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
@@ -216,7 +216,7 @@ const OrderForm = () => {
       setMejaNo("");
       setMessage("");
       setAddedItems({});
-      setBayar("")
+      setBayar("");
     } catch (err) {
       setError("Error, Stock Habis");
     }
@@ -383,12 +383,13 @@ const OrderForm = () => {
           {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
           {isMejaNoValid && isMinimalOrder && isBayarValid ? (
-            <ReactToPrint
-              trigger={() => <button>Kirim Ke Dapur</button>}
-              content={() => printRef.current}
-              // onBeforePrint={saveAsPDF}
-              onAfterPrint={handleSubmit}
-            />
+            // <ReactToPrint
+            //   trigger={() => <button>Kirim Ke Dapur</button>}
+            //   content={() => printRef.current}
+            //   // onBeforePrint={saveAsPDF}
+            //   onAfterPrint={handleSubmit}
+            // />
+            <button>Kirim Ke Dapur</button>
           ) : (
             <button disabled>Kirim Ke Dapur</button>
           )}
@@ -398,13 +399,13 @@ const OrderForm = () => {
       </div>
 
       {/* The printable component */}
-      <PrintableOrder
+      {/* <PrintableOrder
         ref={printRef}
         mejaNo={mejaNo}
         orderItems={orderItems}
         totalPrice={totalPrice}
         message={message}
-      />
+      /> */}
     </div>
   );
 };
