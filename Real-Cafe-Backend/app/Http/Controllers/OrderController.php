@@ -137,11 +137,11 @@ class OrderController extends Controller
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("REAL CAFE JATIROTO\n");
-            $printer->text("================\n");
+            $printer->text("===========================\n");
             $printer->text("$timestamp\n");
             $printer->text("Order ID: {$order->id}\n");
             $printer->text("Kasir: {$request->kasir}\n");
-            $printer->text("======================\n");
+            $printer->text("===========================\n");
 
             $printer->text("Menu                 Total\n");
 
@@ -170,17 +170,15 @@ class OrderController extends Controller
                     );
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
                     $printer->text(sprintf("  %2d X Rp.%d\n", $item['quantity'], $item['price']));
-
                 }
             }
 
-
-            $printer->text("-----------------------------\n");
-            $printer->text(sprintf("Jumlah Menu Pesanan: %-10d %10.0f\n", $totalQty, $totalPrice));
-            $printer->text(sprintf("Bayar: %-14s %10.0f\n", "", $bayar));
-            $printer->text(sprintf("Kembali: %-12s %10.0f\n", "", $kembalian));
+            $printer->text("----------------------------------\n");
+            $printer->text(sprintf("Jumlah Pesanan: %-3d Rp.%d\n", $totalQty, $totalPrice));
+            $printer->text(sprintf("Bayar: %-14s Rp.%d\n", "", $bayar));
+            $printer->text(sprintf("Kembali: %-12s Rp.%d\n", "", $kembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("================\n");
+            $printer->text("=========================\n");
             $printer->text("TERIMA KASIH\n");
             $printer->text("ATAS KUNJUNGANNYA\n\n\n");
 

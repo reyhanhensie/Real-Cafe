@@ -132,6 +132,9 @@ span.header-add {
   text-align: center;
   border: none;
 }
+
+
+
 .item-add,
 .item-add-placeholder {
   flex: 1;
@@ -394,6 +397,14 @@ button.order-remove {
   background-color: #4e3928;
   color: #ecd9c4;
   cursor: pointer;
+}
+.order-form-input button:disabled {
+  font-size: 20px;
+  border-radius: 12px;
+  color: black;
+  background-color: red;
+  color: #ecd9c4;
+  cursor: not-allowed;
 }
 
 /* Media Queries for Portrait Mode on Phones */
