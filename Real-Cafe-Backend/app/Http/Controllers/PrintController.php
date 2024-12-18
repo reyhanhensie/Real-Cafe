@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PrintService;
+use App\Services\PrinterService;
 
 class PrintController extends Controller
 {
