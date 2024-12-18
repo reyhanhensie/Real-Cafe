@@ -15,6 +15,8 @@ use App\Http\Controllers\MilkshakeController;
 use App\Http\Controllers\MinumanDinginController;
 use App\Http\Controllers\MinumanPanasController;
 use App\Http\Controllers\SpendingController;
+// PRINTING
+use App\Http\Controllers\PrintController;
 
 
 // AUTHENTICATION
@@ -60,3 +62,6 @@ Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompl
 
 Route::get('/finance/{menu}/{item}/{type}/{period}',[FinanceController::class,'index']);
 Route::get('/traffic/{menu}/{item}',[FinanceController::class,'traffic']);
+
+
+Route::get('/print', [PrintController::class, 'print']);

@@ -1,38 +1,28 @@
 <?php
 
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
+namespace App\Services;
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 
-use Illuminate\Support\Facades\Log;
-
-namespace App\Services;
-
 class PrinterService
 {
-    protected $printer;
-    protected $connector;
-
-    public function connect()
-    {
-        if ($this->printer === null) {
-            $this->connector = new FilePrintConnector("/dev/usb/lp0");
-            $this->printer = new Printer($this->connector);
-        }
-    }
-
-    public function printTest()
+    public function printReceipt(string $message)
     {
         try {
-            $this->connect(); // Connect when printing is called
-            $this->printer->text("Direct Test Print\n");
-            $this->printer->cut();
-            $this->printer->close();
+            // Connect to the thermal printer
+            $connector = new FilePrintConnector("/dev/usb/lp0");
+            $printer = new Printer($connector);
+
+            // Print the message
+            $printer->text($message . "\n");
+            $printer->cut();
+
+            // Close the connection
+            $printer->close();
         } catch (\Exception $e) {
-            Log::info("Printer error: " . $e->getMessage());
+            // Handle errors (log or rethrow)
+            throw new \Exception("Printing failed: " . $e->getMessage());
         }
     }
 }
