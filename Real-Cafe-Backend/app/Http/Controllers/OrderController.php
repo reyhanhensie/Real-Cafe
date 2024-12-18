@@ -169,7 +169,7 @@ class OrderController extends Controller
                         )
                     );
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['quantity'] / $item['price']));
+                    $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['price'] / $item['quantity']));
                 }
             }
             $NotaTotal = "Rp." . $totalPrice;
