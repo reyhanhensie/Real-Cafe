@@ -162,13 +162,14 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " - %-20s x%3d %8.0f\n", // Adjusted the width for item names and quantities
-                            $item['item_name'],  // Item name
-                            $item['quantity'],   // Quantity
+                            " - %-20s x%3d %8.0f\n",
+                            $item['item_name'],
+                            $item['quantity'],
                             $item['price']
                         )
                     );
-                    $printer->text(sprintf("%-14s Rp. %10.0f\n", $item['price'] * $item['quantity']));
+                    $printer->setJustification(Printer::JUSTIFY_RIGHT);
+                    $printer->text(sprintf("Rp. %10.0f\n", $item['price'] * $item['quantity']));
                 }
             }
 
