@@ -176,8 +176,8 @@ class OrderController extends Controller
             $NotaBayar = "Rp." . $bayar;
             $NotaKembalian = "Rp." . $kembalian;
             $printer->text("--------------------------------\n");
-            $printer->text(sprintf("Jumlah Pesanan: %-3d %10s\n\n", $totalQty, $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %10s\n", "", $NotaBayar));
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %13s\n\n", $totalQty, $NotaTotal));
+            $printer->text(sprintf("Bayar: %-10s %13s\n", "", $NotaBayar));
             $printer->text(sprintf("Kembali: %-12s %10s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
