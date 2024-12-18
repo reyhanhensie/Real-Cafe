@@ -224,6 +224,7 @@ const OrderForm = () => {
 
   const isMinimalOrder = orderItems.length !== 0;
   const isMejaNoValid = mejaNo.trim() !== "";
+  const isKasirValid = SelectedCashier !== "";
   const isBayarValid = Bayar.trim() >= totalPrice;
   return (
     <div className="order-form">
@@ -382,7 +383,7 @@ const OrderForm = () => {
           <h3>Kembalian: Rp. {PriceFormat(Kembalian)}</h3>
           {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
-          {isMejaNoValid && isMinimalOrder && isBayarValid ? (
+          {isMejaNoValid && isMinimalOrder && isBayarValid && isKasirValid ? (
             // <ReactToPrint
             //   trigger={() => <button>Kirim Ke Dapur</button>}
             //   content={() => printRef.current}
