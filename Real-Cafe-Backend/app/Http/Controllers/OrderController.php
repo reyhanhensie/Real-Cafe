@@ -156,7 +156,7 @@ class OrderController extends Controller
             foreach ($groupedItems as $category => $items) {
                 // Print category header (e.g., "Makanan", "Jus")
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
-                $printer->text("\n> " . ucfirst($category) . "\n");
+                $printer->text("\n>" . ucfirst($category) . "\n");
 
                 // Loop through items in the category
                 foreach ($items as $item) {
@@ -172,11 +172,13 @@ class OrderController extends Controller
                     $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['price']));
                 }
             }
-            $NotaBayar = "Rp." . number_format($bayar, 0);
+            $NotaTotal = "Rp." . $totalPrice;
+            $NotaBayar = "Rp." . $bayar;
+            $NotaKembalian = "Rp." . $kembalian;
             $printer->text("--------------------------------\n");
-            $printer->text(sprintf("Jumlah Pesanan: %-3d Rp.%d\n\n", $totalQty, $totalPrice));
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %10s\n\n", $totalQty, $NotaTotal));
             $printer->text(sprintf("Bayar: %-10s %10s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s Rp.%d\n", "", $kembalian));
+            $printer->text(sprintf("Kembali: %-12s %10s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
             $printer->text("TERIMA KASIH\n");
