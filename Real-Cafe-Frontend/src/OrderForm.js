@@ -206,7 +206,7 @@ const OrderForm = () => {
         kasir: SelectedCashier,
         message: message,
         items: formattedItems,
-        bayar: Bayar
+        bayar: parseInt(Bayar, 10)
       });
 
       alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
