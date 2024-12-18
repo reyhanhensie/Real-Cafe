@@ -86,7 +86,12 @@ const MenuEditor = () => {
   };
 
   const handleChange = (field, value) => {
-    setForm((prevForm) => ({ ...prevForm, [field]: value }));
+    // If the field is 'name', restrict the length to 21 characters
+    if (field === "name" && value.length <= 21) {
+      setForm((prevForm) => ({ ...prevForm, [field]: value }));
+    } else if (field !== "name") {
+      setForm((prevForm) => ({ ...prevForm, [field]: value }));
+    }
   };
 
   const handleClose = () => {
@@ -116,6 +121,7 @@ const MenuEditor = () => {
       })
       .catch((error) => console.error(error));
   };
+
   const PriceFormat = (price) => {
     if (price == null) return ""; // Handle null or undefined prices
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -232,6 +238,7 @@ const MenuEditor = () => {
                 value={form.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 placeholder="Nama Menu"
+                maxLength={21} // Limit to 21 characters
               />
             </span>
             <span className={styles.modalContentList}>
