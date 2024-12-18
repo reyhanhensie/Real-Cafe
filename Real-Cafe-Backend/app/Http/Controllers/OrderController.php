@@ -163,19 +163,19 @@ class OrderController extends Controller
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
                     $printer->text(
                         sprintf(
-                            " -%-20s Rp.%d\n",
+                            " -%-21s Rp.%d\n",
                             $item['item_name'],
                             $item['price'] * $item['quantity']
                         )
                     );
                     $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(sprintf("  %2d X Rp.%d\n", $item['quantity'], $item['price']));
+                    $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['price']));
                 }
             }
-
+            $NotaBayar = "Rp." . number_format($bayar,0);
             $printer->text("----------------------------------\n");
             $printer->text(sprintf("Jumlah Pesanan: %-3d Rp.%d\n", $totalQty, $totalPrice));
-            $printer->text(sprintf("Bayar: %-14s Rp.%d\n", "", $bayar));
+            $printer->text(sprintf("Bayar: %-14s Rp.%d\n", "", $NotaBayar));
             $printer->text(sprintf("Kembali: %-12s Rp.%d\n", "", $kembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("=========================\n");
