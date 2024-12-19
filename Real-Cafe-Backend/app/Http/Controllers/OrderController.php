@@ -158,10 +158,10 @@ class OrderController extends Controller
                 // Print category header (e.g., "Makanan", "Jus")
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
                 if ($category === 'Minumanpanas') {
-                    $category == 'Minuman Panas';
+                    $category = 'Minuman Panas';
                 }
                 if ($category === 'Minumandingin') {
-                    $category == 'Minuman Dingin';
+                    $category = 'Minuman Dingin';
                 }
                 $printer->text("\n>" . ucfirst($category) . "\n");
 
