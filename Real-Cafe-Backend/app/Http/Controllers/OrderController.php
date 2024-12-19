@@ -153,11 +153,12 @@ class OrderController extends Controller
                 $groupedItems[$item['item_type']][] = $item;
             }
             $categoryMappings = [
-                'Minumanpanas' => 'Minuman Panas',
-                'Minumandingin' => 'Minuman Dingin',
+                'minumanpanas' => 'Minuman Panas',
+                'minumandingin' => 'Minuman Dingin',
             ];
             // Loop through categories and print each category with its items
             foreach ($groupedItems as $category => $items) {
+
                 $category = $categoryMappings[$category] ?? $category; // Use the mapped name or default to original if no match
 
                 // Print category header (e.g., "Makanan", "Jus")
