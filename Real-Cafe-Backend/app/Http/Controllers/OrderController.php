@@ -157,6 +157,12 @@ class OrderController extends Controller
             foreach ($groupedItems as $category => $items) {
                 // Print category header (e.g., "Makanan", "Jus")
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
+                if ($category === 'Minumanpanas') {
+                    $category == 'Minuman Panas';
+                }
+                if ($category === 'Minumandingin') {
+                    $category == 'Minuman Dingin';
+                }
                 $printer->text("\n>" . ucfirst($category) . "\n");
 
                 // Loop through items in the category
