@@ -275,7 +275,13 @@ const OrderForm = () => {
                     />
                   </button>
                 ) : (
-                  <span className="item-add-placeholder"></span>
+                  <button className="item-add-placeholder">
+                    <img
+                      src="/icons/checkmark.svg"
+                      alt="Mark"
+                      className="add-icon-placeholder"
+                    />
+                  </button>
                 )}
               </li>
             ))}

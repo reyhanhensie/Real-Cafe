@@ -92,6 +92,7 @@ span.header-add {
 
 .item-stock {
   flex: 1.5;
+  display: flex;
   font-weight: 500;
   align-items: center;
   text-align: left;
@@ -102,10 +103,15 @@ span.header-add {
   text-align: left;
   font-weight: 500;
   flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
 
 .item-price {
+  display: flex;
   text-align: left;
+  align-items: center;
   flex: 2;
   font-weight: 500;
 }
@@ -133,18 +139,23 @@ span.header-add {
   border: none;
 }
 
-
-
-.item-add,
 .item-add-placeholder {
   flex: 1;
   align-items: center;
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: default;
   padding: 0;
-  display: flex; /* Ensure flex container properties are applied */
-  justify-content: center; /* Center the content inside */
+  margin: 5px;
+}
+.add-icon-placeholder {
+  width: 20px; /* Adjust the size as needed */
+  height: 20px;
+  /* font-size: 16px; */
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
+    brightness(93%) contrast(85%);
+  border: none;
+  cursor: default;
 }
 
 /* CHEKOUT PESANAN */
@@ -473,7 +484,6 @@ button.order-remove {
     padding: 0;
   }
 
-  .item-add,
   .item-add-placeholder {
     flex: 1;
     align-items: center;
@@ -482,8 +492,8 @@ button.order-remove {
     cursor: pointer;
 
     padding: 0;
-    display: flex; /* Ensure flex container properties are applied */
-    justify-content: center; /* Center the content inside */
+    /* display: flex; Ensure flex container properties are applied */
+    /* justify-content: center; Center the content inside */
   }
 
   /* PARENT */
