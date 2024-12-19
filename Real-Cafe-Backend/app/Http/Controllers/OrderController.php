@@ -152,17 +152,17 @@ class OrderController extends Controller
                 // Group by 'item_type' (e.g., 'makanan', 'jus', etc.)
                 $groupedItems[$item['item_type']][] = $item;
             }
-
+            $categoryMappings = [
+                'Minumanpanas' => 'Minuman Panas',
+                'Minumandingin' => 'Minuman Dingin',
+            ];
             // Loop through categories and print each category with its items
             foreach ($groupedItems as $category => $items) {
+                $category = $categoryMappings[$category] ?? $category; // Use the mapped name or default to original if no match
+
                 // Print category header (e.g., "Makanan", "Jus")
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
-                if ($category === 'Minumanpanas') {
-                    $category = 'Minuman Panas';
-                }
-                if ($category === 'Minumandingin') {
-                    $category = 'Minuman Dingin';
-                }
+
                 $printer->text("\n>" . ucfirst($category) . "\n");
 
                 // Loop through items in the category
