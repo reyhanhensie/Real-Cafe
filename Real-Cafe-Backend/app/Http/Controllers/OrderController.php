@@ -164,7 +164,7 @@ class OrderController extends Controller
                 // Print category header (e.g., "Makanan", "Jus")
                 $printer->setJustification(Printer::JUSTIFY_LEFT);
 
-                $printer->text("\n>" . ucfirst($category) . "\n");
+                $printer->text(">" . ucfirst($category) . "\n");
 
                 // Loop through items in the category
                 foreach ($items as $item) {
