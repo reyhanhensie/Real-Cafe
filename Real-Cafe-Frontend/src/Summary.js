@@ -71,8 +71,8 @@ const Summary = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Meja No</th>
-            <th>Total Harga</th>
+            <th>Meja</th>
+            <th>Harga</th>
             <th>Keterangan</th>
             <th>Kasir</th>
             <th>Mulai</th>
