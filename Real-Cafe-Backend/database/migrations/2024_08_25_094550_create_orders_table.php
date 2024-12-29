@@ -10,7 +10,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->integer('total_price', 10);
+            $table->integer('total_price');
             $table->timestamps();
         });
     }
