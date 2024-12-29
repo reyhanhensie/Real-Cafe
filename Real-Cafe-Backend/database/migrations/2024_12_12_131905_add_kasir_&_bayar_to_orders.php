@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->text('kasir')->nullable(); // Adding message column
+            $table->integer('bayar')->nullable(); // Adding meja_no column
         });
     }
 
@@ -17,6 +18,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('kasir');
+            $table->dropColumn('bayar'); // Adding meja_no column
         });
     }
 };

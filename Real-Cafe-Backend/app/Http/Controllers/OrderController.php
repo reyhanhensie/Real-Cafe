@@ -121,7 +121,8 @@ class OrderController extends Controller
             'total_price' => $totalPrice,
             'meja_no' => $request->meja, // Add meja_no here
             'message' => $request->message,
-            'kasir' => $request->kasir
+            'kasir' => $request->kasir,
+            'bayar' => $bayar
         ]);
 
         // Save order items
@@ -178,7 +179,6 @@ class OrderController extends Controller
             }
 
             $NotaTotal = "Rp." . $order->total_price;
-            $bayar = $order->bayar ?? 0; // Ensure bayar is available
             $kembalian = $bayar - $order->total_price;
             $NotaBayar = "Rp." . $bayar;
             $NotaKembalian = "Rp." . $kembalian;
