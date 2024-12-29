@@ -130,7 +130,6 @@ class OrderController extends Controller
         // Format timestamp
         $timestamp = Carbon::now()->format('Y-m-d H:i:s');
         try {
-            $order = Order::with('items')->findOrFail($orderId);
 
             $timestamp = Carbon::now()->format('Y-m-d H:i:s');
             $connector = new FilePrintConnector("/dev/usb/lp0");
