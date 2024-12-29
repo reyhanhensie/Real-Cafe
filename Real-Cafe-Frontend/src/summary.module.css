@@ -7,31 +7,50 @@
   min-height: 100vh;
   width: 100%;
 }
-.Title{
-    top: 0;
+.Title {
+  top: 0;
 }
-.Table{
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+.Table {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.list td{
+    margin-bottom: 5px;
 }
 
-.ExpandList{
+.ExpandList {
+  display: flex;
+  width: 100%;
+}
+.ExpandDot {
+  flex: 1;
+}
+.ExpandName {
+  flex: 4;
+}
+.ExpandQty {
+  flex: 3;
+}
+.ExpandPrice {
+  flex: 1;
+}
+.ExpandPriceValue {
+  flex: 4;
+}
+.print{
     display: flex;
-    width:100%;
+    justify-content: center;
+    align-items: center;
 }
-.ExpandDot{
-    flex: 1;
-}
-.ExpandName{
-    flex: 4;
-}
-.ExpandQty{
-    flex: 3;
-}
-.ExpandPrice{
-    flex: 1;
-}
-.ExpandPriceValue{
-flex: 4;
+.print img {
+  display: block;
+  margin-bottom: 5px;
+  height: 24px;
+  width: 24px;
+  justify-content: center;
+  align-items: center;
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
+    brightness(93%) contrast(85%);
+    cursor: pointer;
 }

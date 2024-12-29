@@ -153,31 +153,6 @@ const OrderForm = () => {
     setBayar(numberValue.toString());
   };
 
-  // const saveAsPDF = () => {
-  //   const element = printRef.current;
-  //   if (!element) return;
-
-  //   // Temporarily show the element
-  //   const originalDisplay = element.style.display;
-  //   element.style.display = "block";
-
-  //   const opt = {
-  //     margin: 1,
-  //     filename: `Order_${new Date().toISOString()}.pdf`,
-  //     image: { type: "jpeg", quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-  //   };
-
-  //   html2pdf()
-  //     .from(element)
-  //     .set(opt)
-  //     .save()
-  //     .then(() => {
-  //       element.style.display = originalDisplay;
-  //     });
-  // };
-
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
     if (!SelectedCashier) {

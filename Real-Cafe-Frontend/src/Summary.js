@@ -46,6 +46,19 @@ const Summary = () => {
   const toggleOrderItems = (orderId) => {
     setExpandedOrderId(orderId === expandedOrderId ? null : orderId);
   };
+
+  const print = async (orderId) => {
+    try {
+      const response = await axios.get(`${URL_API}/print/${orderId}`);
+      console.log(
+        `Print job for order ${orderId} initiated successfully:`,
+        response.data
+      );
+    } catch (error) {
+      console.error(`Error printing order ${orderId}:`, error);
+    }
+  };
+
   const PriceFormat = (price) => {
     if (price == null) return ""; // Handle null or undefined prices
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -63,21 +76,28 @@ const Summary = () => {
             <th>Total Harga</th>
             <th>Keterangan</th>
             <th>Kasir</th>
-            <th>Jam Pesan</th>
-            <th>Jam Selesai</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th className={styles.print}>Print</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((order) => (
             <React.Fragment key={order.id}>
-              <tr onClick={() => toggleOrderItems(order.id)}>
+              <tr
+                className={styles.list}
+                onClick={() => toggleOrderItems(order.id)}
+              >
                 <td>{order.id}</td>
                 <td>{order.meja_no}</td>
-                <td>{PriceFormat(order.total_price)}</td>
+                <td>Rp. {PriceFormat(order.total_price)}</td>
                 <td>{order.message || "-"}</td>
                 <td>{order.kasir}</td>
                 <td>{FormatDate(order.created_at)}</td>
                 <td>{FormatDate(order.updated_at)}</td>
+                <td className={styles.print} onClick={() => print(order.id)}>
+                  <img src="/icons/print.svg" alt="print" />
+                </td>
               </tr>
               {expandedOrderId === order.id && (
                 <tr>
