@@ -13,7 +13,7 @@ class CreateOrderItemsTable extends Migration
             $table->unsignedBigInteger('order_id');
             $table->morphs('item');
             $table->integer('quantity');
-            $table->decimal('price', 10, 0); // Ensure precision and scale for decimal
+            $table->integer('price', 10, 0); // Ensure precision and scale for decimal
             $table->string('item_name')->nullable(); // Make item_name nullable
             $table->timestamps();
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('minuman_panas', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
             $table->string('name'); // Food name
-            $table->decimal('price', 8,0); // Price with 8 digits total and 2 decimals
+            $table->integer('price', 8,0); // Price with 8 digits total and 2 decimals
             $table->integer('qty'); // Quantity
             $table->timestamps(); // Created at and updated at timestamps
         });
