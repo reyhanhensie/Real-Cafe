@@ -468,7 +468,7 @@ class OrderController extends Controller
             $printer->cut();
             $printer->close();
         } catch (\Exception $e) {
-            // Handle any printing exceptions
+            Log::error("Receipt printing failed: " . $e->getMessage());
         }
     }
 }
