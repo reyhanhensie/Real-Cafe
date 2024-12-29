@@ -67,7 +67,6 @@ const Summary = () => {
   return (
     <div className={styles.SummaryContent}>
       <h1 className={styles.Title}>Laporan Keuangan Hari Ini</h1>
-      <h2>{"> Kasir"}</h2>
       <table className={styles.Table}>
         <thead>
           <tr>
