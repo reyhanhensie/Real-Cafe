@@ -469,6 +469,8 @@ class OrderController extends Controller
             $printer->close();
         } catch (\Exception $e) {
             Log::error("Receipt printing failed: " . $e->getMessage());
+            return response()->json(['error' => 'Receipt printing failed'], 500); // Return HTTP 500 error
+
         }
     }
 }
