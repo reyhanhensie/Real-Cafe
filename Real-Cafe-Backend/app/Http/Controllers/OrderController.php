@@ -131,72 +131,8 @@ class OrderController extends Controller
         $timestamp = Carbon::now()->format('Y-m-d H:i:s');
 
         // Print receipt
-        try {
-            $connector = new FilePrintConnector("/dev/usb/lp0");
-            $printer = new Printer($connector);
-
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("\nREAL CAFE JATIROTO\n");
-            $printer->text("================================\n");
-            $printer->text("$timestamp\n");
-            $printer->text("Order ID: {$order->id}\n");
-            $printer->text("Meja No: {$request->meja}\n");
-            $printer->text("Kasir: {$request->kasir}\n");
-            $printer->text("================================\n");
-            $printer->text("Menu                       Total\n");
-
-
-            // Group items by category
-            $groupedItems = [];
-            foreach ($orderItems as $item) {
-                // Group by 'item_type' (e.g., 'makanan', 'jus', etc.)
-                $groupedItems[$item['item_type']][] = $item;
-            }
-            $categoryMappings = [
-                'minumanpanas' => 'Minuman Panas',
-                'minumandingin' => 'Minuman Dingin',
-            ];
-            // Loop through categories and print each category with its items
-            foreach ($groupedItems as $category => $items) {
-
-                $category = $categoryMappings[$category] ?? $category; // Use the mapped name or default to original if no match
-
-                // Print category header (e.g., "Makanan", "Jus")
-                $printer->setJustification(Printer::JUSTIFY_LEFT);
-
-                $printer->text(">" . ucfirst($category) . "\n");
-
-                // Loop through items in the category
-                foreach ($items as $item) {
-                    $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(
-                        sprintf(
-                            " -%-21s Rp.%d\n",
-                            $item['item_name'],
-                            $item['price']
-                        )
-                    );
-                    $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text(sprintf("  %3d X Rp.%d\n", $item['quantity'], $item['price'] / $item['quantity']));
-                }
-            }
-            $NotaTotal = "Rp." . $totalPrice;
-            $NotaBayar = "Rp." . $bayar;
-            $NotaKembalian = "Rp." . $kembalian;
-            $printer->text("--------------------------------\n");
-            $printer->text(sprintf("Jumlah Pesanan: %-3d %12s\n\n", $totalQty, $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %14s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %10s\n", "", $NotaKembalian));
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("================================\n");
-            $printer->text("TERIMA KASIH\n");
-            $printer->text("ATAS KUNJUNGANNYA\n\n\n");
-
-            $printer->cut();
-            $printer->close();
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Printing failed: ' . $e->getMessage()], 500);
-        }
+        // Call the receipt printing method
+        $this->printReceipt($order->id);
 
         return response()->json($order->load('items'), 201);
     }
@@ -396,5 +332,77 @@ class OrderController extends Controller
     public function __construct(PrinterService $printerService)
     {
         $this->printService = $printerService;
+    }
+    public function printReceipt($orderId)
+    {
+        try {
+            $order = Order::with('items')->findOrFail($orderId);
+
+            $timestamp = Carbon::now()->format('Y-m-d H:i:s');
+            $connector = new FilePrintConnector("/dev/usb/lp0");
+            $printer = new Printer($connector);
+
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("\nREAL CAFE JATIROTO\n");
+            $printer->text("================================\n");
+            $printer->text("$timestamp\n");
+            $printer->text("Order ID: {$order->id}\n");
+            $printer->text("Meja No: {$order->meja_no}\n");
+            $printer->text("Kasir: {$order->kasir}\n");
+            $printer->text("================================\n");
+            $printer->text("Menu                       Total\n");
+
+            // Group items by category
+            $groupedItems = [];
+            foreach ($order->items as $item) {
+                $groupedItems[$item->item_type][] = $item;
+            }
+
+            $categoryMappings = [
+                'minumanpanas' => 'Minuman Panas',
+                'minumandingin' => 'Minuman Dingin',
+            ];
+
+            // Loop through categories and print each category with its items
+            foreach ($groupedItems as $category => $items) {
+                $category = $categoryMappings[$category] ?? $category; // Use the mapped name or default to original if no match
+
+                // Print category header (e.g., "Makanan", "Jus")
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text(">" . ucfirst($category) . "\n");
+
+                // Loop through items in the category
+                foreach ($items as $item) {
+                    $printer->text(
+                        sprintf(
+                            " -%-21s Rp.%d\n",
+                            $item->item_name,
+                            $item->price
+                        )
+                    );
+                    $printer->text(sprintf("  %3d X Rp.%d\n", $item->quantity, $item->price / $item->quantity));
+                }
+            }
+
+            $NotaTotal = "Rp." . $order->total_price;
+            $bayar = $order->bayar ?? 0; // Ensure bayar is available
+            $kembalian = $bayar - $order->total_price;
+            $NotaBayar = "Rp." . $bayar;
+            $NotaKembalian = "Rp." . $kembalian;
+
+            $printer->text("--------------------------------\n");
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %12s\n\n", $order->items->sum('quantity'), $NotaTotal));
+            $printer->text(sprintf("Bayar: %-10s %14s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-12s %10s\n", "", $NotaKembalian));
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("================================\n");
+            $printer->text("TERIMA KASIH\n");
+            $printer->text("ATAS KUNJUNGANNYA\n\n\n");
+
+            $printer->cut();
+            $printer->close();
+        } catch (\Exception $e) {
+            // Handle any printing exceptions
+        }
     }
 }

@@ -64,4 +64,4 @@ Route::get('/finance/{menu}/{item}/{type}/{period}',[FinanceController::class,'i
 Route::get('/traffic/{menu}/{item}',[FinanceController::class,'traffic']);
 
 
-Route::get('/print', [PrintController::class, 'print']);
+Route::get('/print/{id}', [OrderController::class, 'printReceipt']);
