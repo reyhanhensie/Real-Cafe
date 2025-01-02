@@ -17,7 +17,7 @@ use App\Http\Controllers\MinumanPanasController;
 use App\Http\Controllers\SpendingController;
 // PRINTING
 use App\Http\Controllers\PrintController;
-
+use App\Http\Controllers\ShiftsController;
 
 // AUTHENTICATION
 Route::middleware('web')->group(function () {
@@ -43,7 +43,7 @@ Route::apiResource('Lalapan', LalapanController::class);
 Route::apiResource('Makanan', MakananController::class);
 Route::apiResource('Milkshake', MilkshakeController::class);
 Route::apiResource('MinumanDingin', MinumanDinginController::class);
-Route::apiResource(name: 'MinumanPanas', controller: MinumanPanasController::class); 
+Route::apiResource(name: 'MinumanPanas', controller: MinumanPanasController::class);
 Route::apiResource('Spending', SpendingController::class);
 
 Route::get('Menu', [MenuController::class, 'index']);
@@ -60,8 +60,11 @@ Route::patch('/order/{id}/complete/food', [OrderController::class, 'markAsComple
 Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompletedDrink']);
 
 
-Route::get('/finance/{menu}/{item}/{type}/{period}',[FinanceController::class,'index']);
-Route::get('/traffic/{menu}/{item}',[FinanceController::class,'traffic']);
+Route::get('/finance/{menu}/{item}/{type}/{period}', [FinanceController::class, 'index']);
+Route::get('/traffic/{menu}/{item}', [FinanceController::class, 'traffic']);
 
 
 Route::get('/print/{id}', [OrderController::class, 'printReceipt']);
+
+//SHIFT
+Route::post('/ShiftChange', [ShiftsController::class, 'Shift']); // Create an order
