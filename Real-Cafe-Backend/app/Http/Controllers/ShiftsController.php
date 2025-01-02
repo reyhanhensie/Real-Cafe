@@ -101,20 +101,20 @@ class ShiftsController extends Controller
             $printer->text("================================\n");
             $printer->text("LAPORAN KEUANGAN SHIFT {$Shift->shift}\n");
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("Shift Mulai: {$Shift->start_time}\n");
-            $printer->text("Shift Selesai: {$Shift->end_time}\n\n");
+            $printer->text("Shift Mulai:\n {$Shift->start_time}\n");
+            $printer->text("Shift Selesai:\n {$Shift->end_time}\n\n");
             $printer->text("Kasir: {$Shift->nama}\n");
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
             $printer->text("Detail                     Total\n\n");
 
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $penjualan = 'Rp' . $Shift->omset;
+            $penjualan = 'Rp.' . $Shift->omset;
             $printer->text(sprintf("Penjualan: %-7s %13s\n", "", $penjualan));
             $printer->text(sprintf(" Jumlah Pesanan = %dX\n\n", $Shift->qty_omset));
 
-            $pengeluaran = 'Rp' . $Shift->pengeluaran;
-            $printer->text(sprintf("Pengeluaran: %-5s %14s\n", "", $pengeluaran));
+            $pengeluaran = 'Rp.' . $Shift->pengeluaran;
+            $printer->text(sprintf("Pengeluaran: %-4s %14s\n", "", $pengeluaran));
             $printer->text(sprintf(" Jumlah Pengeluaran = %dX\n\n", $Shift->qty_pengeluaran));
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -122,9 +122,9 @@ class ShiftsController extends Controller
 
             $Total = 'Rp.' . ($Shift->omset - $Shift->pengeluaran);
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text(sprintf("Total: %-11s %14s\n", "", $Total));
+            $printer->text(sprintf("Total: %-10s %14s\n", "", $Total));
 
-            $printer->text(sprintf("Uang Laci: %-7s %14s\n", "", $Shift->uang));
+            $printer->text(sprintf("Uang Laci: %-6s %14s\n", "", $Shift->uang));
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
