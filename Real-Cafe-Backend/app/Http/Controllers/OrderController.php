@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Receipt;
+use App\Models\Shift;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Illuminate\Support\Facades\Log;
@@ -64,6 +65,18 @@ class OrderController extends Controller
         $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
         $time_stop = Carbon::now('Asia/Jakarta')->endOfDay();
         $orders = Order::whereBetween('created_at', [$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
+        return response()->json($orders);
+    }
+    public function ShiftOrders()
+    {
+        $now = Carbon::now('Asia/Jakarta');
+        if (Shift::count() === 0) {
+            $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
+        } else {
+            $lastShift = Shift::latest('end_time')->first();
+            $time_start = Carbon::parse($lastShift->end_time);
+        }
+        $orders = Order::whereBetween('created_at', [$time_start, $now])->with('items')->get();
         return response()->json($orders);
     }
     // Store a newly created order in storage

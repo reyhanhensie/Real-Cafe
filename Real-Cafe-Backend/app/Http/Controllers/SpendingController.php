@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Shift;
 use Illuminate\Http\Request;
 use App\Models\Spending;
 use Carbon\Carbon;
@@ -11,9 +12,31 @@ class SpendingController extends Controller
 {
     public function index()
     {
-        $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
-        $time_stop = Carbon::now('Asia/Jakarta')->endOfDay();
-        $Spending = Spending::whereBetween('created_at', [$time_start, $time_stop])->get();
+        $now = Carbon::now('Asia/Jakarta');
+        if (Shift::count() === 0) {
+            $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
+        } else {
+            $lastShift = Shift::latest('end_time')->first();
+            $time_start = Carbon::parse($lastShift->end_time);
+        }
+
+        $Spending = Spending::whereBetween('created_at', [$time_start, $now])->get();
+        return response()->json($Spending);
+    }
+    public function ShiftSpending()
+    {
+        $now = Carbon::now('Asia/Jakarta');
+        if (Shift::count() === 0) {
+            $time_start = Carbon::now('Asia/Jakarta')->startOfDay();
+        } else {
+            $lastShift = Shift::latest('end_time')->first();
+            $time_start = Carbon::parse($lastShift->end_time);
+        }
+
+        $Spending = Spending::whereBetween('created_at', [$time_start, $now])->sum('total');
+        if ($Spending === 0 || $Spending === null) {
+            return response()->json(0);
+        }
         return response()->json($Spending);
     }
 

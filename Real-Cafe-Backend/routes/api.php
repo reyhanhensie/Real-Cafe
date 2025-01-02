@@ -68,3 +68,7 @@ Route::get('/print/{id}', [OrderController::class, 'printReceipt']);
 
 //SHIFT
 Route::post('/ShiftChange', [ShiftsController::class, 'Shift']); // Create an order
+Route::get('/ShiftSpending', [SpendingController::class, 'ShiftSpending']); // Create an order
+Route::get('/ShiftOrder', [OrderController::class, 'ShiftOrders']); // Create an order
+
+Route::get('/test', [ShiftsController::class, 'test']);

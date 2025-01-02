@@ -16,6 +16,12 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 class ShiftsController extends Controller
 {
     //
+    public function test()
+    {
+        $now = Carbon::now();
+        $qtyOmset = Order::where('created_at', '<=', $now)->count();
+        return $qtyOmset;
+    }
     public function Shift(Request $request)
     {
         $now = Carbon::now();
