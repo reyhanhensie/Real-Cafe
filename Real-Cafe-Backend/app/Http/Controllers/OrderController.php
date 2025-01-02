@@ -182,7 +182,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-21s Rp.%d\n",
+                            " -%-21sRp.%d\n",
                             $item->item_name,
                             $item->price
                         )
