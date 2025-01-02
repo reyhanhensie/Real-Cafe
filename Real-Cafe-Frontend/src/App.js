@@ -11,6 +11,7 @@ import Sale_Revenue from './Sale_Revenue';
 import Traffic from './Traffic';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
+import Shift from './Shift';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import Layout from './components/Layout';
@@ -90,6 +91,12 @@ const App = () => {
             path="/traffic" 
             element={
               <DapurRoute element={<Layout><Traffic/></Layout>} />
+            } 
+          />
+                <Route 
+            path="/Shift" 
+            element={
+              <DapurRoute element={<Layout><Shift/></Layout>} />
             } 
           />
         </Routes>

@@ -114,7 +114,7 @@ const Navbar = () => {
               )}
               {Authority >= 1 && (
                 <li>
-                  <Link to="/summary">
+                  <Link to="/Shift">
                     <img src="/icons/bill.svg" alt="Summary" />
                     Laporan
                   </Link>

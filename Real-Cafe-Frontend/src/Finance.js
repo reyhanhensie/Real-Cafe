@@ -16,14 +16,23 @@ const TwoOptionLayout = () => {
           <span className={style.optionText}>Omset & Penjualan</span>
         </Link>
 
-          <Link to="/traffic" className={style.optionCard}>
-            <img
-              src="/icons/finance.svg"
-              alt="Finance Icon"
-              className={style.icon}
-            />
-            <span className={style.optionText}>Traffic Menu</span>
-          </Link>
+        <Link to="/traffic" className={style.optionCard}>
+          <img
+            src="/icons/finance.svg"
+            alt="Finance Icon"
+            className={style.icon}
+          />
+          <span className={style.optionText}>Traffic Menu</span>
+        </Link>
+
+        <Link to="/summary" className={style.optionCard}>
+          <img
+            src="/icons/report.svg"
+            alt="Finance Icon"
+            className={style.icon}
+          />
+          <span className={style.optionText}>Laporan Hari Ini</span>
+        </Link>
       </div>
     </div>
   );
