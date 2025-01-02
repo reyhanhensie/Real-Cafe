@@ -11,7 +11,6 @@ const Shift = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
   const [kasirName, setKasirName] = useState("");
   const [uangLaci, setUangLaci] = useState("");
-  const [Jumlah, setJumlah] = useState(0);
 
   const FormatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -40,10 +39,10 @@ const Shift = () => {
           0
         );
         setTotal(totalPrice);
+
         const spendingResponse = await axios.get(`${URL_API}/ShiftSpending`);
-        setShiftSpending(parseFloat(spendingResponse.data));
-        const Jumlah = totalPrice - shiftSpending;
-        setJumlah(Jumlah);
+        const shiftSpendingValue = parseFloat(spendingResponse.data);
+        setShiftSpending(shiftSpendingValue);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -212,7 +211,7 @@ const Shift = () => {
                 Total:
                 <input
                   type="text"
-                  value={ConstantPriceFormat(Jumlah)}
+                  value={ConstantPriceFormat(total-shiftSpending)}
                   required
                 />
               </label>
