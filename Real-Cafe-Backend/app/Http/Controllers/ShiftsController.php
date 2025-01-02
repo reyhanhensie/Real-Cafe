@@ -123,8 +123,8 @@ class ShiftsController extends Controller
             $Total = 'Rp.' . ($Shift->omset - $Shift->pengeluaran);
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $printer->text(sprintf("Total: %-10s %14s\n", "", $Total));
-
-            $printer->text(sprintf("Uang Laci: %-6s %14s\n", "", $Shift->uang));
+            $laci = 'Rp.'.($Shift->uang);
+            $printer->text(sprintf("Uang Laci: %-6s %14s\n", "", $laci));
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
