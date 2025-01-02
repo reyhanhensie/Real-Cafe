@@ -105,25 +105,25 @@ class ShiftsController extends Controller
             $printer->text("Kasir: {$Shift->nama}\n");
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
-            $printer->text("Detail                     Total\n");
+            $printer->text("Detail                     Total\n\n");
 
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $penjualan = 'Rp' . $Shift->omset;
-            $printer->text(sprintf("Penjualan: %-7s %11s\n", "", $penjualan));
-            $printer->text(sprintf(" Jumlah Pesanan = %d X\n", $Shift->qty_omset));
+            $printer->text(sprintf("Penjualan: %-7s %13s\n", "", $penjualan));
+            $printer->text(sprintf(" Jumlah Pesanan = %dX\n\n", $Shift->qty_omset));
 
             $pengeluaran = 'Rp' . $Shift->pengeluaran;
-            $printer->text(sprintf("Pengeluaran: %-5s %9s\n", "", $pengeluaran));
-            $printer->text(sprintf(" Jumlah Pengeluaran = %d X\n", $Shift->qty_pengeluaran));
+            $printer->text(sprintf("Pengeluaran: %-5s %14s\n", "", $pengeluaran));
+            $printer->text(sprintf(" Jumlah Pengeluaran = %dX\n\n", $Shift->qty_pengeluaran));
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
 
             $Total = 'Rp.' . ($Shift->omset - $Shift->pengeluaran);
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text(sprintf("Total: %-11s %9s\n", "", $Total));
+            $printer->text(sprintf("Total: %-11s %14s\n", "", $Total));
 
-            $printer->text(sprintf("Uang Laci: %-7s %11s\n", "", $Shift->uang));
+            $printer->text(sprintf("Uang Laci: %-7s %14s\n", "", $Shift->uang));
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
