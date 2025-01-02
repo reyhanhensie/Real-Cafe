@@ -99,7 +99,7 @@ class ShiftsController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("\nREAL CAFE JATIROTO\n");
             $printer->text("================================\n");
-            $printer->text("LAPORAN KEUANGAN SHIFT {$Shift->shift}\n");
+            $printer->text("LAPORAN KEUANGAN SHIFT {$Shift->shift}\n\n");
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $printer->text("Shift Mulai:\n {$Shift->start_time}\n");
             $printer->text("Shift Selesai:\n {$Shift->end_time}\n\n");
