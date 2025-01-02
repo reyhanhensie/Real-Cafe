@@ -46,8 +46,9 @@ class ShiftsController extends Controller
             ]);
         } else {
             $lastShift = Shift::latest('end_time')->first();
+            $endTime = Carbon::parse($lastShift->end_time); // Convert to Carbon instance
 
-            $newShiftNumber = $lastShift->end_time->isSameDay($now) ? $lastShift->shift + 1 : 1;
+            $newShiftNumber = $endTime->isSameDay($now) ? $lastShift->shift + 1 : 1;
 
             $turnover = Order::where('created_at', '>', $lastShift->end_time)
                 ->where('created_at', '<=', $now)
