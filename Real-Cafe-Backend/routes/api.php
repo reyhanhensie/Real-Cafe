@@ -67,6 +67,8 @@ Route::get('/traffic/{menu}/{item}', [FinanceController::class, 'traffic']);
 Route::get('/print/{id}', [OrderController::class, 'printReceipt']);
 
 //SHIFT
+Route::get('/Shift', [ShiftsController::class, 'index']); // Create an order
+
 Route::post('/ShiftChange', [ShiftsController::class, 'Shift']); // Create an order
 Route::get('/ShiftSpending', [SpendingController::class, 'ShiftSpending']); // Create an order
 Route::get('/ShiftOrder', [OrderController::class, 'ShiftOrders']); // Create an order

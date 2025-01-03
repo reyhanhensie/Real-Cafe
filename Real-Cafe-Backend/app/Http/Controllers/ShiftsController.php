@@ -15,6 +15,14 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 
 class ShiftsController extends Controller
 {
+    public function index()
+    {
+        $data = Shift::orderBy('created_at', 'desc') // Sort by creation time in descending order
+            ->take(3) // Take the last 3 records
+            ->get(); // Fetch the data
+        return $data;
+    }
+
     //
     public function test()
     {
@@ -123,7 +131,7 @@ class ShiftsController extends Controller
             $Total = 'Rp.' . ($Shift->omset - $Shift->pengeluaran);
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $printer->text(sprintf("Total: %-10s %14s\n", "", $Total));
-            $laci = 'Rp.'.($Shift->uang);
+            $laci = 'Rp.' . ($Shift->uang);
             $printer->text(sprintf("Uang Laci: %-6s %14s\n", "", $laci));
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
