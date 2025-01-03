@@ -60,7 +60,7 @@ const OrderSummary = () => {
     };
 
     fetchOrders();
-    const intervalId = setInterval(fetchOrders, 30000);
+    const intervalId = setInterval(fetchOrders,10000);
     return () => clearInterval(intervalId);
   }, [API_URL, soundAlertDialog.enabled]);
 
