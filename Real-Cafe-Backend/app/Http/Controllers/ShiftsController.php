@@ -9,6 +9,9 @@ use App\Models\Shift;
 use App\Models\Spending;
 use Carbon\Carbon;
 
+use Illuminate\Support\Facades\Log;
+
+
 use App\Services\PrinterService;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
@@ -93,53 +96,55 @@ class ShiftsController extends Controller
 
     public function ShiftPrint(Request $request = null)
     {
+
         $id = $request?->input('id');
+        Log::info('ShiftPrint called with ID:', ['id' => $id]);
         $Shift = $id ? Shift::find($id) : Shift::latest('id')->first();
 
         if (!$Shift) {
             return response()->json(['error' => 'Shift not found'], 404);
         }
 
-        try {
-            $connector = new FilePrintConnector(env('PRINTER_PATH', '/dev/usb/lp0'));
-            $printer = new Printer($connector);
+        // try {
+        //     $connector = new FilePrintConnector(env('PRINTER_PATH', '/dev/usb/lp0'));
+        //     $printer = new Printer($connector);
 
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("\nREAL CAFE JATIROTO\n");
-            $printer->text("================================\n");
-            $printer->text("LAPORAN KEUANGAN SHIFT {$Shift->shift}\n\n");
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("Shift Mulai:\n {$Shift->start_time}\n");
-            $printer->text("Shift Selesai:\n {$Shift->end_time}\n\n");
-            $printer->text("Kasir: {$Shift->nama}\n");
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("================================\n");
-            $printer->text("Detail                     Total\n\n");
+        //     $printer->setJustification(Printer::JUSTIFY_CENTER);
+        //     $printer->text("\nREAL CAFE JATIROTO\n");
+        //     $printer->text("================================\n");
+        //     $printer->text("LAPORAN KEUANGAN SHIFT {$Shift->shift}\n\n");
+        //     $printer->setJustification(Printer::JUSTIFY_LEFT);
+        //     $printer->text("Shift Mulai:\n {$Shift->start_time}\n");
+        //     $printer->text("Shift Selesai:\n {$Shift->end_time}\n\n");
+        //     $printer->text("Kasir: {$Shift->nama}\n");
+        //     $printer->setJustification(Printer::JUSTIFY_CENTER);
+        //     $printer->text("================================\n");
+        //     $printer->text("Detail                     Total\n\n");
 
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $penjualan = 'Rp.' . $Shift->omset;
-            $printer->text(sprintf("Penjualan: %-7s %13s\n", "", $penjualan));
-            $printer->text(sprintf(" Jumlah Pesanan = %dX\n\n", $Shift->qty_omset));
+        //     $printer->setJustification(Printer::JUSTIFY_LEFT);
+        //     $penjualan = 'Rp.' . $Shift->omset;
+        //     $printer->text(sprintf("Penjualan: %-7s %13s\n", "", $penjualan));
+        //     $printer->text(sprintf(" Jumlah Pesanan = %dX\n\n", $Shift->qty_omset));
 
-            $pengeluaran = 'Rp.' . $Shift->pengeluaran;
-            $printer->text(sprintf("Pengeluaran: %-4s %14s\n", "", $pengeluaran));
-            $printer->text(sprintf(" Jumlah Pengeluaran = %dX\n\n", $Shift->qty_pengeluaran));
+        //     $pengeluaran = 'Rp.' . $Shift->pengeluaran;
+        //     $printer->text(sprintf("Pengeluaran: %-4s %14s\n", "", $pengeluaran));
+        //     $printer->text(sprintf(" Jumlah Pengeluaran = %dX\n\n", $Shift->qty_pengeluaran));
 
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("================================\n");
+        //     $printer->setJustification(Printer::JUSTIFY_CENTER);
+        //     $printer->text("================================\n");
 
-            $Total = 'Rp.' . ($Shift->omset - $Shift->pengeluaran);
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text(sprintf("Total: %-10s %14s\n", "", $Total));
-            $laci = 'Rp.' . ($Shift->uang);
-            $printer->text(sprintf("Uang Laci: %-6s %14s\n", "", $laci));
+        //     $Total = 'Rp.' . ($Shift->omset - $Shift->pengeluaran);
+        //     $printer->setJustification(Printer::JUSTIFY_LEFT);
+        //     $printer->text(sprintf("Total: %-10s %14s\n", "", $Total));
+        //     $laci = 'Rp.' . ($Shift->uang);
+        //     $printer->text(sprintf("Uang Laci: %-6s %14s\n", "", $laci));
 
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("================================\n");
+        //     $printer->setJustification(Printer::JUSTIFY_CENTER);
+        //     $printer->text("================================\n");
 
-            $printer->cut();
-            $printer->close();
-        } catch (\Exception $e) {
-        }
+        //     $printer->cut();
+        //     $printer->close();
+        // } catch (\Exception $e) {
+        // }
     }
 }
