@@ -74,7 +74,7 @@ class ShiftsController extends Controller
                 ->where('created_at', '<=', $now)
                 ->count();
 
-            Shift::create([
+            $data = Shift::create([
                 'start_time' => $lastShift->end_time,
                 'end_time' => $now,
                 'shift' => $newShiftNumber,
@@ -87,14 +87,14 @@ class ShiftsController extends Controller
             ]);
         }
 
-        $this->ShiftPrint(); // Call updated print method without errors
+        $this->ShiftPrint(new Request(['id' => $data->id])); // Call updated print method without errors
 
         return response()->json([
             'message' => 'Shift updated successfully!',
         ]);
     }
 
-    public function ShiftPrint(Request $request = null)
+    public function ShiftPrint(Request $request)
     {
 
         $id = $request?->input('id');
