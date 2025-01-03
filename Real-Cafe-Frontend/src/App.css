@@ -12,12 +12,12 @@ body {
   overflow-x: hidden; /* Prevents horizontal scroll */
   width: 100%; /* Ensures no overflow due to width */
   box-sizing: border-box; /* Includes padding and border in the element's width and height */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  /* -ms-overflow-style: none; IE and Edge */
+  /* scrollbar-width: none; Firefox */
 }
 
 body::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
 }
 
 

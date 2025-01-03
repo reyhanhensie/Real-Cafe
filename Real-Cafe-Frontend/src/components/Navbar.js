@@ -79,7 +79,7 @@ const Navbar = () => {
                   </Link>
                 </li>
               )}
-              {Authority >= 2 && (
+              {Authority >= 1 && (
                 <li>
                   <Link to="/stock-management">
                     <img src="/icons/stock.svg" alt="Stock" />

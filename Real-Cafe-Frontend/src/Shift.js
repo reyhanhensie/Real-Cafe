@@ -9,8 +9,11 @@ const Shift = () => {
   const [total, setTotal] = useState(0);
   const [shiftSpending, setShiftSpending] = useState(0); // Pengeluaran from API
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
+  const [isPrintingShift, setIsPrintingShift] = useState(false); // Modal visibility
+  const [shifts, setShifts] = useState([]);
   const [kasirName, setKasirName] = useState("");
   const [uangLaci, setUangLaci] = useState("");
+  const [Id, setId] = useState(null);
 
   const FormatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -89,6 +92,35 @@ const Shift = () => {
       console.error("Error finishing shift:", error);
     }
   };
+  // PRINTING SHIFTS
+
+  useEffect(() => {
+    // Fetch shifts data when the modal opens
+    const fetchShifts = async () => {
+      try {
+        const response = await axios.get(`${URL_API}/Shift`);
+        setShifts(response.data.reverse());
+      } catch (error) {
+        console.error("Error fetching shifts:", error);
+      }
+    };
+
+    if (isPrintingShift) {
+      fetchShifts();
+    }
+  }, [isPrintingShift]);
+
+  const handlePrintShift = async (shiftId) => {
+    try {
+      const response = await axios.post(`${URL_API}/ShiftPrint`, {
+        id: shiftId,
+      });
+      console.log("Shift print initiated successfully:", response.data);
+      setIsPrintingShift(false); // Close the modal after printing
+    } catch (error) {
+      console.error("Error printing shift:", error);
+    }
+  };
 
   return (
     <div className={styles.SummaryContent}>
@@ -96,9 +128,9 @@ const Shift = () => {
         <h1 className={styles.Title}>Laporan Penjualan Shift Sekarang</h1>
         <button
           className={styles.FinishShiftButton}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsPrintingShift(true)}
         >
-          Selesai Shift
+          Print Shift
         </button>
       </div>
 
@@ -167,9 +199,60 @@ const Shift = () => {
             <td colSpan="2">
               <h2>Rp. {PriceFormat(total)}</h2>
             </td>
+            <td colSpan="4">
+              <button
+                className={styles.FinishShiftButton}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Selesai Shift
+              </button>
+              {/* <button>Print Shift</button> */}
+            </td>
           </tr>
         </tfoot>
       </table>
+      {isPrintingShift && (
+        <div className={styles.Printing}>
+          <div className={styles.PrintingContent}>
+            <h2>PILIH SHIFT UNTUK PRINT</h2>
+            <table className={styles.Table}>
+              <thead>
+                <tr>
+                  <th className={styles.printingHeader}>Mulai</th>
+                  <th className={styles.printingHeader}>Selesai</th>
+                  <th className={styles.printingHeader}>Nama</th>
+                  <th className={styles.printingHeader}>Shift</th>
+                  <th className={styles.printingHeader}>Print</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shifts.map((shift) => (
+                  <tr key={shift.id}>
+                    <td>{shift.start_time}</td>
+                    <td>{shift.end_time}</td>
+                    <td>{shift.nama}</td>
+                    <td>{shift.shift}</td>
+                    <td>
+                      <button
+                        className={styles.PrintButton}
+                        onClick={() => handlePrintShift(shift.id)}
+                      >
+                        Print
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button
+              className={styles.CloseButton}
+              onClick={() => setIsPrintingShift(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className={styles.Modal}>
@@ -211,7 +294,7 @@ const Shift = () => {
                 Total:
                 <input
                   type="text"
-                  value={ConstantPriceFormat(total-shiftSpending)}
+                  value={ConstantPriceFormat(total - shiftSpending)}
                   required
                 />
               </label>

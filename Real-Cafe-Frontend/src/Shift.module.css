@@ -163,3 +163,72 @@
 .ModalContent button:last-of-type:hover {
   background-color: #c82333;
 }
+
+/* PRINTING */
+.Printing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.PrintingContent {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #ece0d1;
+  /* padding: 20px; */
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.PrintingContent h2 {
+  margin-bottom: 20px;
+}
+
+.PrintingContent form {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #ece0d1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.PrintingContent label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.PrintingContent input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.PrintingContent button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+.printingHeader {
+  text-align: center;
+}
