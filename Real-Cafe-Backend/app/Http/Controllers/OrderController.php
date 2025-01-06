@@ -203,7 +203,9 @@ class OrderController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
             $printer->text("TERIMA KASIH\n");
-            $printer->text("ATAS KUNJUNGANNYA\n\n\n");
+            $printer->text("ATAS KUNJUNGANNYA\n");
+            $printer->text("================================\n");
+            $printer->text("PASSWORD :           cafereal123\n\n\n");
 
             $printer->cut();
             $printer->close();
@@ -476,7 +478,9 @@ class OrderController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================\n");
             $printer->text("TERIMA KASIH\n");
-            $printer->text("ATAS KUNJUNGANNYA\n\n\n");
+            $printer->text("ATAS KUNJUNGANNYA\n");
+            $printer->text("================================\n");
+            $printer->text("PASSWORD :           cafereal123\n\n\n");
 
             $printer->cut();
             $printer->close();
