@@ -23,6 +23,16 @@
   flex-direction: row;
   position: relative; /* Needed to position Meja No at the top right */
 }
+.order-header {
+  display: flex;
+}
+.order-time {
+  font-size: 18px;
+  font-weight: 600;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
 
 .order-summary h2 {
   align-items: center;
@@ -51,7 +61,7 @@
 }
 .order-card h5 {
   font-size: 20px;
-  margin-top: 5%;
+  margin-top: 10%;
   margin-bottom: 5%;
 }
 .order-card h6 {

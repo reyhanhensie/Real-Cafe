@@ -72,9 +72,11 @@ const OrderForm = () => {
   const [SelectedCashier, setSelectedCashier] = useState("");
   // const nama_kasir = axios.get(`${API_URL}`);
   const options = [
-    { value: "Risma", label: "Risma" },
-    { value: "Ryan", label: "Ryan" },
+    { value: "Ferdi", label: "Ferdi" },
+    { value: "Nanda", label: "Nanda" },
     { value: "Putri", label: "Putri" },
+    { value: "Risma", label: "Risma" },
+    { value: "Ryan",  label: "Ryan" },
   ];
 
   const handleRemoveItem = (id, type) => {

@@ -3,6 +3,7 @@ import axios from "axios";
 import "./OrderSummary.css";
 import API_URL from "./apiconfig";
 import notification from "./assets/sounds/notification_sound.wav";
+import { format } from "date-fns";
 
 const OrderSummary = () => {
   const [orders, setOrders] = useState([]);
@@ -149,7 +150,13 @@ const OrderSummary = () => {
             <div className="orders-list">
               {orders.map((order) => (
                 <div key={order.id} className="order-card">
-                  <h3>Meja: {order.meja_no}</h3>
+                  <div className="order-header">
+                    <h3 className="order-time">
+                      {format(new Date(order.created_at), "HH:mm:ss")}
+                    </h3>
+                    <h3>Meja: {order.meja_no}</h3>
+                  </div>
+
                   <h5>No Urut: {orders.indexOf(order) + 1}</h5>
                   <div className="List">
                     {Object.entries(groupItemsByType(order.items)).map(
