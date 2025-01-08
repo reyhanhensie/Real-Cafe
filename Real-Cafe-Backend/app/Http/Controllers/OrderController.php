@@ -67,6 +67,14 @@ class OrderController extends Controller
         $orders = Order::whereBetween('created_at', [$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
         return response()->json($orders);
     }
+        public function shift(Request $request)
+    {
+        
+        $time_start = Carbon::Parse($request->input('start_time'));
+        $time_stop = Carbon::Parse($request->input('end_time'));
+        $orders = Order::whereBetween('created_at', [$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
+        return response()->json($orders);
+    }
     public function ShiftOrders()
     {
         $now = Carbon::now('Asia/Jakarta');

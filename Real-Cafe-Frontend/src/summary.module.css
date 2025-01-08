@@ -15,8 +15,8 @@
   align-items: center;
   width: 100%;
 }
-.list td{
-    margin-bottom: 5px;
+.list td {
+  margin-bottom: 5px;
 }
 
 .ExpandList {
@@ -38,10 +38,10 @@
 .ExpandPriceValue {
   flex: 4;
 }
-.print{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.print {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .print img {
   display: block;
@@ -52,5 +52,99 @@
   align-items: center;
   filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
     brightness(93%) contrast(85%);
-    cursor: pointer;
+  cursor: pointer;
+}
+
+/* PRINTING */
+.Printing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.ShiftContent {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #ece0d1;
+  /* padding: 20px; */
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.HeaderContent{
+  display: flex;
+  flex-direction: row;
+}
+
+.PrintingContent h2 {
+  margin-bottom: 20px;
+}
+
+.PrintingContent form {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #ece0d1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.PrintingContent label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.PrintingContent input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.PrintingContent button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.printingHeader {
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row; /* Arrange filters in a row */
+  align-items: center; /* Vertically center-align items */
+  gap: 20px; /* Add spacing between filter elements */
+  margin-bottom: 20px; /* Add spacing below the filter row */
+}
+
+.filters label {
+  margin-right: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.filters select,
+.filters input[type="date"] {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ecd9c4;
 }

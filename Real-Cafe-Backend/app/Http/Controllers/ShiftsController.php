@@ -25,6 +25,14 @@ class ShiftsController extends Controller
             ->get(); // Fetch the data
         return $data;
     }
+    public function filter(Request $request)
+    {
+        $start = Carbon::parse($request->input('start_time'));
+        $end = Carbon::parse($request->input('end_time'));
+        $data = Shift::whereBetween('start_time', [$start, $end]) // Sort by creation time in descending order
+            ->get(); // Fetch the data
+        return $data;
+    }
 
     //
     public function test()
