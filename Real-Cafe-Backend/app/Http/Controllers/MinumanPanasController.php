@@ -70,9 +70,11 @@ class MinumanPanasController extends Controller
 
 
     // Remove the specified resource from storage
-    public function destroy(MinumanPanas $MinumanPanas)
+    public function destroy($id)
     {
-        $MinumanPanas->delete();
+        $minumanPanas = MinumanPanas::findOrFail($id); // Use the ID passed in the request
+
+        $minumanPanas->delete();
 
         return response()->json(null, 204);
     }
