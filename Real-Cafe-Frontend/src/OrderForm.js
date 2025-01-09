@@ -17,6 +17,7 @@ const OrderForm = () => {
     Milkshake: "Milkshake",
     "Minuman Dingin": "Minuman Dingin",
     "Minuman Panas": "Minuman Panas",
+    Paket: "Paket",
   };
 
   const [categories] = useState(Object.keys(categoryMap));

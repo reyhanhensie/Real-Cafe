@@ -12,6 +12,7 @@ const categoryMap = {
   Milkshake: "Milkshake",
   "Minuman Dingin": "Minuman Dingin",
   "Minuman Panas": "Minuman Panas",
+  Paket: "Paket",
 };
 
 const MenuEditor = () => {
@@ -47,6 +48,7 @@ const MenuEditor = () => {
 
   const handleConfirmDelete = (category, id) => {
     const sanitizedCategory = category.replace(/\s+/g, "");
+
     axios
       .delete(`${API_URL}/${sanitizedCategory}/${id}`)
       .then((response) => {
@@ -93,7 +95,6 @@ const MenuEditor = () => {
       setForm((prevForm) => ({ ...prevForm, [field]: value }));
     }
   };
-
   const handleClose = () => {
     setIsEditing(null);
     setIsAdding(false); // Close the add item modal as well
@@ -145,7 +146,7 @@ const MenuEditor = () => {
       </div>
 
       {/* Display menu items of the selected category */}
-      {menu[selectedCategory] && menu[selectedCategory].length > 0 ? (
+      {menu[selectedCategory] ? (
         <div className={styles.stockList}>
           <div className={styles.stockHeader}>
             <h2 id={styles.categoryHeader}>{selectedCategory}</h2>
@@ -196,9 +197,12 @@ const MenuEditor = () => {
           </table>
           {/* Add Item Button */}
         </div>
-      ) : (
+        //DISABLED IF ITEMS NOT EXITS
+      ) 
+      : (
         <p>No items found for {selectedCategory}.</p>
-      )}
+      )
+      }
       {isDeleting && (
         <div className={styles.deleteBox}>
           <div className={styles.deleteHeader}>

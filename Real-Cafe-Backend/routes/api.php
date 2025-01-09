@@ -14,6 +14,7 @@ use App\Http\Controllers\MakananController;
 use App\Http\Controllers\MilkshakeController;
 use App\Http\Controllers\MinumanDinginController;
 use App\Http\Controllers\MinumanPanasController;
+use App\Http\Controllers\PaketController;
 use App\Http\Controllers\SpendingController;
 // PRINTING
 use App\Http\Controllers\PrintController;
@@ -44,7 +45,7 @@ Route::apiResource('Makanan', MakananController::class);
 Route::apiResource('Milkshake', MilkshakeController::class);
 Route::apiResource('MinumanDingin', MinumanDinginController::class);
 Route::apiResource(name: 'MinumanPanas', controller: MinumanPanasController::class);
-Route::apiResource(name: 'Paket', controller: MinumanPanasController::class);
+Route::apiResource(name: 'Paket', controller: PaketController::class);
 Route::apiResource('Spending', SpendingController::class);
 
 Route::get('Menu', [MenuController::class, 'index']);
