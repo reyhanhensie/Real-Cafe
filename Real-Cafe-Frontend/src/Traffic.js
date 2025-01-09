@@ -142,7 +142,7 @@ const MenuDropdown = () => {
               return menuData[category]?.map((item) => item.name).join(",");
             })
             .filter(Boolean)
-            .join(",") || "All"; // If no items are selected, include all items
+            .join(",") || "All"
 
     // Default period is "Free" if not selected
 
@@ -150,13 +150,19 @@ const MenuDropdown = () => {
     const apiUrl = `${API_URL}/traffic/${categories}/${items}/?time_low=${timeStart}&time_high=${timeEnd}`;
     setGeneratedApi(apiUrl); // Update the state with the generated API URL
 
-    try {
-      // Make the API request
-      const response = await axios.get(apiUrl);
-      setApiResponse(response.data); // Update the state with the API response
-    } catch (err) {
-      setApiResponse("Error fetching data from API");
+try {
+    // Make the API request
+    const response = await axios.get(apiUrl);
+
+    // Check if the response contains valid data
+    if (response.data === null) {
+      setApiResponse(null); // Update the state with the API response
     }
+    else {setApiResponse(response.data)}
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+    setApiResponse([]); // Set to empty array if an error occurs
+  }
   };
 
   // Prepare data for Bar Chart
