@@ -76,8 +76,7 @@
   background-color: #ece0d1;
   /* padding: 20px; */
   border-radius: 8px;
-  width: 100%;
-  max-width: 800px;
+  width: 80%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 }

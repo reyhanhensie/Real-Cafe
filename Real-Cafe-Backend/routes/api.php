@@ -74,6 +74,7 @@ Route::get('/ShiftSummary', [ShiftsController::class, 'filter']); // Create an o
 
 Route::post('/ShiftChange', [ShiftsController::class, 'Shift']); // Create an order
 Route::get('/ShiftSpending', [SpendingController::class, 'ShiftSpending']); // Create an order
+Route::get('/ShiftSpendingFilter', [SpendingController::class, 'shift']); // Create an order
 
 Route::get('/ShiftOrder', [OrderController::class, 'ShiftOrders']); // Create an order
 Route::get('/ShiftOrderFilter', [OrderController::class, 'shift']); // Create an order

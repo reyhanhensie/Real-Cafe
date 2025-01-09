@@ -1,0 +1,324 @@
+.pengeluaran {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.Header div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.FormHeader {
+  font-size: 18px;
+  /* width: 100%; */
+  margin: 10px;
+  background-color: #ecd9c4;
+  padding: 5px;
+  border-color: #4e3928;
+  border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  display: flex;
+  /* flex-direction: column; */
+}
+
+.FormDescription {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: black;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.FormDescription label {
+  font-size: 18px;
+  font-weight: 600;
+}
+.FormDescription input {
+  width: 95%;
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: transparent;
+  border-radius: 8px;
+  border-color: transparent;
+  color: #4e3928;
+  text-align: center;
+}
+.FormTotal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.FormTotal label {
+  font-size: 18px;
+  font-weight: 600;
+}
+.FormInputNominal {
+  display: flex;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0px;
+}
+.FormTotal input {
+  width: 100%;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 18px;
+  color: #4e3928;
+  font-weight: 600;
+  align-items: center;
+  text-align: center;
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 1px;
+  border-radius: 8px;
+}
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  background-color: #4e3928;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button::hover {
+  background-color: #3a2a20;
+}
+
+/* Modal styles */
+.Modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.ModalContent {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #ece0d1;
+  /* padding: 20px; */
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.ModalContent h2 {
+  margin-bottom: 20px;
+}
+
+.ModalContent form {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #ece0d1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ModalContent label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.ModalContent input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.ModalContent button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ModalContent button:first-of-type {
+  background-color: #28a745;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.ModalContent button:first-of-type:hover {
+  background-color: #218838;
+}
+
+.ModalContent button:last-of-type {
+  background-color: #dc3545;
+  color: #fff;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.ModalContent button:last-of-type:hover {
+  background-color: #c82333;
+}
+
+/* PRINTING */
+.Printing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.ShiftContent {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #ece0d1;
+  /* padding: 20px; */
+  border-radius: 8px;
+  width: 80%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.HeaderContent {
+  display: flex;
+  flex-direction: row;
+}
+
+.PrintingContent h2 {
+  margin-bottom: 20px;
+}
+
+.PrintingContent form {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #ece0d1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.PrintingContent label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.PrintingContent input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.PrintingContent button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.printingHeader {
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row; /* Arrange filters in a row */
+  align-items: center; /* Vertically center-align items */
+  gap: 20px; /* Add spacing between filter elements */
+  margin-bottom: 20px; /* Add spacing below the filter row */
+}
+
+.filters label {
+  margin-right: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.filters select,
+.filters input[type="date"] {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ecd9c4;
+}
+
+.SummaryContent {
+  /* display: flex; */
+  margin: 1%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+.Title {
+  top: 0;
+}
+.Table {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.list td {
+  margin-bottom: 5px;
+}
+
+.ExpandList {
+  display: flex;
+  width: 100%;
+}
+.ExpandDot {
+  flex: 1;
+}
+.ExpandName {
+  flex: 4;
+}
+.ExpandQty {
+  flex: 3;
+}
+.ExpandPrice {
+  flex: 1;
+}
+.ExpandPriceValue {
+  flex: 4;
+}

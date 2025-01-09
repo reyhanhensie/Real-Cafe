@@ -39,6 +39,14 @@ class SpendingController extends Controller
         }
         return response()->json($Spending);
     }
+    public function shift(Request $request)
+    {
+
+        $time_start = Carbon::Parse($request->input('start_time'));
+        $time_stop = Carbon::Parse($request->input('end_time'));
+        $data = Spending::whereBetween('created_at', [$time_start, $time_stop])->get();
+        return response()->json($data);
+    }
 
     public function store(Request $request)
     {

@@ -12,6 +12,7 @@ import Traffic from './Traffic';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
 import Shift from './Shift';
+import Expense from './Expense';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import Layout from './components/Layout';
@@ -78,25 +79,31 @@ const App = () => {
                <Route 
             path="/finance" 
             element={
-              <DapurRoute element={<Layout><Finance/></Layout>} />
+              <AdminRoute element={<Layout><Finance/></Layout>} />
             } 
           />
                 <Route 
             path="/sale-revenue" 
             element={
-              <DapurRoute element={<Layout><Sale_Revenue/></Layout>} />
+              <AdminRoute element={<Layout><Sale_Revenue/></Layout>} />
             } 
           />
                 <Route 
             path="/traffic" 
             element={
-              <DapurRoute element={<Layout><Traffic/></Layout>} />
+              <AdminRoute element={<Layout><Traffic/></Layout>} />
             } 
           />
                 <Route 
-            path="/Shift" 
+            path="/shift" 
             element={
               <DapurRoute element={<Layout><Shift/></Layout>} />
+            } 
+          />
+                <Route 
+            path="/expense" 
+            element={
+              <DapurRoute element={<Layout><Expense/></Layout>} />
             } 
           />
         </Routes>

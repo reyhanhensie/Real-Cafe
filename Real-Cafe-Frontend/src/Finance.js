@@ -31,7 +31,15 @@ const TwoOptionLayout = () => {
             alt="Finance Icon"
             className={style.icon}
           />
-          <span className={style.optionText}>Laporan Hari Ini</span>
+          <span className={style.optionText}>Penjualan Per Shift</span>
+        </Link>
+        <Link to="/expense" className={style.optionCard}>
+          <img
+            src="/icons/spend.svg"
+            alt="Spending Icon"
+            className={style.icon}
+          />
+          <span className={style.optionText}>Pengeluaran Per Shift</span>
         </Link>
       </div>
     </div>

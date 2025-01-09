@@ -12,6 +12,7 @@ use App\Models\Milkshake;
 use App\Models\Makanan;
 use App\Models\MinumanDingin;
 use App\Models\MinumanPanas;
+use App\Models\Paket;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -52,10 +53,10 @@ class OrderController extends Controller
     {
         $orders = Order::where('status_minuman', 'pending')
             ->whereHas('items', function ($query) {
-                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas']);
+                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','paket']);
             })
             ->with(['items' => function ($query) {
-                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas']);
+                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','paket']);
             }])
             ->get();
         return response()->json($orders);
@@ -334,7 +335,7 @@ class OrderController extends Controller
 
         // Check if the current order has pending food items
         $hasPendingDrinkItems = $order->items()
-            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas'])
+            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','paket'])
             ->exists(); // Check only the related items for the given order
 
         // If no pending food items exist, mark 'status_minuman' as completed for the current order

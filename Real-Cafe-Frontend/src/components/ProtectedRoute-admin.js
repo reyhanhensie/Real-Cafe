@@ -17,7 +17,7 @@ const ProtectedRoute = ({ element }) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         try {
           const response = await axios.get(`${URL_API}/user`);
-          if (response.data) {
+          if (response.data.role === 'admin') {
             setIsAuthenticated(true);
           } else {
             setIsAuthenticated(false);
