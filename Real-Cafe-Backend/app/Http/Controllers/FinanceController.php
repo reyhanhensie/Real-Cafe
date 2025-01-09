@@ -180,6 +180,9 @@ class FinanceController extends Controller
                     'price' => $group->sum('price'), // Sum the prices
                 ];
             })->values();
+            if ($data === null){
+                return null;
+            }
         }
         return response()->json($data);
     }
