@@ -44,6 +44,7 @@ Route::apiResource('Makanan', MakananController::class);
 Route::apiResource('Milkshake', MilkshakeController::class);
 Route::apiResource('MinumanDingin', MinumanDinginController::class);
 Route::apiResource(name: 'MinumanPanas', controller: MinumanPanasController::class);
+Route::apiResource(name: 'Paket', controller: MinumanPanasController::class);
 Route::apiResource('Spending', SpendingController::class);
 
 Route::get('Menu', [MenuController::class, 'index']);
