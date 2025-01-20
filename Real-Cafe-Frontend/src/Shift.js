@@ -14,6 +14,9 @@ const Shift = () => {
   const [kasirName, setKasirName] = useState("");
   const [uangLaci, setUangLaci] = useState("");
   const [Id, setId] = useState(null);
+  const [isEditingMessage, setIsEditingMessage] = useState(false);
+  const [form, setForm] = useState({ message: "" });
+  const [editingOrderId, setEditingOrderId] = useState(null);
 
   const FormatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -121,6 +124,34 @@ const Shift = () => {
       console.error("Error printing shift:", error);
     }
   };
+  const handleEditMessage = (orderId, currentMessage) => {
+    setEditingOrderId(orderId);
+    setForm({ message: currentMessage });
+    setIsEditingMessage(true);
+  };
+  const handleSaveMessage = async () => {
+    try {
+      const response = await axios.patch(
+        `${URL_API}/order/${editingOrderId}/message`,
+        {
+          message: form.message,
+        }
+      );
+      console.log("Message updated successfully:", response.data);
+
+      // Update the orders state with the new message
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === editingOrderId
+            ? { ...order, message: form.message }
+            : order
+        )
+      );
+      setIsEditingMessage(false);
+    } catch (error) {
+      console.error("Error updating message:", error);
+    }
+  };
 
   return (
     <div className={styles.SummaryContent}>
@@ -141,6 +172,7 @@ const Shift = () => {
             <th>Meja</th>
             <th>Harga</th>
             <th>Keterangan</th>
+            <th>Edit</th>
             <th>Kasir</th>
             <th>Mulai</th>
             <th>Selesai</th>
@@ -158,6 +190,13 @@ const Shift = () => {
                 <td>{order.meja_no}</td>
                 <td>Rp. {PriceFormat(order.total_price)}</td>
                 <td>{order.message || "-"}</td>
+                <td className={styles.EditIcon}>
+                  <img
+                    src="/icons/edit.svg"
+                    alt="Edit"
+                    onClick={() => handleEditMessage(order.id, order.message)}
+                  />
+                </td>
                 <td>{order.kasir}</td>
                 <td>{FormatDate(order.created_at)}</td>
                 <td>{FormatDate(order.updated_at)}</td>
@@ -316,6 +355,44 @@ const Shift = () => {
               <button onClick={handleFinishShift}>Submit</button>
               <button onClick={() => setIsModalOpen(false)}>Cancel</button>
             </form>
+          </div>
+        </div>
+      )}
+      {isEditingMessage && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>Edit Keterangan</h2>
+              <span
+                className={styles.modalClose}
+                onClick={() => setIsEditingMessage(false)}
+              >
+                <img src="/icons/x-circle.svg" alt="Close" />
+              </span>
+            </div>
+            <div className={styles.modalBody}>
+              <label htmlFor="messageInput">Keterangan:</label>
+              <input
+                type="text"
+                id="messageInput"
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+              />
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                className={`${styles.modalButton} ${styles.modalButtonSave}`}
+                onClick={handleSaveMessage}
+              >
+                Save
+              </button>
+              <button
+                className={`${styles.modalButton} ${styles.modalButtonCancel}`}
+                onClick={() => setIsEditingMessage(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
