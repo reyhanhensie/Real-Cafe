@@ -76,6 +76,7 @@ const OrderForm = () => {
     11126: "Risma",
     "03072": "Ryan",
     55671: "Ferdi",
+    69696 : "Reyhan"
   };
 
   const [cashierCode, setCashierCode] = useState("");
@@ -169,14 +170,18 @@ const OrderForm = () => {
 
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
+
     if (!SelectedCashier) {
-      setError("Pilih nama kasir terlebih dahulu!");
+      setError("Masukkan Kode Kasir Terlebih Dahulu");
       return;
     }
     if (isNaN(mejaNoNumber)) {
       setError("Masukkan Nomor Meja Terlebih Dahulu!");
       return;
     }
+
+    if (loading) return; // Prevent multiple submissions
+    setLoading(true); // Set loading to true to indicate the request is in progress
 
     try {
       const formattedItems = orderItems.map((item) => ({
@@ -187,6 +192,7 @@ const OrderForm = () => {
 
       if (formattedItems.length === 0) {
         setError("ERROR: Minimal 1 Pesanan");
+        setLoading(false); // Reset loading state on error
         return;
       }
 
@@ -209,6 +215,8 @@ const OrderForm = () => {
       setSelectedCashier("");
     } catch (err) {
       setError("Error, Stock Habis");
+    } finally {
+      setLoading(false); // Reset loading state after completion
     }
   };
 
@@ -216,6 +224,8 @@ const OrderForm = () => {
   const isMejaNoValid = mejaNo.trim() !== "";
   const isKasirValid = SelectedCashier !== "";
   const isBayarValid = Bayar.trim() >= totalPrice;
+
+  const [loading, setLoading] = useState(false); // Add a loading state
 
   return (
     <div className="order-form">
@@ -378,13 +388,9 @@ const OrderForm = () => {
           <h3>Kembalian: Rp. {PriceFormat(Kembalian)}</h3>
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
           {isMejaNoValid && isMinimalOrder && isBayarValid && isKasirValid ? (
-            // <ReactToPrint
-            //   trigger={() => <button>Kirim Ke Dapur</button>}
-            //   content={() => printRef.current}
-            //   // onBeforePrint={saveAsPDF}
-            //   onAfterPrint={handleSubmit}
-            // />
-            <button onClick={handleSubmit}>Kirim Ke Dapur</button>
+            <button onClick={handleSubmit} disabled={loading}>
+              {loading ? "Processing..." : "Kirim Ke Dapur"}
+            </button>
           ) : (
             <button disabled>Kirim Ke Dapur</button>
           )}
