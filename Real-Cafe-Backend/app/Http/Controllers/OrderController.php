@@ -53,10 +53,10 @@ class OrderController extends Controller
     {
         $orders = Order::where('status_minuman', 'pending')
             ->whereHas('items', function ($query) {
-                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','paket']);
+                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas', 'paket']);
             })
             ->with(['items' => function ($query) {
-                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','paket']);
+                $query->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas', 'paket']);
             }])
             ->get();
         return response()->json($orders);
@@ -68,9 +68,9 @@ class OrderController extends Controller
         $orders = Order::whereBetween('created_at', [$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
         return response()->json($orders);
     }
-        public function shift(Request $request)
+    public function shift(Request $request)
     {
-        
+
         $time_start = Carbon::Parse($request->input('start_time'));
         $time_stop = Carbon::Parse($request->input('end_time'));
         $orders = Order::whereBetween('created_at', [$time_start, $time_stop])->where('status', 'completed')->with('items')->get();
@@ -335,7 +335,7 @@ class OrderController extends Controller
 
         // Check if the current order has pending food items
         $hasPendingDrinkItems = $order->items()
-            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas','paket'])
+            ->whereIn('item_type', ['coffe', 'jus', 'milkshake', 'minumandingin', 'minumanpanas', 'paket'])
             ->exists(); // Check only the related items for the given order
 
         // If no pending food items exist, mark 'status_minuman' as completed for the current order
@@ -380,6 +380,17 @@ class OrderController extends Controller
         }
 
         return response()->json(['message' => 'Order marked as completed', 'order' => $order], 200);
+    }
+    public function ChangeMessage($id, Request $request)
+    {
+        $order = Order::findOrFail($id);
+
+        // Update the status to 'completed'
+        $order->update([
+            'message' => $request->input('message'),
+        ]);
+
+        return response()->json(['message' => 'Order message changed', 'order' => $order], 200);
     }
 
 
