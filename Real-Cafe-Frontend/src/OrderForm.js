@@ -31,6 +31,7 @@ const OrderForm = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [Kembalian, setKembalian] = useState(0);
   const [error, setError] = useState(null);
+  const [SelectedCashier, setSelectedCashier] = useState("");
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -70,15 +71,22 @@ const OrderForm = () => {
       [type]: new Set([...(prevAddedItems[type] || []), id]),
     }));
   };
-  const [SelectedCashier, setSelectedCashier] = useState("");
-  // const nama_kasir = axios.get(`${API_URL}`);
-  const options = [
-    { value: "Ferdi", label: "Ferdi" },
-    { value: "Nanda", label: "Nanda" },
-    { value: "Putri", label: "Putri" },
-    { value: "Risma", label: "Risma" },
-    { value: "Ryan",  label: "Ryan" },
-  ];
+
+  const cashierMap = {
+    11126: "Risma",
+    "03072": "Ryan",
+    55671: "Ferdi",
+  };
+
+  const [cashierCode, setCashierCode] = useState("");
+
+  const handleCashierCodeChange = (event) => {
+    const code = event.target.value.replace(/[^0-9]/g, "");
+    setCashierCode(code);
+    setSelectedCashier(cashierMap[code] || "");
+  };
+  const addItemHandler = (id, name, price) => () =>
+    handleAddItem(id, name, price);
 
   const handleRemoveItem = (id, type) => {
     const newOrderItems = orderItems.filter(
@@ -125,6 +133,7 @@ const OrderForm = () => {
     const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
     setTotalPrice(total);
   };
+
   useEffect(() => {
     // Recalculate Kembalian whenever totalPrice or Bayar changes
     calculateKembalian();
@@ -134,6 +143,7 @@ const OrderForm = () => {
     const kembalian = Math.max(0, parseInt(Bayar || 0, 10) - totalPrice);
     setKembalian(kembalian);
   };
+
   const PriceFormat = (price) => {
     if (price == null) return ""; // Handle null or undefined prices
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -147,6 +157,7 @@ const OrderForm = () => {
       : "";
     setMejaNo(numberValue.toString());
   };
+
   const handleBayar = (event) => {
     let value = event.target.value;
     value = value.replace(/[^0-9]/g, "");
@@ -195,6 +206,7 @@ const OrderForm = () => {
       setMessage("");
       setAddedItems({});
       setBayar("");
+      setSelectedCashier("");
     } catch (err) {
       setError("Error, Stock Habis");
     }
@@ -204,6 +216,7 @@ const OrderForm = () => {
   const isMejaNoValid = mejaNo.trim() !== "";
   const isKasirValid = SelectedCashier !== "";
   const isBayarValid = Bayar.trim() >= totalPrice;
+
   return (
     <div className="order-form">
       <div className="menu-container">
@@ -232,7 +245,14 @@ const OrderForm = () => {
             </li>
             {menuData[selectedCategory]?.map((item) => (
               <li key={item.id} className="menu-item">
-                <span className="item-stock">{item.qty || "Habis"}</span>
+                <span
+                  className={`item-stock ${
+                    item.qty === 0 ? "out-of-stock" : ""
+                  }`}
+                >
+                  {item.qty || "Habis"}
+                </span>
+
                 <span className="item-name">{item.name}</span>
                 <span className="item-price">
                   Rp. {PriceFormat(item.price)}
@@ -242,9 +262,7 @@ const OrderForm = () => {
                 ]?.has(item.id) ? (
                   <button
                     className="item-add"
-                    onClick={() =>
-                      handleAddItem(item.id, item.name, item.price)
-                    }
+                    onClick={addItemHandler(item.id, item.name, item.price)}
                   >
                     <img
                       src="/icons/plus-solid2.svg"
@@ -268,29 +286,22 @@ const OrderForm = () => {
       </div>
 
       <div className="order-summary">
-        <span className="header">
-          <h3>Your Order</h3>
-          <h3 id="kasir">Kasir : </h3>
-          <select
-            value={SelectedCashier}
-            onChange={(e) => {
-              setSelectedCashier(e.target.value);
-              setError(null); // Clear error when kasir is selected
-            }}
-          >
-            <option value="" disabled>
-              Pilih kasir
-            </option>
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {error && error.includes("kasir") && (
-            <p className="error-message">Pilih nama kasir terlebih dahulu!</p>
-          )}
-        </span>
+        <div className="header">
+          <div className="order-cashier">
+            <h3 id="Your-Order">Your Order</h3>
+            <h3 id="kasir">Kasir : </h3>
+            <input
+              className=""
+              type="number"
+              value={cashierCode}
+              onChange={handleCashierCodeChange}
+              placeholder="Kode Kasir"
+            />
+            {error && error.includes("kasir") && (
+              <p className="error-message">Pilih nama kasir terlebih dahulu!</p>
+            )}
+          </div>
+        </div>
 
         <ul>
           {orderItems.map((item, index) => (
@@ -345,7 +356,7 @@ const OrderForm = () => {
           <div className="order-form-meja">
             <h3>Nomor Meja :</h3>
             <input
-              type="text"
+              type="number"
               value={mejaNo}
               onChange={handleMejaNoChange}
               placeholder="Nomor"
@@ -355,7 +366,7 @@ const OrderForm = () => {
           <div className="order-form-bayar">
             <h3>Bayar :</h3>
             <input
-              type="text"
+              type="number"
               value={Bayar}
               onChange={handleBayar}
               placeholder="Rp. "
@@ -365,7 +376,6 @@ const OrderForm = () => {
 
           <h3>Total Price: Rp. {PriceFormat(totalPrice)}</h3>
           <h3>Kembalian: Rp. {PriceFormat(Kembalian)}</h3>
-          {/* <button onClick={handleSubmit}>Kirim Ke Dapur</button> */}
           {/* Conditional rendering of ReactToPrint based on mejaNo */}
           {isMejaNoValid && isMinimalOrder && isBayarValid && isKasirValid ? (
             // <ReactToPrint
@@ -385,12 +395,12 @@ const OrderForm = () => {
 
       {/* The printable component */}
       {/* <PrintableOrder
-        ref={printRef}
-        mejaNo={mejaNo}
-        orderItems={orderItems}
-        totalPrice={totalPrice}
-        message={message}
-      /> */}
+      ref={printRef}
+      mejaNo={mejaNo}
+      orderItems={orderItems}
+      totalPrice={totalPrice}
+      message={message}
+    /> */}
     </div>
   );
 };
