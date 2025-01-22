@@ -73,7 +73,7 @@ const OrderForm = () => {
   };
 
   const cashierMap = {
-    11126: "Risma",
+    61112: "Risma",
     "03072": "Ryan",
     55671: "Ferdi",
     33205: "Nanda",
