@@ -76,7 +76,9 @@ const OrderForm = () => {
     11126: "Risma",
     "03072": "Ryan",
     55671: "Ferdi",
-    69696 : "Reyhan"
+    33205: "Nanda",
+    13084: "Putri",
+    69696: "Reyhan",
   };
 
   const [cashierCode, setCashierCode] = useState("");
