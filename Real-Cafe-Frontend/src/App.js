@@ -8,6 +8,7 @@ import OrderSummaryDrink from './OrderSummaryDrink';
 import Stock from './Stock';
 import Finance from './Finance';
 import Sale_Revenue from './Sale_Revenue';
+import AllTime from './AllTime';
 import Traffic from './Traffic';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
@@ -86,6 +87,12 @@ const App = () => {
             path="/sale-revenue" 
             element={
               <AdminRoute element={<Layout><Sale_Revenue/></Layout>} />
+            } 
+          />
+          <Route 
+            path="/All-Time" 
+            element={
+              <AdminRoute element={<Layout><AllTime/></Layout>} />
             } 
           />
                 <Route 

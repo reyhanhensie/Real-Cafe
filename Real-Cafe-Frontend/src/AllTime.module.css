@@ -1,0 +1,134 @@
+.Finance {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+  background-color: #dbc1ac;
+}
+select,
+option {
+  background-color: #ecd9c4;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ecd9c4;
+}
+
+.leftPanel {
+  width: 20%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  padding-top: 10px; /* Add some padding for spacing */
+  position: relative; /* Ensure the button stays within the panel */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.CategoryContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  margin: 0;
+  /* height: 5%; */
+  /* margin-top:20px; */
+}
+.CategoryOption {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.leftPanel img {
+  height: 20px;
+  width: 20px;
+  /* filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
+    brightness(100%) contrast(114%); */
+  cursor: pointer;
+}
+button.LeftPanelButton {
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+}
+img.LeftPanelXButton {
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
+    brightness(100%) contrast(114%);
+}
+
+.leftPanel .CategoryButton {
+  position: sticky; /* Keep it fixed at the top while scrolling */
+  top: 0; /* Align it to the top */
+  margin-bottom: 10px; /* Add spacing below the button */
+  padding: 8px 16px; /* Add padding for better aesthetics */
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10; /* Ensure it stays above other content */
+  margin: 0;
+}
+.ItemsContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+  justify-content: flex-end; /* Align the items to the right */
+  width: 100%; /* Make sure it takes up the full width */
+}
+.ItemOption {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  justify-content: flex-end; /* Align the items to the right */
+  width: 100%; /* Make sure it takes up the full width */
+}
+
+.rightPanel {
+  width: 80%; /* Allocate 70% width for the filters and chart */
+  display: flex;
+  flex-direction: column;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row; /* Arrange filters in a row */
+  align-items: center; /* Vertically center-align items */
+  gap: 20px; /* Add spacing between filter elements */
+  margin-bottom: 20px; /* Add spacing below the filter row */
+}
+
+.filters label {
+  margin-right: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.filters select,
+.filters input[type="date"] {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ecd9c4;
+}
+
+.chart-container {
+  flex-grow: 1; /* Allow the chart container to take up remaining space */
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container h3 {
+  margin-top: 0;
+  color: #343a40; /* Neutral dark text */
+}
