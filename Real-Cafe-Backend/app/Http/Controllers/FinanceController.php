@@ -186,4 +186,109 @@ class FinanceController extends Controller
         }
         return response()->json($data);
     }
+        public function AllTime($menu, $item, $type, $period, Request $request)
+    {
+        $time_low = $request->input('time_low');
+        $time_high = $request->input('time_high');
+        $time_low = Carbon::parse($time_low)->startOfDay();
+        $time_high = Carbon::parse($time_high)->endOfDay();
+
+        if (($menu != "All") && ($item != "All")) {
+
+            $menuTypes = explode(separator: ',', string: $menu);
+            $items = explode(separator: ',', string: $item);
+
+            $orders = Order::whereBetween('created_at', [$time_low, $time_high])
+                ->whereHas('items', function ($query) use ($menuTypes) {
+                    $query->whereIn('item_type', $menuTypes);
+                })
+                ->with(['items' => function ($query) use ($menuTypes) {
+                    $query->whereIn('item_type', $menuTypes);
+                }])
+                ->whereHas('items', function ($query) use ($items) {
+                    $query->whereIn('item_name', $items);
+                })
+                ->with(['items' => function ($query) use ($items) {
+                    $query->whereIn('item_name', $items);
+                }])
+                ->whereBetween('created_at', [$time_low, $time_high])
+                ->get();
+        } else if (($menu != "All") && ($item === "All")) {
+            $menuTypes = explode(separator: ',', string: $menu);
+            $orders = Order::whereBetween('created_at', [$time_low, $time_high])
+                ->whereHas('items', function ($query) use ($menuTypes) {
+                    $query->whereIn('item_type', $menuTypes);
+                })
+                ->with(['items' => function ($query) use ($menuTypes) {
+                    $query->whereIn('item_type', $menuTypes);
+                }])
+                ->whereBetween('created_at', [$time_low, $time_high])
+                ->get();
+        } else if (($menu === "All") && ($item === "All")) {
+            $orders = Order::whereBetween('created_at', [$time_low, $time_high])->get();
+        }
+
+        switch ($period) {
+            case 'Hourly':
+                $groupedData = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->format('H:00'); // Group by hour
+                });
+                break;
+            case 'Daily':
+                $groupedData = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->format('l'); // Group by day name
+                });
+                break;
+            case 'Monthly':
+                $groupedData = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->format('j'); // Group by day of the month
+                });
+                break;
+            case 'Yearly':
+                $groupedData = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->format('F'); // Group by month name
+                });
+                break;
+
+            default:
+                return response()->json(['error' => 'Invalid period type'], 400);
+        }
+
+        // Process data based on the type ('revenue' or 'sales')
+        switch ($type) {
+            case 'Revenue':
+                if (($menu != "All") || ($item != "All")) {
+                    $groupedData = $groupedData->map(function ($group) {
+                        return $group->sum(function ($order) {
+                            return $order->items->sum('price'); // Sum of total_price for each order
+                        });
+                    });
+                } else {
+                    // Calculate total revenue for each group (sum of total_price)
+                    $groupedData = $groupedData->map(function ($group) {
+                        return $group->sum('total_price'); // Sum of total_price for each group
+                    });
+                }
+                break;
+
+            case 'Sales':
+                if (($menu != "All") || ($item != "All")) {
+                    $groupedData = $groupedData->map(function ($group) {
+                        return $group->sum(function ($order) {
+                            return $order->items->sum('quantity'); // Sum of total_price for each order
+                        });
+                    });
+                } else {
+                    // Count the number of orders for each group
+                    $groupedData = $groupedData->map(function ($group) {
+                        return $group->count(); // Count the number of orders for each group
+                    });
+                }
+                break;
+            default:
+                return response()->json(['error' => 'Invalid data type'], 400);
+        }
+
+        return response()->json($groupedData);
+    }
 }

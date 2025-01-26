@@ -63,6 +63,7 @@ Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompl
 Route::patch('/order/{id}/message', [OrderController::class, 'changeMessage']);
 
 Route::get('/finance/{menu}/{item}/{type}/{period}', [FinanceController::class, 'index']);
+Route::get('/AllTime/{menu}/{item}/{type}/{period}', [FinanceController::class, 'AllTime']);
 Route::get('/traffic/{menu}/{item}', [FinanceController::class, 'traffic']);
 
 
