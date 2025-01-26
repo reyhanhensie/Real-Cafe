@@ -33,7 +33,7 @@ const MenuDropdown = () => {
     }
     return []; // Return an empty array if no category exists
   });
-  const [selectedPeriod, setSelectedPeriod] = useState("Free");
+  const [selectedPeriod, setSelectedPeriod] = useState("Hourly");
   const [timeStart, setTimeStart] = useState(
     () => new Date().toISOString().split("T")[0]
   );
