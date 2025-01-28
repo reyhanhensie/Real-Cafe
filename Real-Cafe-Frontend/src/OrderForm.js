@@ -275,9 +275,19 @@ const OrderForm = () => {
                   <button
                     className="item-add"
                     onClick={addItemHandler(item.id, item.name, item.price)}
+                    disabled={
+                      item.qty === 0 ||
+                      addedItems[
+                        selectedCategory.toLowerCase().replace(/\s+/g, "")
+                      ]?.has(item.id)
+                    }
                   >
                     <img
-                      src="/icons/plus-solid2.svg"
+                      src={
+                        item.qty === 0
+                          ? "/icons/ban.svg"
+                          : "/icons/plus-solid2.svg"
+                      }
                       alt="Add Icon"
                       className="add-icon"
                     />
