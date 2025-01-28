@@ -65,7 +65,7 @@ const OrderForm = () => {
       const newItems = [...prevOrderItems, { type, id, name, price, qty }];
       setItemQuantities((prev) => ({
         ...prev,
-        [newItems.length - 1]: 1, // Set initial quantity to 1 for new items
+        [`${type}-${id}`]: 1, // Use type-id combination as unique key
       }));
       calculateTotalPrice(newItems);
       return newItems;
@@ -103,10 +103,16 @@ const OrderForm = () => {
     setOrderItems(newOrderItems);
     calculateTotalPrice(newOrderItems);
 
+    // Remove the quantity entry for the removed item
+    setItemQuantities((prev) => {
+      const newQuantities = { ...prev };
+      delete newQuantities[`${type}-${id}`];
+      return newQuantities;
+    });
+
     setAddedItems((prevAddedItems) => {
       const updatedCategoryItems = new Set(prevAddedItems[type] || []);
       updatedCategoryItems.delete(id);
-
       return {
         ...prevAddedItems,
         [type]: updatedCategoryItems,
@@ -114,14 +120,14 @@ const OrderForm = () => {
     });
   };
 
-  const handleChangeQty = (index, newQty, max) => {
-    // Ensure the input doesn't exceed stock quantity
+  const handleChangeQty = (item, newQty, max) => {
     const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
+    const quantityKey = `${item.type}-${item.id}`;
 
-    const updatedQuantities = { ...itemQuantities };
-    updatedQuantities[index] = validQty; // Update the quantity to the valid one
-
-    setItemQuantities(updatedQuantities);
+    setItemQuantities((prev) => ({
+      ...prev,
+      [quantityKey]: validQty,
+    }));
     calculateTotalPrice(orderItems);
   };
 
@@ -324,51 +330,54 @@ const OrderForm = () => {
         </div>
 
         <ul>
-          {orderItems.map((item, index) => (
-            <li key={index} className="order-item">
-              <span className="order-name">{item.name}</span>
-              <span className="order-qty-container">
-                <button
-                  className="order-qty-button"
-                  onClick={() =>
-                    handleChangeQty(index, itemQuantities[index] - 1,item.qty)
-                  }
-                  disabled={itemQuantities[index] <= 1} // Disable when qty is 1
-                >
-                  <img src="/icons/minus-small.svg" alt="-" />
-                </button>
-                <input
-                  className="order-qty-input"
-                  type="number"
-                  value={itemQuantities[index] || 1} // Use itemQuantities state here
-                  min="1"
-                  onChange={(e) => handleChangeQty(index, e.target.value,item.qty)}
-                />
-                <button
-                  className="order-qty-button"
-                  onClick={() =>
-                    handleChangeQty(index, itemQuantities[index] + 1,item.qty)
-                  }
-                  disabled={
-                    itemQuantities[index] >= item.qty
-                  } // Disable if qty >= stock
-                >
-                  <img src="/icons/plus-small.svg" alt="+" />
-                </button>
-              </span>
+          {orderItems.map((item) => {
+            const quantityKey = `${item.type}-${item.id}`;
+            const currentQty = itemQuantities[quantityKey] || 1;
 
-              <span className="order-price">
-                - Rp. {PriceFormat(item.price * (itemQuantities[index] || 1))}{" "}
-                {/* Use itemQuantities here */}
-              </span>
-              <button
-                className="order-remove"
-                onClick={() => handleRemoveItem(item.id, item.type)}
-              >
-                <img src="/icons/x-circle.svg" alt="X" />
-              </button>
-            </li>
-          ))}
+            return (
+              <li key={`${item.type}-${item.id}`} className="order-item">
+                <span className="order-name">{item.name}</span>
+                <span className="order-qty-container">
+                  <button
+                    className="order-qty-button"
+                    onClick={() =>
+                      handleChangeQty(item, currentQty - 1, item.qty)
+                    }
+                    disabled={currentQty <= 1}
+                  >
+                    <img src="/icons/minus-small.svg" alt="-" />
+                  </button>
+                  <input
+                    className="order-qty-input"
+                    type="number"
+                    value={currentQty}
+                    min="1"
+                    onChange={(e) =>
+                      handleChangeQty(item, e.target.value, item.qty)
+                    }
+                  />
+                  <button
+                    className="order-qty-button"
+                    onClick={() =>
+                      handleChangeQty(item, currentQty + 1, item.qty)
+                    }
+                    disabled={currentQty >= item.qty}
+                  >
+                    <img src="/icons/plus-small.svg" alt="+" />
+                  </button>
+                </span>
+                <span className="order-price">
+                  - Rp. {PriceFormat(item.price * currentQty)}
+                </span>
+                <button
+                  className="order-remove"
+                  onClick={() => handleRemoveItem(item.id, item.type)}
+                >
+                  <img src="/icons/x-circle.svg" alt="X" />
+                </button>
+              </li>
+            );
+          })}
         </ul>
         <div className="order-form-input">
           <div className="order-form-message">
