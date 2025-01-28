@@ -275,6 +275,12 @@ button.order-qty-button {
   cursor: pointer;
 }
 
+.order-qty-button:disabled img {
+  cursor: not-allowed;
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
+    brightness(100%) contrast(114%);
+}
+
 input.order-qty-input {
   flex: 1;
   margin-left: 5px;
@@ -418,6 +424,13 @@ button.order-remove {
   color: #ecd9c4;
   cursor: not-allowed;
 }
+.item-add:disabled img {
+  cursor: not-allowed;
+  width: 20px; /* Adjust the size as needed */
+  height: 20px;
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
+    brightness(100%) contrast(114%);
+}
 
 /* Media Queries for Portrait Mode on Phones */
 
@@ -480,6 +493,7 @@ button.order-remove {
     filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
       brightness(93%) contrast(85%);
   }
+
   .item-add {
     flex: 1;
     align-items: center;
@@ -487,6 +501,11 @@ button.order-remove {
     border: none;
     cursor: pointer;
     padding: 0;
+  }
+  .item-add:disabled img {
+    cursor: not-allowed;
+    filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
+      brightness(100%) contrast(114%);
   }
 
   .item-add-placeholder {

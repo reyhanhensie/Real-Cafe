@@ -32,6 +32,7 @@ const OrderForm = () => {
   const [Kembalian, setKembalian] = useState(0);
   const [error, setError] = useState(null);
   const [SelectedCashier, setSelectedCashier] = useState("");
+  const [itemQuantities, setItemQuantities] = useState({});
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -57,11 +58,15 @@ const OrderForm = () => {
     );
   }, [orderItems]);
 
-  const handleAddItem = (id, name, price) => {
+  const handleAddItem = (id, name, price, qty) => {
     const type = selectedCategory.toLowerCase().replace(/\s+/g, "");
 
     setOrderItems((prevOrderItems) => {
-      const newItems = [...prevOrderItems, { type, id, name, qty: 1, price }];
+      const newItems = [...prevOrderItems, { type, id, name, price, qty }];
+      setItemQuantities((prev) => ({
+        ...prev,
+        [newItems.length - 1]: 1, // Set initial quantity to 1 for new items
+      }));
       calculateTotalPrice(newItems);
       return newItems;
     });
@@ -88,8 +93,8 @@ const OrderForm = () => {
     setCashierCode(code);
     setSelectedCashier(cashierMap[code] || "");
   };
-  const addItemHandler = (id, name, price) => () =>
-    handleAddItem(id, name, price);
+  const addItemHandler = (id, name, price, qty) => () =>
+    handleAddItem(id, name, price, qty);
 
   const handleRemoveItem = (id, type) => {
     const newOrderItems = orderItems.filter(
@@ -109,27 +114,15 @@ const OrderForm = () => {
     });
   };
 
-  const handleChangeQty = (index, qty) => {
-    // Ensure the input is a valid number and within the range [1, 99]
-    const sanitizedQty = qty.toString().replace(/[^0-9]/g, ""); // Allow only numeric characters
+  const handleChangeQty = (index, newQty, max) => {
+    // Ensure the input doesn't exceed stock quantity
+    const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
 
-    // Convert to a number and clamp between 1 and 99
-    const validQty = Math.max(1, Math.min(99, parseInt(sanitizedQty, 10) || 1));
+    const updatedQuantities = { ...itemQuantities };
+    updatedQuantities[index] = validQty; // Update the quantity to the valid one
 
-    // Create a copy of the orderItems to avoid mutating state directly
-    const newOrderItems = [...orderItems];
-
-    // Update the quantity of the item at the given index
-    newOrderItems[index].qty = validQty;
-
-    // Update the order items state
-    setOrderItems(newOrderItems);
-
-    // Recalculate the total price
-    calculateTotalPrice(newOrderItems);
-
-    // Clear any error messages related to the quantity input
-    setError(null);
+    setItemQuantities(updatedQuantities);
+    calculateTotalPrice(orderItems);
   };
 
   const calculateTotalPrice = (items) => {
@@ -274,7 +267,12 @@ const OrderForm = () => {
                 ]?.has(item.id) ? (
                   <button
                     className="item-add"
-                    onClick={addItemHandler(item.id, item.name, item.price)}
+                    onClick={addItemHandler(
+                      item.id,
+                      item.name,
+                      item.price,
+                      item.qty
+                    )}
                     disabled={
                       item.qty === 0 ||
                       addedItems[
@@ -332,27 +330,36 @@ const OrderForm = () => {
               <span className="order-qty-container">
                 <button
                   className="order-qty-button"
-                  onClick={() => handleChangeQty(index, item.qty - 1)}
+                  onClick={() =>
+                    handleChangeQty(index, itemQuantities[index] - 1,item.qty)
+                  }
+                  disabled={itemQuantities[index] <= 1} // Disable when qty is 1
                 >
                   <img src="/icons/minus-small.svg" alt="-" />
                 </button>
                 <input
                   className="order-qty-input"
                   type="number"
-                  value={item.qty}
+                  value={itemQuantities[index] || 1} // Use itemQuantities state here
                   min="1"
-                  onChange={(e) => handleChangeQty(index, e.target.value)}
+                  onChange={(e) => handleChangeQty(index, e.target.value,item.qty)}
                 />
                 <button
                   className="order-qty-button"
-                  onClick={() => handleChangeQty(index, item.qty + 1)}
+                  onClick={() =>
+                    handleChangeQty(index, itemQuantities[index] + 1,item.qty)
+                  }
+                  disabled={
+                    itemQuantities[index] >= item.qty
+                  } // Disable if qty >= stock
                 >
                   <img src="/icons/plus-small.svg" alt="+" />
                 </button>
               </span>
 
               <span className="order-price">
-                - Rp. {PriceFormat(item.price * item.qty)}{" "}
+                - Rp. {PriceFormat(item.price * (itemQuantities[index] || 1))}{" "}
+                {/* Use itemQuantities here */}
               </span>
               <button
                 className="order-remove"
