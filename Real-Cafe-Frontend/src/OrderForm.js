@@ -132,7 +132,11 @@ const OrderForm = () => {
   };
 
   const calculateTotalPrice = (items) => {
-    const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const total = items.reduce((acc, item) => {
+      const quantityKey = `${item.type}-${item.id}`;
+      const itemQty = itemQuantities[quantityKey] || 1; // Get the correct quantity
+      return acc + item.price * itemQty;
+    }, 0);
     setTotalPrice(total);
   };
 
