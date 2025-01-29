@@ -352,7 +352,9 @@ const OrderForm = () => {
                     <img src="/icons/minus-small.svg" alt="-" />
                   </button>
                   <input
-                    className="order-qty-input"
+                    className={`order-qty-input ${
+                      currentQty >= item.qty ? "max" : ""
+                    }`}
                     type="number"
                     value={currentQty}
                     min="1"
@@ -363,9 +365,9 @@ const OrderForm = () => {
                   <button
                     className="order-qty-button"
                     onClick={() =>
-                      handleChangeQty(item, currentQty + 1, item.qty)
+                      handleChangeQty(item, currentQty + 1, item.qty+10)
                     }
-                    disabled={currentQty >= item.qty}
+                    disabled={currentQty >= item.qty+10}
                   >
                     <img src="/icons/plus-small.svg" alt="+" />
                   </button>

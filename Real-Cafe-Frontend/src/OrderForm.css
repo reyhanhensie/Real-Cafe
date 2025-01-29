@@ -299,6 +299,12 @@ input.order-qty-input {
   -moz-appearance: textfield;
   appearance: textfield; /* Standard property */
 }
+.order-qty-input.max {
+  border: 2px solid black;
+  background-color: #ffcccc;
+  font-weight: bold;
+  color: red;
+}
 .order-remove img {
   height: 30px;
   width: 30px;
