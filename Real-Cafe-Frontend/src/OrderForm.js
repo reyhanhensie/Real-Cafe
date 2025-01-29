@@ -120,21 +120,30 @@ const OrderForm = () => {
     });
   };
 
-  const handleChangeQty = (item, newQty, max) => {
-    const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
-    const quantityKey = `${item.type}-${item.id}`;
+const handleChangeQty = (item, newQty, max) => {
+  const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
+  const quantityKey = `${item.type}-${item.id}`;
 
-    setItemQuantities((prev) => ({
+  setItemQuantities((prev) => {
+    const newQuantities = {
       ...prev,
       [quantityKey]: validQty,
-    }));
-    calculateTotalPrice(orderItems);
-  };
+    };
+    // Calculate total price with the new quantities
+    const total = orderItems.reduce((acc, orderItem) => {
+      const itemKey = `${orderItem.type}-${orderItem.id}`;
+      const quantity = itemKey === quantityKey ? validQty : (newQuantities[itemKey] || 1);
+      return acc + orderItem.price * quantity;
+    }, 0);
+    setTotalPrice(total);
+    return newQuantities;
+  });
+};
 
   const calculateTotalPrice = (items) => {
     const total = items.reduce((acc, item) => {
       const quantityKey = `${item.type}-${item.id}`;
-      const itemQty = itemQuantities[quantityKey] || 1; // Get the correct quantity
+      const itemQty = itemQuantities?.[quantityKey] ?? 1; // Ensure default value
       return acc + item.price * itemQty;
     }, 0);
     setTotalPrice(total);
