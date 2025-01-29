@@ -120,25 +120,26 @@ const OrderForm = () => {
     });
   };
 
-const handleChangeQty = (item, newQty, max) => {
-  const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
-  const quantityKey = `${item.type}-${item.id}`;
+  const handleChangeQty = (item, newQty, max) => {
+    const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
+    const quantityKey = `${item.type}-${item.id}`;
 
-  setItemQuantities((prev) => {
-    const newQuantities = {
-      ...prev,
-      [quantityKey]: validQty,
-    };
-    // Calculate total price with the new quantities
-    const total = orderItems.reduce((acc, orderItem) => {
-      const itemKey = `${orderItem.type}-${orderItem.id}`;
-      const quantity = itemKey === quantityKey ? validQty : (newQuantities[itemKey] || 1);
-      return acc + orderItem.price * quantity;
-    }, 0);
-    setTotalPrice(total);
-    return newQuantities;
-  });
-};
+    setItemQuantities((prev) => {
+      const newQuantities = {
+        ...prev,
+        [quantityKey]: validQty,
+      };
+      // Calculate total price with the new quantities
+      const total = orderItems.reduce((acc, orderItem) => {
+        const itemKey = `${orderItem.type}-${orderItem.id}`;
+        const quantity =
+          itemKey === quantityKey ? validQty : newQuantities[itemKey] || 1;
+        return acc + orderItem.price * quantity;
+      }, 0);
+      setTotalPrice(total);
+      return newQuantities;
+    });
+  };
 
   const calculateTotalPrice = (items) => {
     const total = items.reduce((acc, item) => {
@@ -230,6 +231,7 @@ const handleChangeQty = (item, newQty, max) => {
       setAddedItems({});
       setBayar("");
       setSelectedCashier("");
+      setCashierCode("")
     } catch (err) {
       setError("Error, Stock Habis");
     } finally {
@@ -334,7 +336,9 @@ const handleChangeQty = (item, newQty, max) => {
             <h3 id="kasir">Kasir : </h3>
             <input
               className=""
-              type="number"
+              type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={cashierCode}
               onChange={handleCashierCodeChange}
               placeholder="Kode Kasir"
