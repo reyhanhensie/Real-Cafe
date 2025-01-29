@@ -192,7 +192,7 @@ const OrderForm = () => {
       const formattedItems = orderItems.map((item) => ({
         type: item.type,
         id: item.id,
-        qty: item.qty,
+        qty: itemQuantities[quantityKey] || 1,
       }));
 
       if (formattedItems.length === 0) {
