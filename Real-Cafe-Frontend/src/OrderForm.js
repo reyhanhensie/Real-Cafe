@@ -189,11 +189,14 @@ const OrderForm = () => {
     setLoading(true); // Set loading to true to indicate the request is in progress
 
     try {
-      const formattedItems = orderItems.map((item) => ({
-        type: item.type,
-        id: item.id,
-        qty: itemQuantities[quantityKey] || 1,
-      }));
+      const formattedItems = orderItems.map((item) => {
+        const quantityKey = `${item.type}-${item.id}`;
+        return {
+          type: item.type,
+          id: item.id,
+          qty: itemQuantities[quantityKey] || 1, // ✅ Get correct quantity
+        };
+      });
 
       if (formattedItems.length === 0) {
         setError("ERROR: Minimal 1 Pesanan");
@@ -365,9 +368,9 @@ const OrderForm = () => {
                   <button
                     className="order-qty-button"
                     onClick={() =>
-                      handleChangeQty(item, currentQty + 1, item.qty+10)
+                      handleChangeQty(item, currentQty + 1, item.qty + 10)
                     }
-                    disabled={currentQty >= item.qty+10}
+                    disabled={currentQty >= item.qty + 10}
                   >
                     <img src="/icons/plus-small.svg" alt="+" />
                   </button>
