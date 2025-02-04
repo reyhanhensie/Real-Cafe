@@ -13,6 +13,7 @@ const categoryMap = {
   "Minuman Dingin": "Minuman Dingin",
   "Minuman Panas": "Minuman Panas",
   Paket: "Paket",
+  Rokok : "Rokok"
 };
 
 const MenuEditor = () => {
