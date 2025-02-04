@@ -18,6 +18,7 @@ use App\Http\Controllers\PaketController;
 use App\Http\Controllers\SpendingController;
 // PRINTING
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\RokokController;
 use App\Http\Controllers\ShiftsController;
 
 // AUTHENTICATION
@@ -46,6 +47,7 @@ Route::apiResource('Milkshake', MilkshakeController::class);
 Route::apiResource('MinumanDingin', MinumanDinginController::class);
 Route::apiResource(name: 'MinumanPanas', controller: MinumanPanasController::class);
 Route::apiResource(name: 'Paket', controller: PaketController::class);
+Route::apiResource(name: 'Rokok', controller: RokokController::class);
 Route::apiResource('Spending', SpendingController::class);
 
 Route::get('Menu', [MenuController::class, 'index']);
