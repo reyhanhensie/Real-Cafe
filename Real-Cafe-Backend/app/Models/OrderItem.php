@@ -28,6 +28,8 @@ class OrderItem extends Model
             'makanan' => \App\Models\Makanan::class,
             'minumandingin' => \App\Models\MinumanDingin::class,
             'minumanpanas' => \App\Models\MinumanPanas::class,
+            'paket' => \App\Models\Paket::class,
+            'rokok' => \App\Models\Rokok::class,
         ];
 
         return $models[$type] ?? null;
