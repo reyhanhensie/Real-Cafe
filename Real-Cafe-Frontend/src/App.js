@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './Pages/Home';
 import OrderForm from './OrderForm';
 import OrderSummary from './OrderSummary';
 import OrderSummaryFood from './OrderSummaryFood';
@@ -14,8 +14,8 @@ import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
 import Shift from './Shift';
 import Expense from './Expense';
-import Register from './pages/Auth/Register';
-import Login from './pages/Auth/Login';
+import Register from './Pages/Auth/Register';
+import Login from './Pages/Auth/Login';
 import Layout from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
 import KasirRoute from './components/ProtectedRoute-kasir';
