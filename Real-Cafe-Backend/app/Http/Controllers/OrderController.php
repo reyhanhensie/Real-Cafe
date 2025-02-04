@@ -12,6 +12,7 @@ use App\Models\Milkshake;
 use App\Models\Makanan;
 use App\Models\MinumanDingin;
 use App\Models\MinumanPanas;
+use App\Models\Rokok;
 use App\Models\Paket;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -96,7 +97,7 @@ class OrderController extends Controller
             'meja' => 'required|integer', // Validate meja_no\
             'kasir' => 'required',
             'items' => 'required|array',
-            'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas,paket',
+            'items.*.type' => 'required|string|in:camilan,coffe,jus,lalapan,milkshake,makanan,minumandingin,minumanpanas,paket,rokok',
             'items.*.id' => 'required|integer',
             'items.*.qty' => 'required|integer|min:1',
             'bayar' => 'required|integer|min:0', // Payment amount
@@ -424,6 +425,10 @@ class OrderController extends Controller
                 return MinumanDingin::class;
             case 'minumanpanas':
                 return MinumanPanas::class;
+            case 'paket':
+                return Paket::class;
+            case 'rokok':
+                return Rokok::class;
             default:
                 abort(404, 'Model not found');
         }

@@ -12,6 +12,7 @@ use App\Models\Milkshake;
 use App\Models\MinumanDingin;
 use App\Models\MinumanPanas;
 use App\Models\Paket;
+use App\Models\Rokok;
 
 class MenuController extends Controller
 {
@@ -26,6 +27,7 @@ class MenuController extends Controller
         $MinumanDingin = MinumanDingin::all();
         $MinumanPanas = MinumanPanas::all();
         $Paket = Paket::all();
+        $Rokok = Rokok::all();
 
         return response()->json([
             'Camilan' => $Camilan,
@@ -36,7 +38,8 @@ class MenuController extends Controller
             'Milkshake' => $Milkshake,
             'Minuman Dingin' => $MinumanDingin,
             'Minuman Panas' => $MinumanPanas,
-            'Paket' => $Paket
+            'Paket' => $Paket,
+            'Rokok' => $Rokok
         ]);
     }
 }
