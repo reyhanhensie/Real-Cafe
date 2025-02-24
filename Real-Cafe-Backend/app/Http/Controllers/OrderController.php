@@ -161,13 +161,13 @@ class OrderController extends Controller
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("\nREAL CAFE JATIROTO\n");
-            $printer->text("==============================================\n");
+            $printer->text("========================================\n");
             $printer->text("$timestamp\n");
             $printer->text("Order ID: {$order->id}\n");
             $printer->text("Meja No: {$order->meja_no}\n");
             $printer->text("Kasir: {$order->kasir}\n");
-            $printer->text("==============================================\n");
-            $printer->text("Menu                                     Total\n");
+            $printer->text("========================================\n");
+            $printer->text("Menu                               Total\n");
 
             // Group items by category
             $groupedItems = [];
@@ -192,7 +192,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-21sRp.%d\n",
+                            " -%-26s Rp.%d\n",
                             $item->item_name,
                             $item->price
                         )
@@ -206,15 +206,15 @@ class OrderController extends Controller
             $NotaBayar = "Rp." . $bayar;
             $NotaKembalian = "Rp." . $kembalian;
 
-            $printer->text("----------------------------------------------\n");
-            $printer->text(sprintf("Jumlah Pesanan: %-3d %12s\n\n", $order->items->sum('quantity'), $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %14s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %10s\n", "", $NotaKembalian));
+            $printer->text("----------------------------------------\n");            
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %17s\n\n", $order->items->sum('quantity'), $NotaTotal));
+            $printer->text(sprintf("Bayar: %-10s %19s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-12s %15s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("==============================================\n");
+            $printer->text("========================================\n");
             $printer->text("TERIMA KASIH\n");
             $printer->text("ATAS KUNJUNGANNYA\n");
-            $printer->text("==============================================\n");
+            $printer->text("========================================\n");
             $printer->text("PASSWORD :           cafereal123\n\n\n");
 
             $printer->cut();
@@ -450,13 +450,13 @@ class OrderController extends Controller
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("\nREAL CAFE JATIROTO\n");
-            $printer->text("==============================================\n");
+            $printer->text("========================================\n");
             $printer->text("$timestamp\n");
             $printer->text("Order ID: {$order->id}\n");
             $printer->text("Meja No: {$order->meja_no}\n");
             $printer->text("Kasir: {$order->kasir}\n");
-            $printer->text("==============================================\n");
-            $printer->text("Menu                       Total\n");
+            $printer->text("========================================\n");
+            $printer->text("Menu                               Total\n");
 
             // Group items by category
             $groupedItems = [];
@@ -481,7 +481,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-21s Rp.%d\n",
+                            " -%-26s Rp.%d\n",
                             $item->item_name,
                             $item->price
                         )
@@ -496,15 +496,15 @@ class OrderController extends Controller
             $NotaBayar = "Rp." . $bayar;
             $NotaKembalian = "Rp." . $kembalian;
 
-            $printer->text("----------------------------------------------\n");
-            $printer->text(sprintf("Jumlah Pesanan: %-3d %12s\n\n", $order->items->sum('quantity'), $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %14s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %10s\n", "", $NotaKembalian));
+            $printer->text("----------------------------------------\n");
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %17s\n\n", $order->items->sum('quantity'), $NotaTotal));
+            $printer->text(sprintf("Bayar: %-10s %19s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-12s %15s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("==============================================\n");
+            $printer->text("========================================\n");
             $printer->text("TERIMA KASIH\n");
             $printer->text("ATAS KUNJUNGANNYA\n");
-            $printer->text("==============================================\n");
+            $printer->text("========================================\n");
             $printer->text("PASSWORD :           cafereal123\n\n\n");
 
             $printer->cut();
