@@ -192,7 +192,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-26s Rp.%d\n",
+                            " -%-30s Rp.%d\n",
                             $item->item_name,
                             $item->price
                         )
@@ -207,9 +207,9 @@ class OrderController extends Controller
             $NotaKembalian = "Rp." . $kembalian;
 
             $printer->text("----------------------------------------\n");            
-            $printer->text(sprintf("Jumlah Pesanan: %-3d %17s\n\n", $order->items->sum('quantity'), $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %19s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %15s\n", "", $NotaKembalian));
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %20s\n\n", $order->items->sum('quantity'), $NotaTotal));
+            $printer->text(sprintf("Bayar: %-10s %22s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-12s %18s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("========================================\n");
             $printer->text("TERIMA KASIH\n");
@@ -481,7 +481,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-26s Rp.%d\n",
+                            " -%-30s Rp.%d\n",
                             $item->item_name,
                             $item->price
                         )
@@ -497,9 +497,9 @@ class OrderController extends Controller
             $NotaKembalian = "Rp." . $kembalian;
 
             $printer->text("----------------------------------------\n");
-            $printer->text(sprintf("Jumlah Pesanan: %-3d %17s\n\n", $order->items->sum('quantity'), $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %19s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %15s\n", "", $NotaKembalian));
+            $printer->text(sprintf("Jumlah Pesanan: %-3d %20s\n\n", $order->items->sum('quantity'), $NotaTotal));
+            $printer->text(sprintf("Bayar: %-10s %22s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-12s %18s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("========================================\n");
             $printer->text("TERIMA KASIH\n");
