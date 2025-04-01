@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./OrderForm.css"; // Import custom styling
-import API_URL from "./apiconfig"; // Import the API_URL
-import ReactToPrint from "react-to-print";
-import PrintableOrder from "./PrintableOrder"; // Import the printable component
+import "./OrderForm.css";
+import API_URL from "./apiconfig";
 
 const OrderForm = () => {
-  // const printRef = useRef(null); // Reference to the print section
-
   const categoryMap = {
     Camilan: "Camilan",
     Coffe: "Coffe",
@@ -25,7 +21,6 @@ const OrderForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("Makanan");
   const [menuData, setMenuData] = useState({});
   const [orderItems, setOrderItems] = useState([]);
-  const [addedItems, setAddedItems] = useState({});
   const [mejaNo, setMejaNo] = useState("");
   const [Bayar, setBayar] = useState("");
   const [message, setMessage] = useState("");
@@ -33,51 +28,10 @@ const OrderForm = () => {
   const [Kembalian, setKembalian] = useState(0);
   const [error, setError] = useState(null);
   const [SelectedCashier, setSelectedCashier] = useState("");
-  const [itemQuantities, setItemQuantities] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [cashierCode, setCashierCode] = useState("");
 
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/Menu`);
-        setMenuData(response.data);
-        console.log(API_URL);
-      } catch (err) {
-        setError("Error fetching menu items");
-      }
-    };
-
-    fetchMenuItems();
-  }, []);
-
-  useEffect(() => {
-    setAddedItems(
-      orderItems.reduce((acc, item) => {
-        if (!acc[item.type]) acc[item.type] = new Set();
-        acc[item.type].add(item.id);
-        return acc;
-      }, {})
-    );
-  }, [orderItems]);
-
-  const handleAddItem = (id, name, price, qty) => {
-    const type = selectedCategory.toLowerCase().replace(/\s+/g, "");
-
-    setOrderItems((prevOrderItems) => {
-      const newItems = [...prevOrderItems, { type, id, name, price, qty }];
-      setItemQuantities((prev) => ({
-        ...prev,
-        [`${type}-${id}`]: 1, // Use type-id combination as unique key
-      }));
-      calculateTotalPrice(newItems);
-      return newItems;
-    });
-
-    setAddedItems((prevAddedItems) => ({
-      ...prevAddedItems,
-      [type]: new Set([...(prevAddedItems[type] || []), id]),
-    }));
-  };
-
+  // Cashier mapping
   const cashierMap = {
     61112: "Risma",
     "03072": "Ryan",
@@ -87,85 +41,104 @@ const OrderForm = () => {
     69696: "Reyhan",
   };
 
-  const [cashierCode, setCashierCode] = useState("");
+  // Fetch menu items on component mount
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/Menu`);
+        setMenuData(response.data);
+      } catch (err) {
+        setError("Error fetching menu items");
+      }
+    };
+    fetchMenuItems();
+  }, []);
 
+  // Calculate total price whenever order items change
+  useEffect(() => {
+    const total = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    setTotalPrice(total);
+  }, [orderItems]);
+
+  // Calculate change whenever total price or payment amount changes
+  useEffect(() => {
+    const kembalian = Math.max(0, parseInt(Bayar || 0, 10) - totalPrice);
+    setKembalian(kembalian);
+  }, [totalPrice, Bayar]);
+
+  // Handle adding items to order
+  const handleAddItem = (id, name, price, maxQty) => {
+    const type = selectedCategory.toLowerCase().replace(/\s+/g, "");
+
+    setOrderItems(prevItems => {
+      // Check if item already exists in order
+      const existingItemIndex = prevItems.findIndex(
+        item => item.id === id && item.type === type
+      );
+
+      if (existingItemIndex >= 0) {
+        // If exists, increment quantity (up to max + 10)
+        const newItems = [...prevItems];
+        const existingItem = newItems[existingItemIndex];
+        const newQty = Math.min(existingItem.quantity + 1, existingItem.maxQty + 10);
+        newItems[existingItemIndex] = {
+          ...existingItem,
+          quantity: newQty
+        };
+        return newItems;
+      } else {
+        // If new, add with quantity 1
+        const newItem = {
+          type,
+          id,
+          name,
+          price,
+          maxQty,
+          quantity: 1
+        };
+        return [...prevItems, newItem];
+      }
+    });
+  };
+
+  // Handle quantity changes
+  const handleChangeQty = (item, newQty) => {
+    setOrderItems(prevItems => {
+      return prevItems.map(prevItem => {
+        if (prevItem.id === item.id && prevItem.type === item.type) {
+          // Validate new quantity (between 1 and maxQty + 10)
+          const validQty = Math.max(
+            1,
+            Math.min(item.maxQty + 10, parseInt(newQty, 10) || 1
+            ));
+          return { ...prevItem, quantity: validQty };
+        }
+        return prevItem;
+      });
+    });
+  };
+
+  // Handle removing items
+  const handleRemoveItem = (id, type) => {
+    setOrderItems(prevItems =>
+      prevItems.filter(item => !(item.id === id && item.type === type))
+    )
+  };
+
+  // Helper function to format prices
+  const PriceFormat = (price) => {
+    if (price == null) return "";
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  // Handle cashier code input
   const handleCashierCodeChange = (event) => {
     const code = event.target.value.replace(/[^0-9]/g, "");
     setCashierCode(code);
     setSelectedCashier(cashierMap[code] || "");
   };
-  const addItemHandler = (id, name, price, qty) => () =>
-    handleAddItem(id, name, price, qty);
 
-  const handleRemoveItem = (id, type) => {
-    const newOrderItems = orderItems.filter(
-      (item) => !(item.id === id && item.type === type)
-    );
-    setOrderItems(newOrderItems);
-    calculateTotalPrice(newOrderItems);
-
-    // Remove the quantity entry for the removed item
-    setItemQuantities((prev) => {
-      const newQuantities = { ...prev };
-      delete newQuantities[`${type}-${id}`];
-      return newQuantities;
-    });
-
-    setAddedItems((prevAddedItems) => {
-      const updatedCategoryItems = new Set(prevAddedItems[type] || []);
-      updatedCategoryItems.delete(id);
-      return {
-        ...prevAddedItems,
-        [type]: updatedCategoryItems,
-      };
-    });
-  };
-
-  const handleChangeQty = (item, newQty, max) => {
-    const validQty = Math.max(1, Math.min(max, parseInt(newQty, 10) || 1));
-    const quantityKey = `${item.type}-${item.id}`;
-
-    setItemQuantities((prev) => {
-      const newQuantities = {
-        ...prev,
-        [quantityKey]: validQty,
-      };
-      // Calculate total price with the new quantities
-      const total = orderItems.reduce((acc, orderItem) => {
-        const itemKey = `${orderItem.type}-${orderItem.id}`;
-        const quantity =
-          itemKey === quantityKey ? validQty : newQuantities[itemKey] || 1;
-        return acc + orderItem.price * quantity;
-      }, 0);
-      setTotalPrice(total);
-      return newQuantities;
-    });
-  };
-
-  const calculateTotalPrice = (items) => {
-    const total = items.reduce((acc, item) => {
-      const quantityKey = `${item.type}-${item.id}`;
-      const itemQty = itemQuantities?.[quantityKey] ?? 1; // Ensure default value
-      return acc + item.price * itemQty;
-    }, 0);
-    setTotalPrice(total);
-  };
-
-  useEffect(() => {
-    // Recalculate Kembalian whenever totalPrice or Bayar changes
-    calculateKembalian();
-  }, [totalPrice, Bayar]);
-
-  const calculateKembalian = () => {
-    const kembalian = Math.max(0, parseInt(Bayar || 0, 10) - totalPrice);
-    setKembalian(kembalian);
-  };
-
-  const PriceFormat = (price) => {
-    if (price == null) return ""; // Handle null or undefined prices
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
-
+  // Handle table number input
   const handleMejaNoChange = (event) => {
     let value = event.target.value;
     value = value.replace(/[^0-9]/g, "");
@@ -175,6 +148,7 @@ const OrderForm = () => {
     setMejaNo(numberValue.toString());
   };
 
+  // Handle payment amount input
   const handleBayar = (event) => {
     let value = event.target.value;
     value = value.replace(/[^0-9]/g, "");
@@ -184,6 +158,7 @@ const OrderForm = () => {
     setBayar(numberValue.toString());
   };
 
+  // Submit order to server
   const handleSubmit = async () => {
     const mejaNoNumber = parseInt(mejaNo, 10);
 
@@ -195,25 +170,23 @@ const OrderForm = () => {
       setError("Masukkan Nomor Meja Terlebih Dahulu!");
       return;
     }
+    if (orderItems.length === 0) {
+      setError("ERROR: Minimal 1 Pesanan");
+      return;
+    }
+    if (parseInt(Bayar, 10) < totalPrice) {
+      setError("Uang Kurang!");
+      return;
+    }
 
-    if (loading) return; // Prevent multiple submissions
-    setLoading(true); // Set loading to true to indicate the request is in progress
+    setLoading(true);
 
     try {
-      const formattedItems = orderItems.map((item) => {
-        const quantityKey = `${item.type}-${item.id}`;
-        return {
-          type: item.type,
-          id: item.id,
-          qty: itemQuantities[quantityKey] || 1, // ✅ Get correct quantity
-        };
-      });
-
-      if (formattedItems.length === 0) {
-        setError("ERROR: Minimal 1 Pesanan");
-        setLoading(false); // Reset loading state on error
-        return;
-      }
+      const formattedItems = orderItems.map(item => ({
+        type: item.type,
+        id: item.id,
+        qty: item.quantity,
+      }));
 
       const response = await axios.post(`${API_URL}/send-order`, {
         meja: mejaNoNumber,
@@ -225,27 +198,27 @@ const OrderForm = () => {
 
       alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
 
+      // Reset form
       setOrderItems([]);
       setTotalPrice(0);
       setMejaNo("");
       setMessage("");
-      setAddedItems({});
       setBayar("");
       setSelectedCashier("");
-      setCashierCode("")
+      setCashierCode("");
+      setError(null);
     } catch (err) {
       setError("Error, Stock Habis");
     } finally {
-      setLoading(false); // Reset loading state after completion
+      setLoading(false);
     }
   };
 
-  const isMinimalOrder = orderItems.length !== 0;
+  // Check if order can be submitted
+  const isMinimalOrder = orderItems.length > 0;
   const isMejaNoValid = mejaNo.trim() !== "";
   const isKasirValid = SelectedCashier !== "";
-  const isBayarValid = Bayar.trim() >= totalPrice;
-
-  const [loading, setLoading] = useState(false); // Add a loading state
+  const isBayarValid = parseInt(Bayar || 0, 10) >= totalPrice;
 
   return (
     <div className="order-form">
@@ -254,9 +227,8 @@ const OrderForm = () => {
           {categories.map((category) => (
             <button
               key={category}
-              className={`nav-button ${
-                selectedCategory === category ? "active" : ""
-              }`}
+              className={`nav-button ${selectedCategory === category ? "active" : ""
+                }`}
               onClick={() => setSelectedCategory(category)}
             >
               {category}
@@ -273,59 +245,43 @@ const OrderForm = () => {
               <span className="header-price">HARGA</span>
               <span className="header-add">TAMBAH</span>
             </li>
-            {menuData[selectedCategory]?.map((item) => (
-              <li key={item.id} className="menu-item">
-                <span
-                  className={`item-stock ${
-                    item.qty === 0 ? "out-of-stock" : ""
-                  }`}
-                >
-                  {item.qty || "Habis"}
-                </span>
+            {menuData[selectedCategory]?.map((item) => {
+              const isInOrder = orderItems.some(
+                orderItem => orderItem.id === item.id &&
+                  orderItem.type === selectedCategory.toLowerCase().replace(/\s+/g, "")
+              );
 
-                <span className="item-name">{item.name}</span>
-                <span className="item-price">
-                  Rp. {PriceFormat(item.price)}
-                </span>
-                {!addedItems[
-                  selectedCategory.toLowerCase().replace(/\s+/g, "")
-                ]?.has(item.id) ? (
-                  <button
-                    className="item-add"
-                    onClick={addItemHandler(
-                      item.id,
-                      item.name,
-                      item.price,
-                      item.qty
-                    )}
-                    disabled={
-                      item.qty === 0 ||
-                      addedItems[
-                        selectedCategory.toLowerCase().replace(/\s+/g, "")
-                      ]?.has(item.id)
-                    }
-                  >
-                    <img
-                      src={
-                        item.qty === 0
-                          ? "/icons/ban.svg"
-                          : "/icons/plus-solid2.svg"
-                      }
-                      alt="Add Icon"
-                      className="add-icon"
-                    />
-                  </button>
-                ) : (
-                  <button className="item-add-placeholder">
-                    <img
-                      src="/icons/checkmark.svg"
-                      alt="Mark"
-                      className="add-icon-placeholder"
-                    />
-                  </button>
-                )}
-              </li>
-            ))}
+              return (
+                <li key={item.id} className="menu-item">
+                  <span className={`item-stock ${item.qty === 0 ? "out-of-stock" : ""}`}>
+                    {item.qty || "Habis"}
+                  </span>
+                  <span className="item-name">{item.name}</span>
+                  <span className="item-price">Rp. {PriceFormat(item.price)}</span>
+                  {!isInOrder ? (
+                    <button
+                      className="item-add"
+                      onClick={() => handleAddItem(item.id, item.name, item.price, item.qty)}
+                      disabled={item.qty === 0}
+                    >
+                      <img
+                        src={item.qty === 0 ? "/icons/ban.svg" : "/icons/plus-solid2.svg"}
+                        alt="Add Icon"
+                        className="add-icon"
+                      />
+                    </button>
+                  ) : (
+                    <button className="item-add-placeholder">
+                      <img
+                        src="/icons/checkmark.svg"
+                        alt="Mark"
+                        className="add-icon-placeholder"
+                      />
+                    </button>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
@@ -334,9 +290,8 @@ const OrderForm = () => {
         <div className="header">
           <div className="order-cashier">
             <h3 id="Your-Order">Your Order</h3>
-            <h3 id="kasir">Kasir : </h3>
+            <h3 id="kasir">Kasir : {SelectedCashier || "Belum Dipilih"}</h3>
             <input
-              className=""
               type="password"
               inputMode="numeric"
               pattern="[0-9]*"
@@ -344,64 +299,50 @@ const OrderForm = () => {
               onChange={handleCashierCodeChange}
               placeholder="Kode Kasir"
             />
-            {error && error.includes("kasir") && (
-              <p className="error-message">Pilih nama kasir terlebih dahulu!</p>
-            )}
           </div>
         </div>
 
         <ul>
-          {orderItems.map((item) => {
-            const quantityKey = `${item.type}-${item.id}`;
-            const currentQty = itemQuantities[quantityKey] || 1;
-
-            return (
-              <li key={`${item.type}-${item.id}`} className="order-item">
-                <span className="order-name">{item.name}</span>
-                <span className="order-qty-container">
-                  <button
-                    className="order-qty-button"
-                    onClick={() =>
-                      handleChangeQty(item, currentQty - 1, item.qty)
-                    }
-                    disabled={currentQty <= 1}
-                  >
-                    <img src="/icons/minus-small.svg" alt="-" />
-                  </button>
-                  <input
-                    className={`order-qty-input ${
-                      currentQty >= item.qty ? "max" : ""
-                    }`}
-                    type="number"
-                    value={currentQty}
-                    min="1"
-                    onChange={(e) =>
-                      handleChangeQty(item, e.target.value, item.qty)
-                    }
-                  />
-                  <button
-                    className="order-qty-button"
-                    onClick={() =>
-                      handleChangeQty(item, currentQty + 1, item.qty + 10)
-                    }
-                    disabled={currentQty >= item.qty + 10}
-                  >
-                    <img src="/icons/plus-small.svg" alt="+" />
-                  </button>
-                </span>
-                <span className="order-price">
-                  - Rp. {PriceFormat(item.price * currentQty)}
-                </span>
+          {orderItems.map((item) => (
+            <li key={`${item.type}-${item.id}`} className="order-item">
+              <span className="order-name">{item.name}</span>
+              <span className="order-qty-container">
                 <button
-                  className="order-remove"
-                  onClick={() => handleRemoveItem(item.id, item.type)}
+                  className="order-qty-button"
+                  onClick={() => handleChangeQty(item, item.quantity - 1)}
+                  disabled={item.quantity <= 1}
                 >
-                  <img src="/icons/x-circle.svg" alt="X" />
+                  <img src="/icons/minus-small.svg" alt="-" />
                 </button>
-              </li>
-            );
-          })}
+                <input
+                  className={`order-qty-input ${item.quantity >= item.maxQty ? "max" : ""
+                    }`}
+                  type="number"
+                  value={item.quantity}
+                  min="1"
+                  onChange={(e) => handleChangeQty(item, e.target.value)}
+                />
+                <button
+                  className="order-qty-button"
+                  onClick={() => handleChangeQty(item, item.quantity + 1)}
+                  disabled={item.quantity >= item.maxQty + 10}
+                >
+                  <img src="/icons/plus-small.svg" alt="+" />
+                </button>
+              </span>
+              <span className="order-price">
+                - Rp. {PriceFormat(item.price * item.quantity)}
+              </span>
+              <button
+                className="order-remove"
+                onClick={() => handleRemoveItem(item.id, item.type)}
+              >
+                <img src="/icons/x-circle.svg" alt="X" />
+              </button>
+            </li>
+          ))}
         </ul>
+
         <div className="order-form-input">
           <div className="order-form-message">
             <h3>Catatan</h3>
@@ -409,8 +350,8 @@ const OrderForm = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tuliskan Catatan Pesanan (OPSIONAL)"
-              rows="3" // Set the textarea to have 3 rows
-              className="message-input" // Apply the class here
+              rows="3"
+              className="message-input"
             />
           </div>
 
@@ -421,9 +362,12 @@ const OrderForm = () => {
               value={mejaNo}
               onChange={handleMejaNoChange}
               placeholder="Nomor"
+              min="1"
+              max="99"
             />
-            {isMejaNoValid ? <h2></h2> : <h4>Masukkan Nomor Meja !</h4>}
+            {!isMejaNoValid && <h4>Masukkan Nomor Meja !</h4>}
           </div>
+
           <div className="order-form-bayar">
             <h3>Bayar :</h3>
             <input
@@ -431,13 +375,14 @@ const OrderForm = () => {
               value={Bayar}
               onChange={handleBayar}
               placeholder="Rp. "
+              min="0"
             />
-            {isBayarValid ? <h2></h2> : <h4>Uang Kurang !</h4>}
+            {!isBayarValid && <h4>Uang Kurang !</h4>}
           </div>
 
           <h3>Total Price: Rp. {PriceFormat(totalPrice)}</h3>
           <h3>Kembalian: Rp. {PriceFormat(Kembalian)}</h3>
-          {/* Conditional rendering of ReactToPrint based on mejaNo */}
+
           {isMejaNoValid && isMinimalOrder && isBayarValid && isKasirValid ? (
             <button onClick={handleSubmit} disabled={loading}>
               {loading ? "Processing..." : "Kirim Ke Dapur"}
@@ -445,19 +390,10 @@ const OrderForm = () => {
           ) : (
             <button disabled>Kirim Ke Dapur</button>
           )}
-          {/* <button onClick={saveAsPDF}>Save as PDF</button> */}
-          {error && <p>{error}</p>}
+
+          {error && <p className="error-message">{error}</p>}
         </div>
       </div>
-
-      {/* The printable component */}
-      {/* <PrintableOrder
-      ref={printRef}
-      mejaNo={mejaNo}
-      orderItems={orderItems}
-      totalPrice={totalPrice}
-      message={message}
-    /> */}
     </div>
   );
 };

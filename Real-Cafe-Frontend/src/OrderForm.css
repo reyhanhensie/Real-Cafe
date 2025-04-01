@@ -103,7 +103,8 @@ span.header-add {
   font-weight: 700;
 }
 
-.item-name {
+span.item-name {
+  display: flex;
   text-align: left;
   font-weight: 500;
   flex: 3;
