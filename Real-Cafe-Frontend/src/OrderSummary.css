@@ -4,14 +4,17 @@
   margin-top: 0;
   overflow-x: auto;
 }
+
 .List {
   margin-bottom: 15%;
 }
+
 .orders-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 20px; /* Space between cards */
+  gap: 20px;
+  /* Space between cards */
 }
 
 .order-card {
@@ -21,11 +24,14 @@
   background-color: #f9f9f9;
   width: 250px;
   flex-direction: row;
-  position: relative; /* Needed to position Meja No at the top right */
+  position: relative;
+  /* Needed to position Meja No at the top right */
 }
+
 .order-header {
   display: flex;
 }
+
 .order-time {
   font-size: 18px;
   font-weight: 600;
@@ -41,6 +47,7 @@
   font-size: 40px;
   margin-top: 0;
 }
+
 .order-card h3 {
   margin: 0;
   font-size: 20px;
@@ -59,11 +66,13 @@
   margin: 10px 0;
   font-size: 14px;
 }
+
 .order-card h5 {
   font-size: 20px;
   margin-top: 10%;
   margin-bottom: 5%;
 }
+
 .order-card h6 {
   color: #634832;
   font-size: 20px;
@@ -99,6 +108,7 @@
   text-align: left;
   flex: 3;
 }
+
 .item-qty {
   text-align: right;
   flex: 1;
@@ -109,15 +119,21 @@
 }
 
 .item-name.stroked {
-  text-decoration: line-through; /* Adds the stroke effect */
-  color: red; /* Optional: change color to highlight stroked text */
+  text-decoration: line-through;
+  /* Adds the stroke effect */
+  color: red;
+  /* Optional: change color to highlight stroked text */
 }
+
 .order-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Pushes items to the top and bottom */
-  height: 100%; /* Ensure the container takes full height */
+  justify-content: space-between;
+  /* Pushes items to the top and bottom */
+  height: 100%;
+  /* Ensure the container takes full height */
 }
+
 .order-mark {
   bottom: 10px;
   display: flex;
@@ -129,6 +145,7 @@
   left: 50%;
   width: 100%;
 }
+
 .Pesanan-button {
   padding-left: 20px;
   padding-right: 20px;
@@ -142,17 +159,21 @@
   cursor: pointer;
   font-size: 12px;
 }
+
 .bottom-interact {
   margin-top: 0%;
 }
+
 .order-message {
   margin-top: 10%;
   margin-bottom: 20%;
   font-size: 18px;
 }
+
 .Pesanan-button:hover {
   background-color: #0056b3;
 }
+
 .confirmation-dialog {
   position: fixed;
   top: 50%;
@@ -208,7 +229,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 200px); /* Adjust based on your layout */
+  height: calc(100vh - 200px);
+  /* Adjust based on your layout */
 }
 
 .empty-order-content {
@@ -241,9 +263,11 @@
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     transform: scale(1);
   }
@@ -255,76 +279,97 @@
 
 
 /* SUMMARY MENU ITEMS */
-.Summary-menu {
-  position: absolute;
-  top: 50px;
-  right: -300px; /* Initially hidden */
-  width: 250px;
-  max-height: 80vh;
-  overflow-y: auto;
-  background: #ffffff; /* Semi-transparent dark background */
+/* Container to hold both the button and the summary menu */
+.summary-container {
+  position: relative;
+}
+
+/* Toggle button at the top-right of the screen */
+.toggle-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s;
+  z-index: 9999; /* Ensure it stays above other elements */
+}
+
+.toggle-button:hover {
+  background: #d32f2f;
+}
+
+/* Summary menu slides from the right */
+.summary-menu {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 320px;
+  background:white;
   color: black;
-  padding: 10px;
-  border-radius: 10px 0 0 10px;
-  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.3);
-  transition: right 0.4s ease-in-out;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  max-height: 50vh;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+  z-index: 9998;
 }
 
-.Summary-menu.show {
-  right: 0; /* Slide in */
+.summary-menu.show {
+  transform: translateX(0);
 }
 
-.Summary-menu h2 {
-  font-size: 1rem;
+.summary-menu h2 {
+  font-size: 1.2rem;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-weight: bold;
   text-transform: uppercase;
 }
 
-.Summary-menu h3 {
-  font-size: 0.9rem;
-  margin: 6px 0;
+.summary-menu h3 {
+  font-size: 20px;
+  /* font-size: 1rem; */
+  margin: 8px 0;
   font-weight: bold;
 }
 
-.Summary-menu ul {
+.summary-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.Summary-menu li {
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 4px 8px;
+.summary-menu li {
+  font-size: 20px;  
+  /* font-size: 0.9rem; */
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 3px;
+  margin-bottom: 6px;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* This pushes the quantity to the right */
+  align-items: center;
 }
 
-/* Animation for cascading effect */
-.Summary-menu div {
-  opacity: 0;
-  transform: translateX(20px);
-  animation: slideIn 0.3s ease-in-out forwards;
+.item-name {
+  flex-grow: 1; /* Ensures the name takes up available space */
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.item-quantity {
+  font-weight: bold;
+  color: black; /* Makes it stand out */
+  min-width: 30px; /* Ensures it doesn't collapse */
+  text-align: right;
 }
-
-.Summary-menu div:nth-child(1) { animation-delay: 0.1s; }
-.Summary-menu div:nth-child(2) { animation-delay: 0.2s; }
-.Summary-menu div:nth-child(3) { animation-delay: 0.3s; }
-.Summary-menu div:nth-child(4) { animation-delay: 0.4s; }
-.Summary-menu div:nth-child(5) { animation-delay: 0.5s; }

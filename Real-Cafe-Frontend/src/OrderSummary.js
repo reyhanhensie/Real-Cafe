@@ -21,6 +21,7 @@ const OrderSummary = () => {
   const previousOrdersCount = useRef(0);
   const [canPlaySound, setCanPlaySound] = useState(false);
   const [summary, setSummary] = useState({});
+  const [isSummaryVisible, setIsSummaryVisible] = useState(false);
 
 
   useEffect(() => {
@@ -146,32 +147,46 @@ const OrderSummary = () => {
   const formatCategory = (type) => {
     const categoryMap = {
       lalapan: "Lalapan",
+      makanan: "Makanan",
       minumandingin: "Minuman Dingin",
+      minumanpanas: "Minuman Panas",
       jus: "Jus",
       milkshake: "Milkshake",
       coffe: "Kopi",
       camilan: "Camilan",
+      paket: "Paket",
     };
     return categoryMap[type] || "Lainnya";
+  };
+  const handleToggleSummary = () => {
+    setIsSummaryVisible(!isSummaryVisible);
   };
 
   return (
     <div className="order-summary">
-      <div className={`Summary-menu ${Object.keys(summary).length > 0 ? 'show' : ''}`}>
-        <h2>RINGKASAN</h2>
-        {Object.entries(summary).map(([category, items]) => (
-          <div key={category}>
-            <h3>{category}</h3>
-            <ul>
-              {Object.entries(items).map(([itemName, quantity]) => (
-                <li key={itemName}>
-                  <span>{itemName}</span>
-                  <span>{quantity}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      {/* SUMMARY */}
+      <div className="summary-container">
+        <button className="toggle-button" onClick={handleToggleSummary}>
+          {isSummaryVisible ? "X" : "☰"}
+        </button>
+
+        <div className={`summary-menu ${isSummaryVisible ? "show" : ""}`}>
+          <h2>RINGKASAN</h2>
+          {Object.entries(summary).map(([category, items]) => (
+            <div key={category}>
+              <h3>{category}</h3>
+              <ul>
+                {Object.entries(items).map(([itemName, quantity]) => (
+                  <li key={itemName}>
+                    <span className="item-name">{itemName}</span>
+                    <span className="item-quantity">{quantity}</span>
+                  </li>
+
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
 
 
@@ -286,6 +301,7 @@ const OrderSummary = () => {
           )}
         </>
       )}
+
     </div>
   );
 };
