@@ -20,6 +20,9 @@ const OrderSummary = () => {
   const audioRef = useRef(null);
   const previousOrdersCount = useRef(0);
   const [canPlaySound, setCanPlaySound] = useState(false);
+  const [summary, setSummary] = useState({});
+  const [isSummaryVisible, setIsSummaryVisible] = useState(false);
+
 
   useEffect(() => {
     if (!soundAlertDialog.enabled) return;
@@ -86,6 +89,8 @@ const OrderSummary = () => {
       );
       const response = await axios.get(`${API_URL}/live-drink`);
       setOrders(response.data);
+      setSummary(categorizeItems(response.data));
+
       previousOrdersCount.current = response.data.length;
     } catch (err) {
       console.error("Error completing the order:", err);
@@ -117,6 +122,46 @@ const OrderSummary = () => {
   const disableSoundAlert = () => {
     setSoundAlertDialog({ isOpen: false, enabled: false });
   };
+  // SUMMARY OF THE COMPONENT
+  const categorizeItems = (orders) => {
+    const categories = {};
+
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        const category = formatCategory(item.item_type);
+
+        if (!categories[category]) {
+          categories[category] = {};
+        }
+
+        if (!categories[category][item.item_name]) {
+          categories[category][item.item_name] = 0;
+        }
+
+        categories[category][item.item_name] += item.quantity;
+      });
+    });
+
+    return categories;
+  };
+
+  const formatCategory = (type) => {
+    const categoryMap = {
+      lalapan: "Lalapan",
+      makanan: "Makanan",
+      minumandingin: "Minuman Dingin",
+      minumanpanas: "Minuman Panas",
+      jus: "Jus",
+      milkshake: "Milkshake",
+      coffe: "Kopi",
+      camilan: "Camilan",
+      paket: "Paket",
+    };
+    return categoryMap[type] || "Lainnya";
+  };
+  const handleToggleSummary = () => {
+    setIsSummaryVisible(!isSummaryVisible);
+  };
 
   return (
     <div className="order-summary">
@@ -131,6 +176,29 @@ const OrderSummary = () => {
           </div>
         </div>
       )}
+      <div className="summary-container">
+        <button className="toggle-button" onClick={handleToggleSummary}>
+          {isSummaryVisible ? "X" : "☰"}
+        </button>
+
+        <div className={`summary-menu ${isSummaryVisible ? "show" : ""}`}>
+          <h2>RINGKASAN</h2>
+          {Object.entries(summary).map(([category, items]) => (
+            <div key={category}>
+              <h3>{category}</h3>
+              <ul>
+                {Object.entries(items).map(([itemName, quantity]) => (
+                  <li key={itemName}>
+                    <span className="item-name">{itemName}</span>
+                    <span className="item-quantity">{quantity}</span>
+                  </li>
+
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Render content only if sound alerts are enabled */}
       {!soundAlertDialog.isOpen && soundAlertDialog.enabled && (
@@ -166,20 +234,19 @@ const OrderSummary = () => {
                             {type === "minumanpanas"
                               ? "Minuman Panas"
                               : type === "minumandingin"
-                              ? "Minuman Dingin"
-                              : type.charAt(0).toUpperCase() + type.slice(1)}
+                                ? "Minuman Dingin"
+                                : type.charAt(0).toUpperCase() + type.slice(1)}
                           </h6>
                           <ul>
                             {items.map((item, index) => (
                               <li key={index} className="order-item">
                                 <span
-                                  className={`item-name ${
-                                    (strokedItems[order.id] || []).includes(
-                                      item.item_name
-                                    )
-                                      ? "stroked"
-                                      : ""
-                                  }`}
+                                  className={`item-name ${(strokedItems[order.id] || []).includes(
+                                    item.item_name
+                                  )
+                                    ? "stroked"
+                                    : ""
+                                    }`}
                                   onClick={() =>
                                     handleItemClick(order.id, item.item_name)
                                   }
