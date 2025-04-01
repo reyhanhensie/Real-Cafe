@@ -22,7 +22,9 @@ const OrderSummary = () => {
   const [canPlaySound, setCanPlaySound] = useState(false);
   const [summary, setSummary] = useState({});
   const [isSummaryVisible, setIsSummaryVisible] = useState(false);
-
+  const [isReceivingOrders, setIsReceivingOrders] = useState(true);
+  const [lastFetchTime, setLastFetchTime] = useState(null);
+  const frozenOrdersRef = useRef(null);
 
   useEffect(() => {
     if (!soundAlertDialog.enabled) return;
@@ -51,13 +53,28 @@ const OrderSummary = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(`${API_URL}/live-orders`);
-        setOrders(response.data);
-        setSummary(categorizeItems(response.data));
-
-        if (response.data.length > previousOrdersCount.current) {
-          audioRef.current.play();
+        
+        if (isReceivingOrders) {
+          // If we're receiving orders, update normally
+          setOrders(response.data);
+          setSummary(categorizeItems(response.data));
+          
+          if (response.data.length > previousOrdersCount.current) {
+            audioRef.current.play();
+          }
+          
+          previousOrdersCount.current = response.data.length;
+          setLastFetchTime(new Date());
+          
+          // Store the latest orders in the frozenOrders ref when receiving
+          frozenOrdersRef.current = response.data;
+        } else if (!frozenOrdersRef.current) {
+          // Initialize frozen orders if we don't have any yet
+          setOrders(response.data);
+          setSummary(categorizeItems(response.data));
+          frozenOrdersRef.current = response.data;
+          setLastFetchTime(new Date());
         }
-        previousOrdersCount.current = response.data.length;
       } catch (err) {
         console.error("Error fetching orders:", err);
         setError("Error fetching orders");
@@ -67,7 +84,36 @@ const OrderSummary = () => {
     fetchOrders();
     const intervalId = setInterval(fetchOrders, 10000);
     return () => clearInterval(intervalId);
-  }, [API_URL, soundAlertDialog.enabled]);
+  }, [API_URL, soundAlertDialog.enabled, isReceivingOrders]);
+
+  // Effect to handle toggling orders reception
+  useEffect(() => {
+    if (!isReceivingOrders) {
+      // Store the current orders when stopping
+      frozenOrdersRef.current = orders;
+    }
+  }, [isReceivingOrders, orders]);
+
+  const toggleOrderReception = () => {
+    if (!isReceivingOrders) {
+      // If we're starting to receive orders again, do a fresh fetch
+      fetchLatestOrders();
+    }
+    setIsReceivingOrders(!isReceivingOrders);
+  };
+
+  const fetchLatestOrders = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/live-orders`);
+      setOrders(response.data);
+      setSummary(categorizeItems(response.data));
+      previousOrdersCount.current = response.data.length;
+      setLastFetchTime(new Date());
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setError("Error fetching orders");
+    }
+  };
 
   const groupItemsByType = (items) => {
     return items.reduce((acc, item) => {
@@ -88,9 +134,17 @@ const OrderSummary = () => {
       await axios.patch(
         `${API_URL}/order/${confirmationDialog.orderId}/complete`
       );
-      const response = await axios.get(`${API_URL}/live-orders`);
-      setOrders(response.data);
-      previousOrdersCount.current = response.data.length;
+      
+      if (isReceivingOrders) {
+        // Only fetch new orders if we're in receiving mode
+        fetchLatestOrders();
+      } else {
+        // If we're not receiving orders, just remove the completed order from the current list
+        const updatedOrders = orders.filter(order => order.id !== confirmationDialog.orderId);
+        setOrders(updatedOrders);
+        setSummary(categorizeItems(updatedOrders));
+        frozenOrdersRef.current = updatedOrders;
+      }
     } catch (err) {
       console.error("Error completing the order:", err);
       setError("Error completing the order");
@@ -121,6 +175,7 @@ const OrderSummary = () => {
   const disableSoundAlert = () => {
     setSoundAlertDialog({ isOpen: false, enabled: false });
   };
+  
   // SUMMARY OF THE COMPONENT
   const categorizeItems = (orders) => {
     const categories = {};
@@ -158,6 +213,7 @@ const OrderSummary = () => {
     };
     return categoryMap[type] || "Lainnya";
   };
+  
   const handleToggleSummary = () => {
     setIsSummaryVisible(!isSummaryVisible);
   };
@@ -181,14 +237,12 @@ const OrderSummary = () => {
                     <span className="item-name">{itemName}</span>
                     <span className="item-quantity">{quantity}</span>
                   </li>
-
                 ))}
               </ul>
             </div>
           ))}
         </div>
       </div>
-
 
       {/* Only show the confirmation dialog if sound alerts are not yet enabled */}
       {soundAlertDialog.isOpen && (
@@ -206,7 +260,21 @@ const OrderSummary = () => {
       {!soundAlertDialog.isOpen && soundAlertDialog.enabled && (
         <>
           <audio ref={audioRef} src={notification} />
-          <h2>ORDERS</h2>
+          <div className="header-controls">
+            <h2>ORDERS</h2>
+            <button 
+              className={`order-control-button ${isReceivingOrders ? 'stop-orders' : 'open-orders'}`}
+              onClick={toggleOrderReception}
+            >
+              {isReceivingOrders ? 'ORDER TERBUKA' : 'ORDER DITUTUP'}
+            </button>
+            {!isReceivingOrders && (
+              <div className="orders-stopped-indicator">
+                <span>Orders berhenti sejak {lastFetchTime ? format(new Date(lastFetchTime), "HH:mm:ss") : 'N/A'}</span>
+              </div>
+            )}
+          </div>
+          
           {error && <p className="error">{error}</p>}
           {orders.length === 0 ? (
             <div className="empty-order">
@@ -301,7 +369,6 @@ const OrderSummary = () => {
           )}
         </>
       )}
-
     </div>
   );
 };

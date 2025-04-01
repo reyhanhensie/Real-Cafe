@@ -373,3 +373,58 @@
   min-width: 30px; /* Ensures it doesn't collapse */
   text-align: right;
 }
+
+
+/* OPEN CLOSE ORDER */
+/* Add this to your OrderSummary.css file */
+
+.header-controls {
+  display: flex;
+  justify-content: center;
+flex-direction: column;
+  /* justify-content: space-between; */
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.order-control-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.open-orders {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.open-orders:hover {
+  background-color: #ff7875;
+}
+
+.stop-orders {
+  background-color: #52c41a;
+  color: white;
+}
+
+.stop-orders:hover {
+  background-color: #73d13d;
+}
+
+.orders-stopped-indicator {
+  background-color: #ffe58f;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-size: 0.8rem;
+  color: #d4b106;
+  display: flex;
+  align-items: center;
+}
+
+.orders-stopped-indicator span {
+  margin-left: 5px;
+}
