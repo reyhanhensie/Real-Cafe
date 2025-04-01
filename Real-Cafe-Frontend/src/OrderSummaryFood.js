@@ -23,6 +23,7 @@ const OrderSummary = () => {
   const [summary, setSummary] = useState({});
   const [isSummaryVisible, setIsSummaryVisible] = useState(false);
 
+
   useEffect(() => {
     if (!soundAlertDialog.enabled) return;
 
@@ -52,6 +53,7 @@ const OrderSummary = () => {
         const response = await axios.get(`${API_URL}/live-food`);
         setOrders(response.data);
         setSummary(categorizeItems(response.data));
+
         if (response.data.length > previousOrdersCount.current) {
           // Play sound for new order if enabled
           audioRef.current.play();
@@ -89,6 +91,7 @@ const OrderSummary = () => {
       );
       const response = await axios.get(`${API_URL}/live-food`);
       setOrders(response.data);
+
       previousOrdersCount.current = response.data.length;
     } catch (err) {
       console.error("Error completing the order:", err);
@@ -160,8 +163,20 @@ const OrderSummary = () => {
   const handleToggleSummary = () => {
     setIsSummaryVisible(!isSummaryVisible);
   };
+
   return (
     <div className="order-summary">
+      {/* Only show the confirmation dialog if sound alerts are not yet enabled */}
+      {soundAlertDialog.isOpen && (
+        <div className="confirmation-dialog">
+          <p>ENABLE SOUND ALERT FIRST!</p>
+          <div className="confirmation-buttons">
+            <button onClick={enableSoundAlert} className="confirm-button">
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <div className="summary-container">
         <button className="toggle-button" onClick={handleToggleSummary}>
           {isSummaryVisible ? "X" : "☰"}

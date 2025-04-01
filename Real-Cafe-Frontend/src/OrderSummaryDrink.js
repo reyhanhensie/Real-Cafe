@@ -52,6 +52,8 @@ const OrderSummary = () => {
       try {
         const response = await axios.get(`${API_URL}/live-drink`);
         setOrders(response.data);
+        setSummary(categorizeItems(response.data));
+
         if (response.data.length > previousOrdersCount.current) {
           // Play sound for new order if enabled
           audioRef.current.play();
@@ -89,7 +91,6 @@ const OrderSummary = () => {
       );
       const response = await axios.get(`${API_URL}/live-drink`);
       setOrders(response.data);
-      setSummary(categorizeItems(response.data));
 
       previousOrdersCount.current = response.data.length;
     } catch (err) {
