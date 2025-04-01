@@ -20,6 +20,8 @@ const OrderSummary = () => {
   const audioRef = useRef(null);
   const previousOrdersCount = useRef(0);
   const [canPlaySound, setCanPlaySound] = useState(false);
+  const [summary, setSummary] = useState({});
+
 
   useEffect(() => {
     if (!soundAlertDialog.enabled) return;
@@ -49,8 +51,9 @@ const OrderSummary = () => {
       try {
         const response = await axios.get(`${API_URL}/live-orders`);
         setOrders(response.data);
+        setSummary(categorizeItems(response.data));
+
         if (response.data.length > previousOrdersCount.current) {
-          // Play sound for new order if enabled
           audioRef.current.play();
         }
         previousOrdersCount.current = response.data.length;
@@ -117,9 +120,54 @@ const OrderSummary = () => {
   const disableSoundAlert = () => {
     setSoundAlertDialog({ isOpen: false, enabled: false });
   };
+  // SUMMARY OF THE COMPONENT
+  const categorizeItems = (orders) => {
+    const categories = {};
+
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        const category = formatCategory(item.item_type);
+
+        if (!categories[category]) {
+          categories[category] = {};
+        }
+
+        if (!categories[category][item.item_name]) {
+          categories[category][item.item_name] = 0;
+        }
+
+        categories[category][item.item_name] += item.quantity;
+      });
+    });
+
+    return categories;
+  };
+
+  const formatCategory = (type) => {
+    const categoryMap = {
+      lalapan :"Lalapan",
+      minumandingin: "Minuman Dingin",
+      jus: "Jus",
+      milkshake: "Milkshake",
+      coffe: "Kopi",
+      camilan: "Camilan",
+    };
+    return categoryMap[type] || "Lainnya";
+  };
 
   return (
     <div className="order-summary">
+      <h2>Total Items Needed to Prepare</h2>
+      {Object.entries(summary).map(([category, items]) => (
+        <div key={category}>
+          <h3>{category}</h3>
+          <ul>
+            {Object.entries(items).map(([itemName, quantity]) => (
+              <li key={itemName}>{itemName}: {quantity}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
       {/* Only show the confirmation dialog if sound alerts are not yet enabled */}
       {soundAlertDialog.isOpen && (
         <div className="confirmation-dialog">
@@ -166,20 +214,19 @@ const OrderSummary = () => {
                             {type === "minumanpanas"
                               ? "Minuman Panas"
                               : type === "minumandingin"
-                              ? "Minuman Dingin"
-                              : type.charAt(0).toUpperCase() + type.slice(1)}
+                                ? "Minuman Dingin"
+                                : type.charAt(0).toUpperCase() + type.slice(1)}
                           </h6>
                           <ul>
                             {items.map((item, index) => (
                               <li key={index} className="order-item">
                                 <span
-                                  className={`item-name ${
-                                    (strokedItems[order.id] || []).includes(
-                                      item.item_name
-                                    )
-                                      ? "stroked"
-                                      : ""
-                                  }`}
+                                  className={`item-name ${(strokedItems[order.id] || []).includes(
+                                    item.item_name
+                                  )
+                                    ? "stroked"
+                                    : ""
+                                    }`}
                                   onClick={() =>
                                     handleItemClick(order.id, item.item_name)
                                   }
