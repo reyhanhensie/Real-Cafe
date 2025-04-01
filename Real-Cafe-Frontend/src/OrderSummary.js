@@ -145,7 +145,7 @@ const OrderSummary = () => {
 
   const formatCategory = (type) => {
     const categoryMap = {
-      lalapan :"Lalapan",
+      lalapan: "Lalapan",
       minumandingin: "Minuman Dingin",
       jus: "Jus",
       milkshake: "Milkshake",
@@ -157,17 +157,24 @@ const OrderSummary = () => {
 
   return (
     <div className="order-summary">
-      <h2>Total Items Needed to Prepare</h2>
-      {Object.entries(summary).map(([category, items]) => (
-        <div key={category}>
-          <h3>{category}</h3>
-          <ul>
-            {Object.entries(items).map(([itemName, quantity]) => (
-              <li key={itemName}>{itemName}: {quantity}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <div className={`Summary-menu ${Object.keys(summary).length > 0 ? 'show' : ''}`}>
+        <h2>RINGKASAN</h2>
+        {Object.entries(summary).map(([category, items]) => (
+          <div key={category}>
+            <h3>{category}</h3>
+            <ul>
+              {Object.entries(items).map(([itemName, quantity]) => (
+                <li key={itemName}>
+                  <span>{itemName}</span>
+                  <span>{quantity}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+
       {/* Only show the confirmation dialog if sound alerts are not yet enabled */}
       {soundAlertDialog.isOpen && (
         <div className="confirmation-dialog">
