@@ -290,7 +290,7 @@ const OrderForm = () => {
         <div className="header">
           <div className="order-cashier">
             <h3 id="Your-Order">Your Order</h3>
-            <h3 id="kasir">Kasir : {SelectedCashier || "Belum Dipilih"}</h3>
+            <h3 id="kasir">Kasir :</h3>
             <input
               type="password"
               inputMode="numeric"
@@ -298,6 +298,7 @@ const OrderForm = () => {
               value={cashierCode}
               onChange={handleCashierCodeChange}
               placeholder="Kode Kasir"
+              autoComplete="off"  // This is the key attribute
             />
           </div>
         </div>
