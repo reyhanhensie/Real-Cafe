@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import style from "./Finance.module.css"; // Make sure to create this CSS file for styles
+import style from "./Admin.module.css"; // Make sure to create this CSS file for styles
 
 const TwoOptionLayout = () => {
   return (

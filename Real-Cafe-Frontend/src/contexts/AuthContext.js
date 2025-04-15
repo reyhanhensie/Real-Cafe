@@ -12,13 +12,18 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate(); // Initialize useNavigate
   const location = useLocation(); // Get the current route
   const isOnRegisterPage = location.pathname === "/register";
+  const isOnMenuFoto = location.pathname === "/MenuFoto";
+
   useEffect(() => {
     const logout = () => {
       setIsAuthenticated(false);
       setUserRole(null); // Clear user role
     };
     const checkAuth = async () => {
-      if (!isOnRegisterPage) {
+      if (isOnMenuFoto){
+
+      }
+      else if (!isOnRegisterPage) {
         const token = Cookies.get("token");
         if (token) {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;

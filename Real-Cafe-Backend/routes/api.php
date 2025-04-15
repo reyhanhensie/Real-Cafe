@@ -21,6 +21,10 @@ use App\Http\Controllers\PrintController;
 use App\Http\Controllers\RokokController;
 use App\Http\Controllers\ShiftsController;
 
+// MenuFoto
+use App\Http\Controllers\MenuFotoController;
+
+
 // AUTHENTICATION
 Route::middleware('web')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
@@ -85,3 +89,11 @@ Route::get('/ShiftOrder', [OrderController::class, 'ShiftOrders']); // Create an
 Route::get('/ShiftOrderFilter', [OrderController::class, 'shift']); // Create an order
 
 Route::get('/test', [ShiftsController::class, 'test']);
+
+
+
+Route::get('/daftar-menu', [MenuFotoController::class, 'index']);
+Route::post('/menufoto', [MenuFotoController::class, 'store']);
+Route::delete('/menufoto/{id}', [MenuFotoController::class, 'destroy']);
+Route::put('/menufoto/{id}', [MenuFotoController::class, 'update']);
+

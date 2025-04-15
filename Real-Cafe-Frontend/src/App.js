@@ -6,7 +6,7 @@ import OrderSummary from './OrderSummary';
 import OrderSummaryFood from './OrderSummaryFood';
 import OrderSummaryDrink from './OrderSummaryDrink';
 import Stock from './Stock';
-import Finance from './Finance';
+import Admin from './Admin';
 import Sale_Revenue from './Sale_Revenue';
 import AllTime from './AllTime';
 import Traffic from './Traffic';
@@ -22,6 +22,9 @@ import KasirRoute from './components/ProtectedRoute-kasir';
 import DapurRoute from './components/ProtectedRoute-dapur';
 import AdminRoute from './components/ProtectedRoute-admin';
 
+import MenuFoto from './MenuFoto';
+import MenuFotoEdit from './MenuFotoEdit';
+
 import './App.css';
 
 const App = () => {
@@ -33,86 +36,95 @@ const App = () => {
           <Route path="/" element={<Layout><Home /></Layout>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Layout><Login /></Layout>} />
-          
+          <Route path="/MenuFoto" element={<MenuFoto />} />
+
+
           {/* Protected Routes */}
-          <Route 
-            path="/order-form" 
+          <Route
+            path="/order-form"
             element={
               <KasirRoute element={<Layout><OrderForm /></Layout>} />
-            } 
+            }
           />
-          <Route 
-            path="/order-summary" 
+          <Route
+            path="/order-summary"
             element={
               <DapurRoute element={<Layout><OrderSummary /></Layout>} />
-            } 
+            }
           />
-          <Route 
-            path="/stock-management" 
+          <Route
+            path="/stock-management"
             element={
               <DapurRoute element={<Layout><Stock /></Layout>} />
-            } 
+            }
           />
-            <Route 
-            path="/spending" 
+          <Route
+            path="/spending"
             element={
               <DapurRoute element={<Layout><Pengeluaran /></Layout>} />
-            } 
+            }
           />
-            <Route 
-            path="/summary" 
+          <Route
+            path="/summary"
             element={
               <DapurRoute element={<Layout><Summary /></Layout>} />
-            } 
+            }
           />
-            <Route 
-            path="/order-summary-food" 
+          <Route
+            path="/order-summary-food"
             element={
               <DapurRoute element={<Layout><OrderSummaryFood /></Layout>} />
-            } 
+            }
           />
-            <Route 
-            path="/order-summary-drink" 
+          <Route
+            path="/order-summary-drink"
             element={
               <DapurRoute element={<Layout><OrderSummaryDrink /></Layout>} />
-            } 
+            }
           />
-               <Route 
-            path="/finance" 
+          <Route
+            path="/admin"
             element={
-              <AdminRoute element={<Layout><Finance/></Layout>} />
-            } 
+              <AdminRoute element={<Layout><Admin /></Layout>} />
+            }
           />
-                <Route 
-            path="/sale-revenue" 
+          <Route
+            path="/sale-revenue"
             element={
-              <AdminRoute element={<Layout><Sale_Revenue/></Layout>} />
-            } 
+              <AdminRoute element={<Layout><Sale_Revenue /></Layout>} />
+            }
           />
-          <Route 
-            path="/All-Time" 
+          <Route
+            path="/All-Time"
             element={
-              <AdminRoute element={<Layout><AllTime/></Layout>} />
-            } 
+              <AdminRoute element={<Layout><AllTime /></Layout>} />
+            }
           />
-                <Route 
-            path="/traffic" 
+          <Route
+            path="/traffic"
             element={
-              <AdminRoute element={<Layout><Traffic/></Layout>} />
-            } 
+              <AdminRoute element={<Layout><Traffic /></Layout>} />
+            }
           />
-                <Route 
-            path="/shift" 
+          <Route
+            path="/MenuFotoEdit"
             element={
-              <DapurRoute element={<Layout><Shift/></Layout>} />
-            } 
+              <AdminRoute element={<Layout><MenuFotoEdit/></Layout>} />
+            }
           />
-                <Route 
-            path="/expense" 
+          <Route
+            path="/shift"
             element={
-              <DapurRoute element={<Layout><Expense/></Layout>} />
-            } 
+              <DapurRoute element={<Layout><Shift /></Layout>} />
+            }
           />
+          <Route
+            path="/expense"
+            element={
+              <DapurRoute element={<Layout><Expense /></Layout>} />
+            }
+          />
+
         </Routes>
       </AuthProvider>
     </Router>

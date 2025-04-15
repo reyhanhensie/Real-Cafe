@@ -1,0 +1,117 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll;
+  /* Prevent vertical scroll */
+}
+
+.menu-foto-edit {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  margin: 0 auto;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+.menu-foto-edit h2 {
+  margin-bottom: 24px;
+  font-size: 28px;
+  color: #333;
+}
+
+.menu-foto-edit form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.menu-foto-edit input[type="text"],
+.menu-foto-edit input[type="file"] {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.menu-foto-edit button {
+  padding: 10px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.menu-foto-edit button:hover {
+  background-color: #2563eb;
+}
+
+/* ✅ Menu list horizontally scrollable */
+.menu-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  gap: 20px;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 20px;
+
+}
+
+
+
+/* ✅ Remove white border and background */
+.menu-card {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  width: 220px;
+  box-shadow: none;
+  background: transparent;
+  transition: transform 0.2s ease;
+}
+
+.menu-card:hover {
+  transform: scale(1.02);
+}
+
+.menu-card img {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  max-height: 300px;
+  display: block;
+}
+
+.menu-card p {
+  margin: 10px 0 4px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+}
+
+.menu-card button {
+  margin-right: 8px;
+  margin-top: 6px;
+  background-color: #f97316;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.menu-card button:last-child {
+  background-color: #10b981;
+}
