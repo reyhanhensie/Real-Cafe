@@ -19,10 +19,17 @@ const MenuList = () => {
             }
         };
 
-        container.addEventListener('wheel', handleWheel, { passive: false });
+        if (container) {
+            container.addEventListener('wheel', handleWheel, { passive: false });
+        }
 
-        return () => container.removeEventListener('wheel', handleWheel);
+        return () => {
+            if (container) {
+                container.removeEventListener('wheel', handleWheel);
+            }
+        };
     }, []);
+
 
     return (
         <div className="menu-foto-container">

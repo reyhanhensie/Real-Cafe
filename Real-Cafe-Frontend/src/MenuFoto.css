@@ -3,6 +3,9 @@ body {
   margin: 0;
   padding: 0;
   overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
   /* Prevent vertical scroll */
 }
 
