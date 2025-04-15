@@ -25,7 +25,7 @@ const MenuList = () => {
     }, []);
 
     return (
-        <div className="menu-container">
+        <div className="menu-foto-container">
             {menus.map(menu => (
                 <div key={menu.id} className="menu-item">
                     <img

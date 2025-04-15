@@ -5,7 +5,7 @@ import style from "./Admin.module.css"; // Make sure to create this CSS file for
 const TwoOptionLayout = () => {
   return (
     <div className={style.mainContainer}>
-      <h1 className={style.heading}>Choose Your Finance Option</h1>
+      <h1 className={style.heading}>Choose Your Admin Option</h1>
       <div className={style.options}>
         <Link to="/sale-revenue" className={style.optionCard}>
           <img
@@ -48,6 +48,14 @@ const TwoOptionLayout = () => {
             className={style.icon}
           />
           <span className={style.optionText}>Pengeluaran Per Shift</span>
+        </Link>
+        <Link to="/MenuFotoEdit" className={style.optionCard}>
+          <img
+            src="/icons/order-kitchen.svg"
+            alt="Spending Icon"
+            className={style.icon}
+          />
+          <span className={style.optionText}>Menu Foto</span>
         </Link>
       </div>
     </div>

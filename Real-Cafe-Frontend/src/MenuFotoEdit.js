@@ -29,15 +29,19 @@ const MenuFotoEdit = () => {
     formData.append('name', newMenu.name);
     formData.append('image', newMenu.image);
 
-    const res = await fetch(`${API_URL}/menufoto`, {
+    await fetch(`${API_URL}/menufoto`, {
       method: 'POST',
       body: formData,
     });
 
-    const newItem = await res.json();
-    setMenus([...menus, newItem]);
+    // Refresh menu list
+    await fetch(`${API_URL}/daftar-menu`)
+      .then(res => res.json())
+      .then(data => setMenus(data));
+
     setNewMenu({ name: '', image: null });
   };
+
 
   const handleDelete = async (id) => {
     await fetch(`${API_URL}/menufoto/${id}`, {
