@@ -11,7 +11,7 @@ const MenuList = () => {
             .then(data => setMenus(data));
     }, []);
     useEffect(() => {
-        const container = document.querySelector('.menu-container');
+        const container = document.querySelector('.menu-foto-container');
         const handleWheel = (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
