@@ -97,3 +97,10 @@ Route::post('/menufoto', [MenuFotoController::class, 'store']);
 Route::delete('/menufoto/{id}', [MenuFotoController::class, 'destroy']);
 Route::put('/menufoto/{id}', [MenuFotoController::class, 'update']);
 
+use App\Http\Controllers\ShoppingListController;
+
+Route::get('/shopping-list', [ShoppingListController::class, 'index']);
+Route::post('/shopping-list', [ShoppingListController::class, 'store']);
+Route::put('/shopping-list/{id}/status', [ShoppingListController::class, 'updateStatus']);
+Route::put('/shopping-list/{id}', [ShoppingListController::class, 'update']); // NEW
+Route::delete('/shopping-list/{id}', [ShoppingListController::class, 'destroy']);
