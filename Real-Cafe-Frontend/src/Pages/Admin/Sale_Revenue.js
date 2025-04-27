@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Chart as ChartJS,
@@ -9,10 +9,11 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import style from "./Traffic.module.css";
+import style from "./Sale_Revenue.module.css";
+import { useRef } from "react";
 import { Chart } from "chart.js";
 
-import API_URL from "./apiconfig"; // Import the API_URL
+import API_URL from "../../apiconfig"; // Import the API_URL
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -28,7 +29,7 @@ const MenuDropdown = () => {
     const firstCategory = Object.keys(menuData)[0]; // Get the first category from the menuData
     if (firstCategory) {
       // Set the first item of the first category as the default selected item
-      return [[menuData[firstCategory]?.[0]?.name || ""]]; // Set default item to first item in category
+      return [[menuData[firstCategory]?.[0]?.name || ""]];
     }
     return []; // Return an empty array if no category exists
   });
@@ -142,51 +143,80 @@ const MenuDropdown = () => {
               return menuData[category]?.map((item) => item.name).join(",");
             })
             .filter(Boolean)
-            .join(",") || "All"
+            .join(",") || "All"; // If no items are selected, include all items
 
     // Default period is "Free" if not selected
+    const period = selectedPeriod || "Free";
 
     // Construct API URL with selected parameters
-    const apiUrl = `${API_URL}/traffic/${categories}/${items}/?time_low=${timeStart}&time_high=${timeEnd}`;
+    const apiUrl = `${API_URL}/finance/${categories}/${items}/${selectedType}/${period}?time_low=${timeStart}&time_high=${timeEnd}`;
     setGeneratedApi(apiUrl); // Update the state with the generated API URL
 
-try {
-    // Make the API request
-    const response = await axios.get(apiUrl);
-
-    // Check if the response contains valid data
-    if (response.data === null) {
-      setApiResponse(null); // Update the state with the API response
+    try {
+      // Make the API request
+      const response = await axios.get(apiUrl);
+      setApiResponse(response.data); // Update the state with the API response
+    } catch (err) {
+      setApiResponse("Error fetching data from API");
     }
-    else {setApiResponse(response.data)}
-  } catch (err) {
-    console.error(err); // Log the error for debugging
-    setApiResponse([]); // Set to empty array if an error occurs
-  }
+  };
+  const formatTime = (dateLabel) => {
+    const date = new Date(dateLabel);
+    switch (selectedPeriod) {
+      case "Free":
+        return new Date(dateLabel)
+          .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
+          .replace(", ", " ")
+          .replace(/\//g, "-")
+          .split(" ")
+          .map((part, index) => {
+            if (index === 0) {
+              const [day, month, year] = part.split("-");
+              return `${year}-${month}-${day}`;
+            }
+            return part;
+          })
+          .join(" ");
+      case "Hourly":
+        return new Date(dateLabel)
+          .toLocaleString("en-GB", { timeZone: "Asia/Bangkok" })
+          .replace(", ", " ")
+          .replace(/\//g, "-")
+          .split(" ")
+          .map((part, index) => {
+            if (index === 0) {
+              const [day, month, year] = part.split("-");
+              return `${year}-${month}-${day}`;
+            }
+            return part.slice(0, 5); // Only display hour and minute
+          })
+          .join(" ");
+      case "Daily":
+      case "Weekly":
+        return new Date(dateLabel).toISOString().slice(0, 10);
+      case "Monthly":
+        return new Date(dateLabel).toISOString().slice(0, 7);
+      case "Yearly":
+        return new Date(dateLabel).toISOString().slice(0, 4);
+      default:
+        return new Date(dateLabel).toISOString();
+    }
   };
 
   // Prepare data for Bar Chart
   const chartData = {
-    labels: apiResponse
-      ? apiResponse.map((item) => item.item_name) // Extract item names for the X axis
-      : [],
-
+    labels: apiResponse ? Object.keys(apiResponse) : [],
     datasets: [
       {
-        label: selectedType === "Revenue" ? "Revenue (Rp)" : "Sales (Qty)",
-        data: apiResponse
-          ? apiResponse.map((item) =>
-              selectedType === "Revenue" ? item.price : item.quantity
-            ) // Use price for revenue, quantity for sales
-          : [],
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        label: selectedType === "Revenue" ? "Omset (Rp)" : "Penjualan (Qty)",
+        data: apiResponse ? Object.values(apiResponse) : [],
+        backgroundColor: "#3A5568",
+        borderColor: "#3A5568 ",
         borderWidth: 1,
       },
     ],
   };
 
-  // Chart options for customization
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -228,10 +258,13 @@ try {
             weight: "bold",
             size: 14,
           },
+          callback: function (value, index, ticks) {
+            return formatTime(this.getLabelForValue(value)); // Use shared function
+          },
         },
         title: {
           display: true,
-          text: "Menu",
+          text: "Waktu",
           color: "#000",
           font: {
             weight: "bold",
@@ -292,10 +325,13 @@ try {
             ticks: {
               color: "black",
               font: { weight: "bold" },
+              callback: function (value, index, ticks) {
+                return formatTime(this.getLabelForValue(value)); // Use shared function
+              },
             },
             title: {
               display: true,
-              text: "Menu",
+              text: "Waktu",
               color: "black",
               font: {
                 weight: "bold",
@@ -351,6 +387,9 @@ try {
         {selectedCategories.map((category, categoryIndex) => (
           <div key={categoryIndex} className={style.CategoryContainer}>
             <h4>Tipe Menu {categoryIndex + 1}</h4>
+            {/* <label htmlFor={`category-${categoryIndex}`}>
+              Tipe Menu :
+            </label> */}
 
             <div className={style.CategoryOption}>
               {/* Remove Category */}
@@ -443,6 +482,22 @@ try {
           </div>
 
           <div>
+            <label htmlFor="period">Periode :</label>
+            <select
+              id="period"
+              value={selectedPeriod}
+              onChange={handlePeriodChange}
+            >
+              <option value="Free">Bebas</option>
+              <option value="Hourly">Per-Jam</option>
+              <option value="Daily">Harian</option>
+              <option value="Weekly">Mingguan</option>
+              <option value="Monthly">Bulanan</option>
+              <option value="Yearly">Tahunan</option>
+            </select>
+          </div>
+
+          <div>
             <label htmlFor="timeStart">Mulai :</label>
             <input
               type="date"
@@ -470,13 +525,21 @@ try {
           </button>
         </div>
 
+        {/* Display Generated API */}
+        {/* {generatedApi && (
+          <div>
+            <h3>Generated API:</h3>
+            <p>{generatedApi}</p>
+          </div>
+        )} */}
+
         {/* Display API Response */}
-        {/* {apiResponse && (
+        {apiResponse && (
           <div>
             <h3>API Response:</h3>
             <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
           </div>
-        )} */}
+        )}
 
         {/* Chart Section */}
         {apiResponse && (

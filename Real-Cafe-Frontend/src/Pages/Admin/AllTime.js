@@ -13,7 +13,7 @@ import style from "./Sale_Revenue.module.css";
 import { useRef } from "react";
 import { Chart } from "chart.js";
 
-import API_URL from "./apiconfig"; // Import the API_URL
+import API_URL from "../../apiconfig"; // Import the API_URL
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 

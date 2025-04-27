@@ -1,15 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Pages/Home';
+
+// ROUTES 
+import KasirRoute from './components/ProtectedRoute-kasir';
+import DapurRoute from './components/ProtectedRoute-dapur';
+import AdminRoute from './components/ProtectedRoute-admin';
+
+// ADMIN
+import Admin from './Pages/Admin/Admin';
+
 import OrderForm from './OrderForm';
 import OrderSummary from './OrderSummary';
 import OrderSummaryFood from './OrderSummaryFood';
 import OrderSummaryDrink from './OrderSummaryDrink';
 import Stock from './Stock';
-import Admin from './Admin';
-import Sale_Revenue from './Sale_Revenue';
-import AllTime from './AllTime';
-import Traffic from './Traffic';
+import Sale_Revenue from './Pages/Admin/Sale_Revenue';
+import AllTime from './Pages/Admin/AllTime';
+import Traffic from './Pages/Admin/Traffic';
 import Pengeluaran from './Pengeluaran';
 import Summary from './Summary';
 import Shift from './Shift';
@@ -18,12 +26,10 @@ import Register from './Pages/Auth/Register';
 import Login from './Pages/Auth/Login';
 import Layout from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
-import KasirRoute from './components/ProtectedRoute-kasir';
-import DapurRoute from './components/ProtectedRoute-dapur';
-import AdminRoute from './components/ProtectedRoute-admin';
+
 
 import MenuFoto from './MenuFoto';
-import MenuFotoEdit from './MenuFotoEdit';
+import MenuFotoEdit from './Pages/Admin/MenuFotoEdit';
 
 import './App.css';
 

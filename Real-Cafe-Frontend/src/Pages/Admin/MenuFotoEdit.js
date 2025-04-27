@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import API_URL from "./apiconfig";
+import API_URL from "../../apiconfig";
 import './MenuFotoEdit.css';
 
 
