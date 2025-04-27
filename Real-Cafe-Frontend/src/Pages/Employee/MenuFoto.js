@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './MenuFoto.css'; // Add your CSS here
-import API_URL from "./apiconfig";
+import API_URL from "../../apiconfig";
 
 const MenuList = () => {
     const [menus, setMenus] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import API_URL from "./apiconfig";
-import style from "./Expense.module.css";
+import API_URL from "../../apiconfig";
+import style from "./Pengeluaran.module.css";
 
 const Pengeluaran = () => {
   const [spending, setSpending] = useState([]);
@@ -18,9 +18,6 @@ const Pengeluaran = () => {
   const [editingId, setEditingId] = useState(null); // Track which item is being edited
   const [error, setError] = useState(null);
   const [editingItem, setEditingItem] = useState(null); // Track which item is being edited
-  const [isSelectingShift, setisSelectingShift] = useState(false); // Modal visibility
-  const [shifts, setShifts] = useState([]);
-  const [hasfilter, sethasfilter] = useState(false);
 
   useEffect(() => {
     // Fetch spending data from the API
@@ -143,93 +140,68 @@ const Pengeluaran = () => {
     if (price == null) return ""; // Handle null or undefined prices
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
-  const [timeStart, setTimeStart] = useState(() => {
-    const today = new Date();
-    today.setDate(today.getDate() - 1); // Subtract one day
-    return today.toISOString().split("T")[0];
-  });
-  const [timeEnd, setTimeEnd] = useState(
-    () => new Date().toISOString().split("T")[0]
-  );
-  const filterShifts = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/ShiftSummary?start_time=${timeStart}&end_time=${timeEnd}`
-      );
-      setShifts(response.data);
-      sethasfilter(true);
-    } catch (error) {
-      console.error("Error fetching shifts:", error);
-    }
-  };
-  const ConstantPriceFormat = (price) => {
-    if (price == null || price === 0) return "Rp. 0"; // Handle null or undefined prices
-    return "Rp. " + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
-  const OrderFilter = async (start, end) => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/ShiftSpendingFilter/?start_time=${start}&end_time=${end}`
-      );
-      setSpending(response.data);
-
-      // Calculate total price for all orders
-      const totalPrice = response.data.reduce(
-        (acc, order) => acc + parseFloat(order.total),
-        0
-      );
-      setTotal(totalPrice);
-    } catch (error) {
-      console.error("Error fetching shifts:", error);
-    }
-    setisSelectingShift(false);
-  };
-    useEffect(() => {
-    // Fetch shifts data when the modal opens
-    const fetchShifts = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/Shift`);
-        if (!hasfilter) {
-          setShifts(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching shifts:", error);
-      }
-    };
-
-    if (isSelectingShift) {
-      fetchShifts();
-    }
-  }, [isSelectingShift]);
 
   return (
     <div className={style.pengeluaran}>
       <div className={style.Header}>
         <div>
           <h1>Pengeluaran</h1>
-          <button
-            className={style.FinishShiftButton}
-            onClick={() => setisSelectingShift(true)}
-          >
-            Pilih Shift
-          </button>
+          <h2>Total - Rp. {PriceFormat(total)}</h2>
+        </div>
+        <div className={style.Form}>
+          <form className={style.FormHeader} onSubmit={handleSubmit}>
+            <div className={style.FormDescription}>
+              <label>Deskripsi :</label>
+              <input
+                type="text"
+                name="deskripsi"
+                value={formData.deskripsi}
+                placeholder="Masukkan Deskripsi"
+                onChange={handleInputChange}
+                required
+                autoComplete="off"
+              />
+            </div>
+            <div className={style.FormTotal}>
+              <label>Total :</label>
+              <p className={style.FormInputNominal}>
+                Rp.
+                <input
+                  type="number"
+                  name="total"
+                  value={formData.total}
+                  placeholder="Masukkan Nominal"
+                  onChange={handleInputChange}
+                  required
+                  autoComplete="off"
+                />{" "}
+              </p>
+            </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <button type="submit">Tambah Pengeluaran</button>
+          </form>
         </div>
       </div>
 
-      <table className={style.MainTable}>
+      <table>
         <thead>
           <tr>
             <th>Deskripsi</th>
             <th>Total</th>
             <th>Jam</th>
+            <th>Ubah</th>
           </tr>
         </thead>
         <tbody>
           {spending.map((item) => (
             <tr key={item.id}>
               <td>{item.deskripsi}</td>
-              <td>Rp. {PriceFormat(item.total)}</td>
+              <td>RP. {PriceFormat(item.total)}</td>
               <td>{FormatDate(item.created_at)}</td>
+              <td>
+                <button onClick={() => handleEdit(item)}>Edit</button>
+                <button onClick={() => handleDelete(item.id)}>Hapus</button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -286,78 +258,6 @@ const Pengeluaran = () => {
                 Cancel
               </button>
             </form>
-          </div>
-        </div>
-      )}
-      {isSelectingShift && (
-        <div className={style.Printing}>
-          <div className={style.ShiftContent}>
-            <div className={style.filters}>
-              <h2>Pilih Jadwal</h2>
-              <div>
-                <label htmlFor="timeStart">Mulai :</label>
-                <input
-                  type="date"
-                  id="timeStart"
-                  value={timeStart}
-                  onChange={(e) => setTimeStart(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="timeEnd">Selesai :</label>
-                <input
-                  type="date"
-                  id="timeEnd"
-                  value={timeEnd}
-                  onChange={(e) => setTimeEnd(e.target.value)}
-                />
-              </div>
-              <button className={style.Apply} onClick={filterShifts}>
-                Apply
-              </button>
-            </div>
-            <table className={style.Table}>
-              <thead>
-                <tr>
-                  <th className={style.printingHeader}>Mulai</th>
-                  <th className={style.printingHeader}>Selesai</th>
-                  <th className={style.printingHeader}>Nama</th>
-                  <th className={style.printingHeader}>Shift</th>
-                  <th className={style.printingHeader}>Penjualan</th>
-                  <th className={style.printingHeader}>Pengeluaran</th>
-                  <th className={style.printingHeader}>Pilih</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shifts.map((shift) => (
-                  <tr key={shift.id}>
-                    <td>{shift.start_time}</td>
-                    <td>{shift.end_time}</td>
-                    <td>{shift.nama}</td>
-                    <td>{shift.shift}</td>
-                    <td>{ConstantPriceFormat(shift.omset)}</td>
-                    <td>{ConstantPriceFormat(shift.pengeluaran)}</td>
-                    <td>
-                      <button
-                        className={style.PrintButton}
-                        onClick={() =>
-                          OrderFilter(shift.start_time, shift.end_time)
-                        }
-                      >
-                        Select
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <button
-              className={style.CloseButton}
-              onClick={() => setisSelectingShift(false)}
-            >
-              Close
-            </button>
           </div>
         </div>
       )}

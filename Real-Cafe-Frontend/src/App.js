@@ -10,25 +10,25 @@ import AdminRoute from './components/ProtectedRoute-admin';
 // ADMIN
 import Admin from './Pages/Admin/Admin';
 
-import OrderForm from './OrderForm';
-import OrderSummary from './OrderSummary';
-import OrderSummaryFood from './OrderSummaryFood';
-import OrderSummaryDrink from './OrderSummaryDrink';
-import Stock from './Stock';
+import OrderForm from './Pages/Employee/OrderForm';
+import OrderSummary from './Pages/Employee/OrderSummary';
+import OrderSummaryFood from './Pages/Employee/OrderSummaryFood';
+import OrderSummaryDrink from './Pages/Employee/OrderSummaryDrink';
+import Stock from './Pages/Employee/Stock';
 import Sale_Revenue from './Pages/Admin/Sale_Revenue';
 import AllTime from './Pages/Admin/AllTime';
 import Traffic from './Pages/Admin/Traffic';
-import Pengeluaran from './Pengeluaran';
-import Summary from './Summary';
-import Shift from './Shift';
-import Expense from './Expense';
+import Pengeluaran from './Pages/Employee/Pengeluaran';
+import Summary from './Pages/Employee/Summary';
+import Shift from './Pages/Employee/Shift';
+import Expense from './Pages/Employee/Expense';
 import Register from './Pages/Auth/Register';
 import Login from './Pages/Auth/Login';
 import Layout from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
 
 
-import MenuFoto from './MenuFoto';
+import MenuFoto from './Pages/Employee/MenuFoto';
 import MenuFotoEdit from './Pages/Admin/MenuFotoEdit';
 
 import './App.css';

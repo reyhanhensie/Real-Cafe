@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OrderForm.css";
-import API_URL from "./apiconfig";
+import API_URL from "../../apiconfig";
 
 const OrderForm = () => {
   const categoryMap = {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./OrderSummary.css";
-import API_URL from "./apiconfig";
-import notification from "./assets/sounds/notification_sound.wav";
+import API_URL from "../../apiconfig";
+import notification from "../../assets/sounds/notification_sound.wav";
 import { format } from "date-fns";
 
 const OrderSummary = () => {

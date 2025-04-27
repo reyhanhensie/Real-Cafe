@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./OrderSummary.css";
-import API_URL from "./apiconfig";
-import notification from "./assets/sounds/notification_sound.wav";
+import API_URL from "../../apiconfig";
+import notification from "../../assets/sounds/notification_sound.wav";
 import { format } from "date-fns";
 
 const OrderSummary = () => {
@@ -53,7 +53,7 @@ const OrderSummary = () => {
 
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${API_URL}/live-food`);
+        const response = await axios.get(`${API_URL}/live-drink`);
         if (isReceivingOrders) {
           // If we're receiving orders, update normally
           setOrders(response.data);
@@ -105,7 +105,7 @@ const OrderSummary = () => {
 
   const fetchLatestOrders = async () => {
     try {
-      const response = await axios.get(`${API_URL}/live-food`);
+      const response = await axios.get(`${API_URL}/live-drink`);
       setOrders(response.data);
       setSummary(categorizeItems(response.data));
       previousOrdersCount.current = response.data.length;
@@ -133,7 +133,7 @@ const OrderSummary = () => {
   const confirmCompleteOrder = async () => {
     try {
       await axios.patch(
-        `${API_URL}/order/${confirmationDialog.orderId}/complete/food`
+        `${API_URL}/order/${confirmationDialog.orderId}/complete/drink`
       );
       if (isReceivingOrders) {
         // Only fetch new orders if we're in receiving mode

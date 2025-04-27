@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import API_URL from "./apiconfig"; // Import the API_URL
+import API_URL from "../../apiconfig"; // Import the API_URL
 import styles from "./Stock.module.css"; // Import the CSS Module
 
 const categoryMap = {

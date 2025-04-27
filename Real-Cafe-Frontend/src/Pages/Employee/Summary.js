@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import URL_API from "./apiconfig";
+import URL_API from "../../apiconfig";
 import styles from "./summary.module.css"; // Import the CSS Module
 
 const Summary = () => {
