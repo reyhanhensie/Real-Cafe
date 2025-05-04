@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_URL from "../../apiconfig";
 import style from "./ShoppingList.module.css";
+import style1 from "./ShoppingList.style1.module.css";
 
 const ShoppingList = () => {
   const [spending, setSpending] = useState([]);
@@ -16,6 +17,10 @@ const ShoppingList = () => {
   });
   const [editingItem, setEditingItem] = useState(null);
   const [error, setError] = useState("");
+
+  const [formCategoryData, setFormCategoryData] = useState({
+    category: "",
+  });
 
   // For Shopping Items Modal
   const [shoppingItems, setShoppingItems] = useState([]);
@@ -161,6 +166,16 @@ const ShoppingList = () => {
     setIsModalOpen(false);
   };
 
+  const handleOpenModalCategory = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/shopping-items`);
+      setShoppingItems(response.data);
+      setIsCreatingCategory(true);
+    } catch (error) {
+      console.error("Error fetching shopping items:", error);
+    }
+  };
+
 
   return (
     <div className={style.pengeluaran}>
@@ -209,106 +224,117 @@ const ShoppingList = () => {
 
       {/* Modal for shopping items */}
       {isModalOpen && (
-        <div className={style.modal_shipping_item}>
-          <div className={style.modalContent_shipping_item}>
+        <div className={style1.modal_shipping_item}>
+          <div className={style1.modalContent_shipping_item}>
             <h3>Shopping Items</h3>
-            <div className={style.modalContent_shipping_itemTitle}>
-              <div className={style.categoryWrapper}>
-                <select name="category_id">…</select>
-                <button onClick={() => setIsCreatingCategory(true)}>
-                  <img src="/icons/plus.svg" alt="Add Category" />
-                </button>
-              </div>
-              <h2>Tambah Daftar Belanja</h2>
-              <button className={style.modalContent_add_item_button} onClick={null}>
+            <div className={style1.modalContent_shipping_itemTitle}>
+              <h2>Tambah Daftar</h2>
+              <button className={style1.modalContent_add_item_button} onClick={() => setIsCreatingShoppingItem(true)}>
                 <img
                   src={"/icons/plus-solid2.svg"}
                   alt="Add Icon"
-                  className={style.modalContent_add_item}
+                  className={style1.modalContent_add_item}
                 />
               </button>
             </div>
+            <div className={style1.modalContent_shipping_item_list}>
+              <h2>Daftar Belanja</h2>
+              <ul>
+                {shoppingItems.map((item) => (
+                  <li key={item.id}>{item.name}</li>
+                ))}
+              </ul>
+            </div>
+
+            <button className={style1.modal_shipping_item_close} onClick={handleCloseModal}>Close</button>
+          </div>
+        </div>
+      )}
+      {isCreatingShoppingItem && (
+        <div className={style1.modal_add_shipping_item_form}>
+          <div className={style1.modalContent_add_shipping_item_form}>
+            <button className={style1.modalContent_close_button} onClick={() => setIsCreatingShoppingItem(false)}>
+              <img
+                src={"/icons/x-circle.svg"}
+                alt="Close"
+                className={style1.modalContent_close_icon}
+              />
+            </button>
+            <h2>Tambah Daftar Belanja</h2>
+
+            <div className={style1.modalContent_add_shipping_item_InputForm_Container}>
+              <div className={style1.modalContent_add_shipping_item_InputForm}>
+                <label>Nama :</label>
+                <input
+                  value={null}
+                  onChange={null}
+                  placeholder="Nama Barang"
+                />
+                <label>Kategori :</label>
+
+                <input
+                  value={null}
+                  onChange={null}
+                  placeholder="Pilih Kategori"
+                />
+                <button onClick={null}>Simpan</button>
+
+              </div>
+              <div className={style1.modalContent_add_shipping_item_InputForm2}>
+                <label>Tambah Kategori</label>
+                <button onClick={() => setIsCreatingCategory(true)}>
+                  <img
+                    src={"/icons/add-menu.svg"}
+                    alt="Close"
+                    className={style1.modalContent_add_category_icon}
+                  />
+                </button>
+              </div>
+            </div>
+
             <ul>
               {shoppingItems.map((item) => (
                 <li key={item.id}>{item.name}</li>
               ))}
             </ul>
-            <button className={style.modal_shipping_item_close} onClick={handleCloseModal}>Close</button>
+
           </div>
+
         </div>
       )}
+
       {isCreatingCategory && (
-        <div className={style.modal_category_form}>
-          <div className={style.modalContent_category_form}>
-            <h3>Shopping Items</h3>
-            <div className={style.modalContent_shipping_itemTitle}>
-              <div className={style.categoryWrapper}>
-                <select name="category_id">…</select>
-                <button onClick={() => setIsCreatingCategory(true)}>
-                  <img src="/icons/plus.svg" alt="Add Category" />
-                </button>
-              </div>
-              <h2>Tambah Daftar Belanja</h2>
-              <button className={style.modalContent_add_item_button} onClick={null}>
-                <img
-                  src={"/icons/plus-solid2.svg"}
-                  alt="Add Icon"
-                  className={style.modalContent_add_item}
-                />
-              </button>
+        <div className={style1.modal_category_form}>
+          <div className={style1.modalContent_category_form}>
+            <button className={style1.modalContent_close_button} onClick={() => handleOpenModalCategory()}>
+              <img
+                src={"/icons/x-circle.svg"}
+                alt="Close"
+                className={style1.modalContent_close_icon}
+              />
+            </button>
+            <h2>Tambah Kategori</h2>
+            <div className={style1.modalContent_category_input_form}>
+              <label>Kategori :</label>
+              <input
+                value={null}
+                onChange={null}
+                placeholder="Ketik Kategori"
+              />
+              <button onClick={null}>Simpan</button>
             </div>
+            <h3>Kategori Tersedia</h3>
+
             <ul>
               {shoppingItems.map((item) => (
                 <li key={item.id}>{item.name}</li>
               ))}
             </ul>
-            <button className={style.modal_shipping_item_close} onClick={handleCloseModal}>Close</button>
           </div>
-          <input
-            value={null}
-            onChange={null}
-            placeholder="Nama Kategori"
-          />
-          <button onClick={null}>Save</button>
-          <button onClick={() => setIsCreatingCategory(false)}>Cancel</button>
+
         </div>
       )}
-      {isCreatingCategory && (
-        <div className={style.modal_category_form}>
-          <div className={style.modalContent_category_form}>
-            <h3>Shopping Items</h3>
-            <div className={style.modalContent_shipping_itemTitle}>
-              <div className={style.categoryWrapper}>
-                <select name="category_id">…</select>
-                <button onClick={() => setIsCreatingCategory(true)}>
-                  <img src="/icons/plus.svg" alt="Add Category" />
-                </button>
-              </div>
-              <h2>Tambah Daftar Belanja</h2>
-              <button className={style.modalContent_add_item_button} onClick={null}>
-                <img
-                  src={"/icons/plus-solid2.svg"}
-                  alt="Add Icon"
-                  className={style.modalContent_add_item}
-                />
-              </button>
-            </div>
-            <ul>
-              {shoppingItems.map((item) => (
-                <li key={item.id}>{item.name}</li>
-              ))}
-            </ul>
-            <button className={style.modal_shipping_item_close} onClick={handleCloseModal}>Close</button>
-          </div>
-          <input
-            value={null}
-            onChange={null}
-            placeholder="Nama Kategori"
-          />
-          <button onClick={null}>Save</button>
-          <button onClick={() => setIsCreatingCategory(false)}>Cancel</button>
-        </div>
-      )}
+
 
 
       <table>
