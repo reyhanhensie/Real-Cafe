@@ -19,8 +19,9 @@ const ShoppingList = () => {
   const [error, setError] = useState("");
 
   const [formCategoryData, setFormCategoryData] = useState({
-    category: "",
+    name: "",
   });
+  const [categories, setCategories] = useState([]);
 
   // For Shopping Items Modal
   const [shoppingItems, setShoppingItems] = useState([]);
@@ -121,6 +122,8 @@ const ShoppingList = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+
+
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
     setEditData({ ...editData, [name]: value });
@@ -168,13 +171,33 @@ const ShoppingList = () => {
 
   const handleOpenModalCategory = async () => {
     try {
-      const response = await axios.get(`${API_URL}/shopping-items`);
-      setShoppingItems(response.data);
+      const response = await axios.get(`${API_URL}/categories`);
+      setCategories(response.data);
       setIsCreatingCategory(true);
     } catch (error) {
       console.error("Error fetching shopping items:", error);
     }
   };
+
+  const handleInputCategoryChange = (e) => {
+    const { name, value } = e.target;
+    setFormCategoryData({ ...formCategoryData, [name]: value });
+  };
+
+  const HandleSumbitCategory = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${API_URL}/categories`, formCategoryData);
+      setCategories((prevCategories) => [...prevCategories, response.data]);
+      // setFormCategoryData((prevSpending) => [...prevSpending, response.data]); 
+      // setTotal((prevTotal) => prevTotal + parseFloat(formCategoryData.total));
+    }
+    catch (error) {
+      // setError("Error updating the item. Please try again.");
+      console.error("Error updating spending:", error);
+    }
+
+  }
 
 
   return (
@@ -269,6 +292,7 @@ const ShoppingList = () => {
                   value={null}
                   onChange={null}
                   placeholder="Nama Barang"
+
                 />
                 <label>Kategori :</label>
 
@@ -282,7 +306,7 @@ const ShoppingList = () => {
               </div>
               <div className={style1.modalContent_add_shipping_item_InputForm2}>
                 <label>Tambah Kategori</label>
-                <button onClick={() => setIsCreatingCategory(true)}>
+                <button onClick={() => handleOpenModalCategory()}>
                   <img
                     src={"/icons/add-menu.svg"}
                     alt="Close"
@@ -306,7 +330,7 @@ const ShoppingList = () => {
       {isCreatingCategory && (
         <div className={style1.modal_category_form}>
           <div className={style1.modalContent_category_form}>
-            <button className={style1.modalContent_close_button} onClick={() => handleOpenModalCategory()}>
+            <button className={style1.modalContent_close_button} onClick={() => setIsCreatingCategory(false)}>
               <img
                 src={"/icons/x-circle.svg"}
                 alt="Close"
@@ -317,25 +341,24 @@ const ShoppingList = () => {
             <div className={style1.modalContent_category_input_form}>
               <label>Kategori :</label>
               <input
-                value={null}
-                onChange={null}
+                type="text"
+                name="name"
+                value={formCategoryData.name}
+                onChange={handleInputCategoryChange}
                 placeholder="Ketik Kategori"
+                required
               />
-              <button onClick={null}>Simpan</button>
+              <button onClick={HandleSumbitCategory}>Simpan</button>
             </div>
             <h3>Kategori Tersedia</h3>
-
             <ul>
-              {shoppingItems.map((item) => (
+              {categories.map((item) => (
                 <li key={item.id}>{item.name}</li>
               ))}
             </ul>
           </div>
-
         </div>
       )}
-
-
 
       <table>
         <thead>
