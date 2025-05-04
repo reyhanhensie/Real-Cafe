@@ -104,3 +104,24 @@ Route::post('/shopping-list', [ShoppingListController::class, 'store']);
 Route::put('/shopping-list/{id}/status', [ShoppingListController::class, 'updateStatus']);
 Route::put('/shopping-list/{id}', [ShoppingListController::class, 'update']); // NEW
 Route::delete('/shopping-list/{id}', [ShoppingListController::class, 'destroy']);
+
+use App\Http\Controllers\ShoppingItemController;
+
+Route::get('/shopping-items', [ShoppingItemController::class, 'index']);
+Route::post('/shopping-items', [ShoppingItemController::class, 'store']);
+
+
+// Get all shopping items
+Route::get('/shopping-items', [ShoppingItemController::class, 'index']);
+
+// Get all categories
+Route::get('/categories', [ShoppingItemController::class, 'getCategories']);
+
+// Create a new shopping item
+Route::post('/shopping-items', [ShoppingItemController::class, 'store']);
+
+// Create a new category
+Route::post('/categories', [ShoppingItemController::class, 'storeCategory']);
+
+// Show a specific shopping item
+Route::get('/shopping-items/{id}', [ShoppingItemController::class, 'show']);
