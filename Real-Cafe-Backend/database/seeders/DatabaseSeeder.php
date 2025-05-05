@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             JusSeeder::class,
             CoffeSeeder::class,
             CamilanSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

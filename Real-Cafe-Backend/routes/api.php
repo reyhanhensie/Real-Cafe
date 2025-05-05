@@ -108,7 +108,7 @@ Route::delete('/shopping-list/{id}', [ShoppingListController::class, 'destroy'])
 use App\Http\Controllers\ShoppingItemController;
 
 Route::get('/shopping-items', [ShoppingItemController::class, 'index']);
-Route::post('/shopping-items', [ShoppingItemController::class, 'store']);
+Route::post('/shopping-item', [ShoppingItemController::class, 'store']);
 
 
 // Get all shopping items

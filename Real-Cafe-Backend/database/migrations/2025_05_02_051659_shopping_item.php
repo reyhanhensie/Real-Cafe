@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('shopping_items', function (Blueprint $table) {
             $table->id();
             $table->text('name');
+            $table->integer('category_id')->nullable();
             $table->timestamps();
         });
     }

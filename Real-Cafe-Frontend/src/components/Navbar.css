@@ -6,6 +6,7 @@
   text-decoration: none;
   order: 2;
 }
+
 .logo h3 {
   margin: 1rem;
   color: white;
@@ -23,8 +24,7 @@
 
 /* Icon styles in nav-links */
 .nav-links li img {
-  filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
-    brightness(91%) contrast(89%);
+  filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg) brightness(91%) contrast(89%);
   width: 20px;
   height: 20px;
   margin-right: 8px;
@@ -37,6 +37,7 @@
 
 /* PC OR TABLET*/
 @media (min-width: 1300px) {
+
   /* Navbar container */
   .navbar {
     background-color: #38220f;
@@ -66,8 +67,7 @@
     height: 24px;
     padding: 2px;
     display: flex;
-    filter: invert(95%) sepia(8%) saturate(1074%) hue-rotate(322deg)
-      brightness(98%) contrast(88%);
+    filter: invert(95%) sepia(8%) saturate(1074%) hue-rotate(322deg) brightness(98%) contrast(88%);
   }
 
   .reopen.closed {
@@ -81,12 +81,17 @@
     transform: translate(0);
     visibility: visible;
     opacity: 1;
-    top: 0; /* Stick it to the top of the page */
-    left: 0; /* Align it to the left */
+    top: 0;
+    /* Stick it to the top of the page */
+    left: 0;
+    /* Align it to the left */
     opacity: 50%;
     transition: opacity 100ms ease-in;
     /* left: 1%; */
+    z-index: 1000;
+
   }
+
   .reopen.closed:hover {
     color: black;
     opacity: 1;
@@ -118,9 +123,9 @@
     transform: translateY(0);
     padding: 0;
   }
+
   .close-button img {
-    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
-      brightness(91%) contrast(89%);
+    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg) brightness(91%) contrast(89%);
     width: 20px;
     height: 20px;
     display: flex;
@@ -145,6 +150,7 @@
     text-decoration: none;
     order: 2;
   }
+
   .logo h3 {
     margin: 1rem;
     color: white;
@@ -186,8 +192,7 @@
 
   /* Icon styles in nav-links */
   .nav-links li img {
-    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
-      brightness(91%) contrast(89%);
+    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg) brightness(91%) contrast(89%);
     width: 20px;
     height: 20px;
     margin-right: 8px;
@@ -227,6 +232,7 @@
     height: 24px;
   }
 }
+
 /* HAPE */
 @media (max-width: 1299px) {
   .reopen img {
@@ -234,9 +240,9 @@
     height: 24px;
     padding: 2px;
     display: flex;
-    filter: invert(95%) sepia(8%) saturate(1074%) hue-rotate(322deg)
-      brightness(98%) contrast(88%);
+    filter: invert(95%) sepia(8%) saturate(1074%) hue-rotate(322deg) brightness(98%) contrast(88%);
   }
+
   .reopen {
     bottom: 1rem;
     left: 1rem;
@@ -245,14 +251,18 @@
     transition: transform 0.25s ease-in-out, position 0.5s ease-in-out,
       opacity 0.15s ease-in;
   }
+
   /* General navbar styling */
   .navbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vh; /* Full screen width for mobile */
+    width: 100vh;
+    /* Full screen width for mobile */
     height: 100%;
     max-width: 300px;
     background-color: #38220f;
@@ -263,7 +273,8 @@
     flex-direction: column;
     z-index: 1000;
     padding: 20px;
-    overflow-y: auto; /* Enable scrolling */
+    overflow-y: auto;
+    /* Enable scrolling */
   }
 
   .navbar.open {
@@ -275,13 +286,15 @@
   .navbar.closed {
     position: absolute;
     padding: 0;
-    transform: translateX(-100%); /* Hide when closed */
+    transform: translateX(-100%);
+    /* Hide when closed */
   }
 
   .close-button {
     position: absolute;
     top: 1rem;
-    right: 0rem; /* Positioned outside navbar */
+    right: 0rem;
+    /* Positioned outside navbar */
     background-color: #38220f;
     border: none;
     border-radius: 50%;
@@ -298,8 +311,7 @@
   }
 
   .close-button img {
-    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
-      brightness(91%) contrast(89%);
+    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg) brightness(91%) contrast(89%);
     width: 20px;
     height: 20px;
     display: flex;
@@ -321,6 +333,7 @@
     color: white;
     font-size: 1.2rem;
   }
+
   /* Nav links styling */
   .nav-links {
     list-style: none;
@@ -348,11 +361,11 @@
   .nav-links li a:hover {
     text-decoration: underline;
   }
+
   .nav-links li img {
     width: 24px;
     height: 24px;
-    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg)
-      brightness(91%) contrast(89%);
+    filter: invert(98%) sepia(43%) saturate(1170%) hue-rotate(301deg) brightness(91%) contrast(89%);
   }
 
   /* Reopen button styling */
@@ -382,8 +395,10 @@
     opacity: 0;
     /* transition: visibility 1s, opacity 0.2s ease-in; */
     transition: opacity 0ms ease-in;
-    top: 0; /* Stick it to the top of the page */
-    left: 0; /* Align it to the left */
+    top: 0;
+    /* Stick it to the top of the page */
+    left: 0;
+    /* Align it to the left */
   }
 
   .reopen.closed {
@@ -397,8 +412,10 @@
     transform: translate(0);
     visibility: visible;
     opacity: 1;
-    top: 0; /* Stick it to the top of the page */
-    left: 0; /* Align it to the left */
+    top: 0;
+    /* Stick it to the top of the page */
+    left: 0;
+    /* Align it to the left */
     opacity: 50%;
     transition: opacity 500ms ease-in-out;
     /* left: 1%; */

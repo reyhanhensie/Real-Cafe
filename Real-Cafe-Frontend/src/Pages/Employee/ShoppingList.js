@@ -8,8 +8,8 @@ const ShoppingList = () => {
   const [spending, setSpending] = useState([]);
   const [total, setTotal] = useState(0);
   const [formData, setFormData] = useState({
-    item: "",
-    price: "",
+    name: "",
+    category_id: "",
   });
   const [editData, setEditData] = useState({
     item: "",
@@ -21,14 +21,14 @@ const ShoppingList = () => {
   const [formCategoryData, setFormCategoryData] = useState({
     name: "",
   });
-  const [categories, setCategories] = useState([]);
+  const [Categories, setCategories] = useState([]);
 
   // For Shopping Items Modal
   const [shoppingItems, setShoppingItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingShoppingItem, setIsCreatingShoppingItem] = useState(false);
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
-
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     const fetchSpending = async () => {
@@ -157,8 +157,10 @@ const ShoppingList = () => {
   // Open/close modal for shopping items
   const handleOpenModal = async () => {
     try {
-      const response = await axios.get(`${API_URL}/shopping-items`);
-      setShoppingItems(response.data);
+      const response1 = await axios.get(`${API_URL}/shopping-items`);
+      const response2 = await axios.get(`${API_URL}/categories`);
+      setShoppingItems(response1.data);
+      setCategories(response2.data); // Assuming categories are part of the response
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching shopping items:", error);
@@ -188,23 +190,41 @@ const ShoppingList = () => {
     e.preventDefault();
     try {
       const response = await axios.post(`${API_URL}/categories`, formCategoryData);
-      setCategories((prevCategories) => [...prevCategories, response.data]);
-      // setFormCategoryData((prevSpending) => [...prevSpending, response.data]); 
-      // setTotal((prevTotal) => prevTotal + parseFloat(formCategoryData.total));
+      if (response.data && response.data.id) {
+        setCategories((prevCategories) => [...prevCategories, response.data]);
+        setFormCategoryData({ name: "" }); // Reset formCategoryData after submission
+      } else {
+        console.error("Invalid response data:", response.data);
+      }
+    } catch (error) {
+      console.error("Error adding category:", error);
     }
-    catch (error) {
-      // setError("Error updating the item. Please try again.");
-      console.error("Error updating spending:", error);
-    }
-
   }
+  const HandleSubmitShoppingItem = async (e) => {
+    e.preventDefault();
+    console.log("Form Data:", formData);
+    console.log(parseInt(formData.category_id));
+
+    try {
+      const response = await axios.post(`${API_URL}/shopping-item`, formData);
+      if (response.data && response.data.id) {
+        setShoppingItems((prev) => [...prev, response.data]);
+        setFormData({ name: "" }); // Reset formCategoryData after submission
+      } else {
+        console.error("Invalid response data:", response.data);
+      }
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  }
+
 
 
   return (
     <div className={style.pengeluaran}>
       <div className={style.Header}>
         <div>
-          <h1>Pengeluaran</h1>
+          <h1>Total Belanjaan</h1>
           <h2>Total - Rp. {PriceFormat(total)}</h2>
         </div>
 
@@ -289,21 +309,39 @@ const ShoppingList = () => {
               <div className={style1.modalContent_add_shipping_item_InputForm}>
                 <label>Nama :</label>
                 <input
-                  value={null}
-                  onChange={null}
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                   placeholder="Nama Barang"
-
                 />
                 <label>Kategori :</label>
+                <select
+                  value={formData.category_id}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      category_id: e.target.value === "" ? "" : parseInt(e.target.value),
+                    })
+                  }
+                >
+                  <option value="">-- Pilih Kategori --</option>
+                  {Categories.map((Categories) => (
+                    <option key={Categories.id} value={Categories.id}>
+                      {Categories.name}
+                    </option>
+                  ))}
+                </select>
+                {formData.category_id === "" || formData.name === "" ? (
+                  <button disabled>Simpan</button>
 
-                <input
-                  value={null}
-                  onChange={null}
-                  placeholder="Pilih Kategori"
-                />
-                <button onClick={null}>Simpan</button>
+                ) : (
+                  <button
+                    onClick={HandleSubmitShoppingItem}>Simpan</button>
+                )}
 
               </div>
+
               <div className={style1.modalContent_add_shipping_item_InputForm2}>
                 <label>Tambah Kategori</label>
                 <button onClick={() => handleOpenModalCategory()}>
@@ -315,15 +353,13 @@ const ShoppingList = () => {
                 </button>
               </div>
             </div>
-
+            <h2>Daftar Menu Belanja</h2>
             <ul>
               {shoppingItems.map((item) => (
                 <li key={item.id}>{item.name}</li>
               ))}
             </ul>
-
           </div>
-
         </div>
       )}
 
@@ -352,8 +388,16 @@ const ShoppingList = () => {
             </div>
             <h3>Kategori Tersedia</h3>
             <ul>
-              {categories.map((item) => (
-                <li key={item.id}>{item.name}</li>
+              {Categories.map((item) => (
+                <li className={style1.CategoriesList} key={item.id}>{item.name}
+
+                  {/* NANTI */}
+                  {/* <div className={style1.CategoriesListButton}>
+                    <button onClick={null }>Edit</button>
+                    <button onClick={null }>Hapus</button>
+                  </div> */}
+
+                </li>
               ))}
             </ul>
           </div>

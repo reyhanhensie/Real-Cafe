@@ -12,7 +12,7 @@ class ShoppingItemController extends Controller
     public function index(Request $request)
     {
         $query = ShoppingItem::with('category');
-        
+
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
@@ -41,10 +41,7 @@ class ShoppingItemController extends Controller
             'category_id' => $validated['category_id'],
         ]);
 
-        return response()->json([
-            'message' => 'Item added successfully',
-            'item' => $item,
-        ], 201);
+        return response()->json($item, 201);
     }
 
     // POST /categories
@@ -58,10 +55,7 @@ class ShoppingItemController extends Controller
         // Create category
         $category = ShoppingItemCategory::create($validated);
 
-        return response()->json([
-            'message' => 'Category created successfully',
-            'category' => $category,
-        ], 201);
+        return response()->json($category, 201);
     }
 
     // GET /shopping-items/{id}
