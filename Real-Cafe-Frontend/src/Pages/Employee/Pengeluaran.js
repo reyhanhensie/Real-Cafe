@@ -202,7 +202,7 @@ const Pengeluaran = () => {
                 <button onClick={() => handleEdit(item)}>Edit</button>
                 <button onClick={() => handleDelete(item.id)}>Hapus</button>
               </td>
-            </tr>
+            </tr> 
           ))}
         </tbody>
         <tfoot>
