@@ -1,6 +1,8 @@
 .modalContentContainer {
-  max-height: 400px;
-  overflow-y: auto;
+  /* position: relative; */
+  /* max-height: 400px; */
+  /* height: 100%; */
+  overflow-y: scroll;
   padding: 1rem;
   background-color: #ece0d1;
   /* Soft cream */
@@ -13,6 +15,8 @@
   -ms-overflow-style: none;
   /* Internet Explorer 10+ */
 }
+
+
 
 .categoryBlock {
   margin-bottom: 1.5rem;
@@ -59,7 +63,7 @@
   /* Rich brown */
 }
 
-.actionButtons button {
+.actionButtons {
   margin-left: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -71,7 +75,7 @@
 }
 
 .actionButtons .edit {
-  color: #634832;
+  color: white;
 }
 
 .actionButtons .edit:hover {
@@ -79,9 +83,168 @@
 }
 
 .actionButtons .delete {
-  color: #38220f;
+  color: white;
 }
 
 .actionButtons .delete:hover {
   background-color: #dbc1ac;
+}
+
+/* style2.module.css */
+
+.EditingShoppingModalOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(56, 34, 15, 0.6);
+  /* #38220f dark overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+
+
+.EditingShoppingModalFormContainer {
+  position: relative;
+  background-color: #ece0d1;
+  border: 2px solid #dbc1ac;
+  /* border-radius: 16px; */
+  padding: 2rem;
+  width: 50%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+
+.EditingShoppingModalFormContainer label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+  color: #634832;
+}
+
+.EditingShoppingModalFormContainer input,
+.EditingShoppingModalFormContainer select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #dbc1ac;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  color: #38220f;
+}
+
+.EditingShoppingModalFormContainer button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #967259;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.EditingShoppingModalFormContainer .modalContent_close_button {
+  position: absolute;
+  display: flex;
+  right: 0px;
+  top: 0px;
+  padding: 0px;
+  background-color: transparent;
+  /* align-items: center; */
+  justify-content: end;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  text-align: center;
+  /* z-index: 9999; */
+}
+
+.EditingShoppingModalFormContainer button:hover {
+  background-color: #634832;
+}
+
+.EditingShoppingModalFormContainer button:disabled {
+  background-color: #dbc1ac;
+  color: #967259;
+  cursor: not-allowed;
+}
+
+
+.EditingShoppingDeleteModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(56, 34, 15, 0.8);
+  /* Dark backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.EditingShoppingDeleteModal {
+  background-color: #ece0d1;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: #38220f;
+  text-align: center;
+}
+
+.EditingShoppingDeleteModal h2 {
+  margin-bottom: 1rem;
+  color: #38220f;
+}
+
+.EditingShoppingDeleteModalActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.EditingShoppingDeleteButton {
+  background-color: #967259;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.EditingShoppingDeleteButton:hover {
+  background-color: #634832;
+}
+
+.EditingShoppingCancelButton {
+  background-color: #dbc1ac;
+  color: #38220f;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.EditingShoppingCancelButton:hover {
+  background-color: #967259;
+  color: white;
 }

@@ -15,6 +15,8 @@
 .modalContent_shipping_item {
   background-color: #ecd9c4;
   padding: 20px;
+  height: 90%;
+
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -85,15 +87,20 @@
 }
 
 .modalContent_shipping_item {
-  width: 50%;
+  position: relative;
+  overflow-y: auto;
+  width: 90%;
   max-width: 600px;
+  height: 90%;
+  max-height: 90vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
 }
 
-@media (max-width: 768px) {
-  .modalContent_shipping_item {
-    width: 80%;
-  }
-}
+
 
 button,
 .modalContent_shipping_item button {
@@ -128,7 +135,7 @@ button,
   position: absolute;
   /* margin-top: 1rem; */
   width: 100%;
-  height: 90%;
+  height: 100%;
   /* background-color: rgba(0, 0, 0, 0.5); */
   display: flex;
   justify-content: center;
@@ -150,8 +157,8 @@ button,
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  height: 80%;
-  width: 50%;
+  height: 90%;
+  width: 90%;
   /* Adjust the width of modal */
   max-width: 600px;
   /* Prevent the modal from becoming too wide */
@@ -315,9 +322,9 @@ button,
   text-align: center;
 }
 
-.modalContent_add_shipping_item_InputForm button:disabled{
- background-color: red;
- cursor: not-allowed;
+.modalContent_add_shipping_item_InputForm button:disabled {
+  background-color: red;
+  cursor: not-allowed;
 }
 
 .modalContent_add_category_icon {
@@ -351,7 +358,7 @@ button,
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .modalContent_category_form {

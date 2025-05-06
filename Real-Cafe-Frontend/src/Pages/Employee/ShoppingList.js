@@ -33,6 +33,8 @@ const ShoppingList = () => {
 
   const [isEditingShoppingItem, setIsEditingShoppingItem] = useState(false);
   const [editingShoppingItemId, setEditingShoppingItemId] = useState(null);
+  const [isDeletingShoppingItem, setIsDeletingShoppingItem] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
 
   useEffect(() => {
@@ -231,6 +233,7 @@ const ShoppingList = () => {
       console.error("Error adding category:", error);
     }
     setFormData({ name: "" }); // Reset formCategoryData after submission
+    setFormData({ category_id: "" }); // Reset formCategoryData after submission
 
     // Reset after save
     setIsEditingShoppingItem(false);
@@ -256,6 +259,15 @@ const ShoppingList = () => {
       category_id: item.category_id,
     });
   };
+  const handleShoppingItemDelete = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/shopping-items/${id}`);
+      setShoppingItems((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  }
+
 
 
 
@@ -309,6 +321,13 @@ const ShoppingList = () => {
       {isModalOpen && (
         <div className={style1.modal_shipping_item}>
           <div className={style1.modalContent_shipping_item}>
+            <button className={style1.modalContent_close_button} onClick={handleCloseModal}>
+              <img
+                src={"/icons/x-circle.svg"}
+                alt="Close"
+                className={style1.modalContent_close_icon}
+              /></button>
+
             <h3>Shopping Items</h3>
             <div className={style1.modalContent_shipping_itemTitle}>
               <h2>Tambah Daftar</h2>
@@ -322,14 +341,34 @@ const ShoppingList = () => {
             </div>
             <div className={style1.modalContent_shipping_item_list}>
               <h2>Daftar Belanja</h2>
-              <ul>
-                {shoppingItems.map((item) => (
-                  <li key={item.id}>{item.name}</li>
-                ))}
-              </ul>
+            </div>
+            <div className={style2.modalContentContainer}>
+
+              {Object.entries(groupedItems).map(([categoryName, items]) => (
+                <div className={style2.categoryBlock} key={categoryName}>
+                  <h3 className={style2.categoryTitle}>{categoryName}</h3>
+                  <ul className={style2.itemList}>
+                    {items.map((item) => (
+                      <li className={style2.item} key={item.id}>
+                         <span className={style2.itemName}>{item.name}</span>
+                        <div className={style2.actionButtons}>
+                          <button
+                            onClick={() => {
+                              setItemToDelete(item);
+                            }}
+                            className={style2.delete}
+                          >
+                            Tambah
+                          </button>
+
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
 
-            <button className={style1.modal_shipping_item_close} onClick={handleCloseModal}>Close</button>
           </div>
         </div>
       )}
@@ -410,11 +449,15 @@ const ShoppingList = () => {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(item.id)}
+                            onClick={() => {
+                              setItemToDelete(item);
+                              setIsDeletingShoppingItem(true);
+                            }}
                             className={style2.delete}
                           >
                             Hapus
                           </button>
+
                         </div>
                       </li>
                     ))}
@@ -427,6 +470,38 @@ const ShoppingList = () => {
           </div>
         </div>
       )}
+
+      {isDeletingShoppingItem && (
+        <div className={style2.EditingShoppingDeleteModalOverlay}>
+          <div className={style2.EditingShoppingDeleteModal}>
+            <h2>Hapus Barang?</h2>
+            <p>Apakah kamu yakin ingin menghapus <strong>{itemToDelete?.name}</strong> dari daftar?</p>
+
+            <div className={style2.EditingShoppingDeleteModalActions}>
+              <button
+                className={style2.EditingShoppingDeleteButton}
+                onClick={() => {
+                  handleShoppingItemDelete(itemToDelete.id);
+                  setIsDeletingShoppingItem(false);
+                  setItemToDelete(null);
+                }}
+              >
+                Ya, Hapus
+              </button>
+              <button
+                className={style2.EditingShoppingCancelButton}
+                onClick={() => {
+                  setIsDeletingShoppingItem(false);
+                  setItemToDelete(null);
+                }}
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {isCreatingCategory && (
         <div className={style1.modal_category_form}>

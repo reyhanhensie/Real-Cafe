@@ -32,8 +32,8 @@ const Login = () => {
         }
       );
       //set token on cookies
-      Cookies.set("token", response.data.token);
-      Cookies.set("role",response.data.user.role)
+      localStorage.set("token", response.data.token);
+      localStorage.set("role",response.data.user.role)
       console.log("Login response:", response.data);
       setIsAuthenticated(true);
 

@@ -9,5 +9,5 @@ class ShoppingList extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['item', 'price', 'status'];
+    protected $fillable = ['name','category', 'price', 'status'];
 }

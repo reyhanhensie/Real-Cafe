@@ -1,7 +1,6 @@
 // src/components/ProtectedRoute.js
 import React, { useState, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
 import URL_API from "../apiconfig";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
@@ -9,7 +8,7 @@ import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner comp
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const location = useLocation(); // Use useLocation to preserve the intended location
-  const token = Cookies.get("token");
+  const token = localStorage.get("token");
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -21,14 +20,14 @@ const ProtectedRoute = ({ element }) => {
             setIsAuthenticated(true);
           } else {
             setIsAuthenticated(false);
-            Cookies.remove("token");
-            Cookies.remove("role");
+            localStorage.remove("token");
+            localStorage.remove("role");
           }
         } catch (error) {
           console.error("Error fetching user role", error);
           setIsAuthenticated(false);
-          Cookies.remove("token");
-          Cookies.remove("role");
+          localStorage.remove("token");
+          localStorage.remove("role");
         }
       } else {
         setIsAuthenticated(false);

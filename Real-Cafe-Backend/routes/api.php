@@ -108,6 +108,9 @@ Route::delete('/shopping-list/{id}', [ShoppingListController::class, 'destroy'])
 use App\Http\Controllers\ShoppingItemController;
 
 Route::get('/shopping-items', [ShoppingItemController::class, 'index']);
+Route::put('/shopping-items/{id}', [ShoppingItemController::class, 'update']);
+Route::delete('/shopping-items/{id}', [ShoppingItemController::class, 'destroy']);
+
 Route::post('/shopping-item', [ShoppingItemController::class, 'store']);
 
 

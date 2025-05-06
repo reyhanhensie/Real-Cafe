@@ -40,6 +40,13 @@ class ShoppingItemController extends Controller
 
         return response()->json($item, 201);
     }
+    public function destroy($id)
+    {
+        $shoppingList = ShoppingItem::findOrFail($id);
+        $shoppingList->delete();
+
+        return response()->json(['message' => 'Item deleted successfully.']);
+    }
 
 
     // GET /categories
