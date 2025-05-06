@@ -31,6 +31,10 @@ const ShoppingList = () => {
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  const [isEditingShoppingItem, setIsEditingShoppingItem] = useState(false);
+  const [editingShoppingItemId, setEditingShoppingItemId] = useState(null);
+
+
   useEffect(() => {
     const fetchSpending = async () => {
       try {
@@ -207,16 +211,30 @@ const ShoppingList = () => {
     console.log(parseInt(formData.category_id));
 
     try {
-      const response = await axios.post(`${API_URL}/shopping-item`, formData);
-      if (response.data && response.data.id) {
-        setShoppingItems((prev) => [...prev, response.data]);
-        setFormData({ name: "" }); // Reset formCategoryData after submission
+
+      if (editingShoppingItemId) {
+        const response = await axios.put(`${API_URL}/shopping-items/${editingShoppingItemId}`, formData);
+        setShoppingItems((prev) =>
+          editingShoppingItemId
+            ? prev.map((item) =>
+              item.id === editingShoppingItemId ? response.data : item
+            )
+            : [...prev, response.data]
+        );
+
       } else {
-        console.error("Invalid response data:", response.data);
+        const response = await axios.post(`${API_URL}/shopping-items/`, formData);
+        setShoppingItems((prev) => [...prev, response.data]);
       }
+
     } catch (error) {
       console.error("Error adding category:", error);
     }
+    setFormData({ name: "" }); // Reset formCategoryData after submission
+
+    // Reset after save
+    setIsEditingShoppingItem(false);
+    setEditingShoppingItemId(null);
   }
 
 
@@ -229,6 +247,16 @@ const ShoppingList = () => {
     groups[categoryName].push(item);
     return groups;
   }, {});
+
+  const handleEditShoppingItem = (item) => {
+    setIsEditingShoppingItem(true);
+    setEditingShoppingItemId(item.id);
+    setFormData({
+      name: item.name,
+      category_id: item.category_id,
+    });
+  };
+
 
 
 
@@ -376,7 +404,7 @@ const ShoppingList = () => {
                         <span className={style2.itemName}>{item.name}</span>
                         <div className={style2.actionButtons}>
                           <button
-                            onClick={() => handleEdit(item)}
+                            onClick={() => handleEditShoppingItem(item)}
                             className={style2.edit}
                           >
                             Edit
@@ -441,6 +469,61 @@ const ShoppingList = () => {
         </div>
       )}
 
+      {/* EDIT SHOPPING ITEM */}
+      {isEditingShoppingItem && (
+        <div className={style2.EditingShoppingModalOverlay}>
+          <div className={style2.EditingShoppingModalFormContainer}>
+            <button className={style2.modalContent_close_button} onClick={() => {
+              setIsEditingShoppingItem(false);
+              setFormData({ name: "", category_id: "" });
+            }}
+            >
+              <img
+                src={"/icons/x-circle.svg"}
+                alt="Close"
+                className={style1.modalContent_close_icon}
+              />
+            </button>
+            <label>Nama :</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Nama Barang"
+            />
+            <label>Kategori :</label>
+            <select
+              value={formData.category_id}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  category_id: e.target.value === "" ? "" : parseInt(e.target.value),
+                })
+              }
+            >
+              <option value="">-- Pilih Kategori --</option>
+              {Categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            {formData.category_id === "" || formData.name === "" ? (
+              <button disabled>Simpan</button>
+            ) : (
+              <button onClick={HandleSubmitShoppingItem}>
+                {editingShoppingItemId ? "Update" : "Simpan"}
+              </button>
+            )}
+          </div>
+        </div>
+      )
+      }
+
+
+
       <table>
         <thead>
           <tr>
@@ -476,50 +559,52 @@ const ShoppingList = () => {
         </tfoot>
       </table>
 
-      {editingItem && (
-        <div className={style.modalOverlay}>
-          <div className={style.modalContent}>
-            <h3>Edit Pengeluaran</h3>
-            <form className={style.ModalForm} onSubmit={handleEditSubmit}>
-              <div className={style.ModalFormDescription}>
-                <label>Deskripsi :</label>
-                <input
-                  type="text"
-                  name="deskripsi"
-                  value={editData.item}
-                  onChange={(e) =>
-                    setEditData({ ...editData, item: e.target.value })
-                  }
-                  required
-                  autoComplete="off"
-                />
-              </div>
-              <div className={style.ModalFormTotal}>
-                <label>Total :</label>
-                <p>
-                  Rp.{" "}
+      {
+        editingItem && (
+          <div className={style.modalOverlay}>
+            <div className={style.modalContent}>
+              <h3>Edit Pengeluaran</h3>
+              <form className={style.ModalForm} onSubmit={handleEditSubmit}>
+                <div className={style.ModalFormDescription}>
+                  <label>Deskripsi :</label>
                   <input
-                    type="number"
-                    name="total"
-                    value={editData.price}
+                    type="text"
+                    name="deskripsi"
+                    value={editData.item}
                     onChange={(e) =>
-                      setEditData({ ...editData, price: e.target.value })
+                      setEditData({ ...editData, item: e.target.value })
                     }
                     required
                     autoComplete="off"
                   />
-                </p>
-              </div>
-              {error && <p style={{ color: "red" }}>{error}</p>}
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleCloseEdit}>
-                Cancel
-              </button>
-            </form>
+                </div>
+                <div className={style.ModalFormTotal}>
+                  <label>Total :</label>
+                  <p>
+                    Rp.{" "}
+                    <input
+                      type="number"
+                      name="total"
+                      value={editData.price}
+                      onChange={(e) =>
+                        setEditData({ ...editData, price: e.target.value })
+                      }
+                      required
+                      autoComplete="off"
+                    />
+                  </p>
+                </div>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <button type="submit">Update</button>
+                <button type="button" onClick={handleCloseEdit}>
+                  Cancel
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 };
 
