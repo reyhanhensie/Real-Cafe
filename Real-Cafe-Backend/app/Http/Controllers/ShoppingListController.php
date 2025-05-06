@@ -9,20 +9,22 @@ class ShoppingListController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ShoppingList::with('category'); // this is the correct way to eager load
+        $query = ShoppingList::with('category');
 
         if ($request->has('status')) {
             $query->where('status', $request->status);
+        } else {
+            // If no specific status is requested, exclude 'complete'
+            $query->where('status', '!=', 'complete');
         }
 
         if ($request->has('search')) {
             $query->where('item', 'like', '%' . $request->search . '%');
         }
-        $query->with('category'); // this is the correct way to eager load
-
 
         return response()->json($query->get());
     }
+
 
     public function store(Request $request)
     {
@@ -41,7 +43,9 @@ class ShoppingListController extends Controller
             'price' => $request->price,
             'category_id' => $request->category_id,
             'description' => $request->description,
+            'status' => 'pending',
         ]);
+        
         $shoppingList->load('category');
 
 
@@ -52,14 +56,15 @@ class ShoppingListController extends Controller
     public function updateStatus($id, Request $request)
     {
         $request->validate([
-            'status' => 'required|in:pending,bought,deleted',
+            'status' => 'required|in:pending,bought,complete',
         ]);
 
         $shoppingList = ShoppingList::findOrFail($id);
         $shoppingList->status = $request->status;
         $shoppingList->save();
+        $shoppingList->load('category');
 
-        return response()->json(['message' => 'Status updated successfully.']);
+        return response()->json($shoppingList, 201);
     }
 
     public function update($id, Request $request)

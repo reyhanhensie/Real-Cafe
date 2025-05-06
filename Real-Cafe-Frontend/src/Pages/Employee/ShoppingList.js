@@ -48,6 +48,12 @@ const ShoppingList = () => {
   const [editingShoppingListId, setEditingShoppingListId] = useState(null);
   const [ShoppingList, setShoppingList] = useState([]);
 
+  const [isDeletingShoppingList, setIsDeletingShoppingList] = useState(false);
+  const [ShoppingListtoDelete, setShoppingListtoDelete] = useState(null);
+
+
+
+
 
 
 
@@ -249,6 +255,7 @@ const ShoppingList = () => {
       } else {
         const response = await axios.post(`${API_URL}/shopping-items/`, formData);
         setShoppingItems((prev) => [...prev, response.data]);
+
       }
 
     } catch (error) {
@@ -286,6 +293,7 @@ const ShoppingList = () => {
     try {
       await axios.delete(`${API_URL}/shopping-items/${id}`);
       setShoppingItems((prev) => prev.filter((item) => item.id !== id));
+
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -319,21 +327,81 @@ const ShoppingList = () => {
             : [...prev, response.data]
         );
 
+
       } else {
         const response = await axios.post(`${API_URL}/shopping-list/`, formDataShoppingList);
         setShoppingList((prev) => [...prev, response.data]);
+        console.log("Response:", response.data);
+        setTotal((prevTotal) => prevTotal + parseFloat(response.data.price || 0));
+
+
       }
 
     } catch (error) {
       console.error("Error adding category:", error);
     }
-    setFormDataShoppingList({ name: "" }); // Reset formCategoryData after submission
-    setFormDataShoppingList({ category_id: "" }); // Reset formCategoryData after submission
+    setFormDataShoppingList({
+      name: "",
+      category: "",
+      category_id: "",
+      price: "",
+      description: "",
+    }); // Reset formCategoryData after submission
 
     // Reset after save
-    setIsEditingShoppingItem(false);
-    setEditingShoppingItemId(null);
+    setIsAddingShoppingList(false);
   }
+
+  const handleStatus = (status) => {
+    if (status === "pending") {
+      return "Pending";
+    } else if (status === "bought") {
+      return "Terbeli";
+    } else {
+      return "Unknown Status";
+    }
+  };
+
+  const HandleUpdateStatus = (item, status) => async (e) => {
+    try {
+      const response = await axios.put(`${API_URL}/shopping-list/${item.id}/status`, {
+        status: status,
+      });
+
+      if (status === "complete") {
+        // Remove the item from the list
+        setShoppingList((prev) => prev.filter((i) => i.id !== item.id));
+        setTotal((prevTotal) => prevTotal - parseFloat(item.price));
+
+      } else {
+        // Just update the item
+        setShoppingList((prev) =>
+          prev.map((i) =>
+            i.id === item.id ? response.data : i
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+
+  const handleConfirmDelete = async (e) => {
+    try {
+      // Delete the item from the shopping list
+      const response = await axios.delete(`${API_URL}/shopping-list/${ShoppingListtoDelete.id}`);
+      console.log("Item deleted:", response.data);
+      setShoppingList((prev) => prev.filter((i) => i.id !== ShoppingListtoDelete.id));
+      setTotal((prevTotal) => prevTotal - parseFloat(ShoppingListtoDelete.price));
+
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+    setIsDeletingShoppingList(false);
+  }
+
+
 
 
 
@@ -436,6 +504,35 @@ const ShoppingList = () => {
               ))}
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {isDeletingShoppingList && (
+        <div className={style2.EditingShoppingDeleteModalOverlay}>
+          <div className={style2.EditingShoppingDeleteModal}>
+            <h2>Hapus Barang?</h2>
+            {/* <p>Apakah kamu yakin ingin menghapus <strong>{itemToDelete?.name}</strong> dari daftar?</p> */}
+
+            <div className={style2.EditingShoppingDeleteModalActions}>
+              <button
+                className={style2.EditingShoppingDeleteButton}
+                onClick={() => {
+                  handleConfirmDelete();
+                }}
+              >
+                Ya, Hapus
+              </button>
+              <button
+                className={style2.EditingShoppingCancelButton}
+                onClick={() => {
+                  setIsDeletingShoppingList(false);
+                  setItemToDelete(null);
+                }}
+              >
+                Batal
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -666,40 +763,87 @@ const ShoppingList = () => {
 
 
 
-      <table>
-        <thead>
-          <tr>
+      <table className={style2.ShoppingListTable}>
+        <thead className={style2.ShoppingListTable__thead}>
+          <tr className={style2.ShoppingListTable__headerRow}>
+            <th></th>
+            <th>Nama</th>
             <th>Deskripsi</th>
-            <th>Total</th>
+            <th>Harga</th>
             <th>Jam</th>
-            <th>Aksi</th>
+            <th>Status</th>
+            <th>Update Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className={style2.ShoppingListTable__body}>
           {ShoppingList.map((item) => (
-            <tr key={item.id}>
+            <tr className={style2.ShoppingListTable__row} key={item.id}>
+              <td className={style2.ShoppingListTable__cell}>
+                <button onClick={() => {
+                  setShoppingListtoDelete(item);
+                  setIsDeletingShoppingList(true);
+                  console.log(ShoppingListtoDelete);
+                }
+
+                } className={style2.ShoppingListTable__iconButton}>
+                  <img
+                    src={"/icons/x-circle.svg"}
+                    alt="Edit"
+                    className={style2.ShoppingListTable__icon}
+                  />
+                </button>
+              </td>
               <td>{item.name}</td>
+              <td>{item.description}</td>
               <td>Rp. {PriceFormat(item.price)}</td>
               <td>{FormatDate(item.created_at)}</td>
+              <td>{handleStatus(item.status)}</td>
               <td>
-                <button onClick={() => handleEdit(item)}>Edit</button>
-                <button onClick={() => handleDelete(item.id)}>Hapus</button>
+                <div className={style2.ShoppingListTable__statusButtons}>
+                  <button className={style2.ShoppingListTable__statusPending} onClick={HandleUpdateStatus(item, "pending")}>
+                    <img
+                      src={"/icons/pending.svg"}
+                      alt="Pending"
+                      className={style2.ShoppingListTable__iconstatus}
+                    />
+                    <p>Pending</p>
+
+                  </button>
+                  <button className={style2.ShoppingListTable__statusBought} onClick={HandleUpdateStatus(item, "bought")}>
+
+                    <img
+                      src={"/icons/paid.svg"}
+                      alt="Bought"
+                      className={style2.ShoppingListTable__iconstatus}
+                    />
+                    <p>Beli</p>
+
+                  </button>
+                  <button className={style2.ShoppingListTable__statusDone} onClick={HandleUpdateStatus(item, "complete")}>
+                    <img
+                      src={"/icons/check-mark-round.svg"}
+                      alt="Done"
+                      className={style2.ShoppingListTable__iconstatus}
+                    />
+                    <p>Selesai</p>
+
+                  </button>
+
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
-        <tfoot>
+        <tfoot className={style2.ShoppingListTable__footer}>
           <tr>
-            <td>
-              <strong>Total</strong>
-            </td>
-            <td>
-              <strong>Rp. {PriceFormat(total)}</strong>
-            </td>
+            <td><strong>Total</strong></td>
+            <td><strong>Rp. {PriceFormat(total)}</strong></td>
             <td></td>
           </tr>
         </tfoot>
       </table>
+
+
 
       {editingItem && (
         <div className={style.modalOverlay}>

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->text('category');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->integer('category_id'); // Changed from decimal to integer
 
             $table->integer('price')->nullable(); // Changed from decimal to integer
