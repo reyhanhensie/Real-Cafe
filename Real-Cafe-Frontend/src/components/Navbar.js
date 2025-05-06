@@ -17,10 +17,10 @@ const Navbar = () => {
     userRole === "kasir"
       ? 1
       : userRole === "dapur"
-      ? 2
-      : userRole === "admin"
-      ? 3
-      : null;
+        ? 2
+        : userRole === "admin"
+          ? 3
+          : null;
 
   const logoutHandler = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -81,6 +81,14 @@ const Navbar = () => {
               )}
               {Authority >= 1 && (
                 <li>
+                  <Link to="/shopping-list">
+                    <img src="/icons/report.svg" alt="Kitchen Order" />
+                    Daftar Belanja
+                  </Link>
+                </li>
+              )}
+              {Authority >= 1 && (
+                <li>
                   <Link to="/stock-management">
                     <img src="/icons/stock.svg" alt="Stock" />
                     Stock
@@ -89,24 +97,7 @@ const Navbar = () => {
               )}
               {Authority >= 1 && (
                 <li>
-                  <Link to="/order-summary-drink">
-                    <img src="/icons/minuman.svg" alt="Kitchen Order" />
-                    Dapur Minum
-                  </Link>
-                </li>
-              )}
-              {Authority >= 1 && (
-                <li>
-                  <Link to="/order-summary-food">
-                    <img src="/icons/food.svg" alt="Kitchen Order" />
-                    Dapur Makan
-                  </Link>
-                </li>
-              )}
-
-              {Authority >= 1 && (
-                <li>
-                  <Link to="/order-summary">
+                  <Link to="/DapurOption">
                     <img src="/icons/order-kitchen.svg" alt="Kitchen Order" />
                     Dapur
                   </Link>

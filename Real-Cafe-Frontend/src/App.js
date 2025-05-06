@@ -20,9 +20,12 @@ import MenuFotoEdit from './Pages/Admin/MenuFotoEdit';
 
 // EMPLOYEE
 import OrderForm from './Pages/Employee/OrderForm';
+
+import DapurOption from './Pages/Employee/DapurOption';
 import OrderSummary from './Pages/Employee/OrderSummary';
 import OrderSummaryFood from './Pages/Employee/OrderSummaryFood';
 import OrderSummaryDrink from './Pages/Employee/OrderSummaryDrink';
+
 import Stock from './Pages/Employee/Stock';
 import Pengeluaran from './Pages/Employee/Pengeluaran';
 import Summary from './Pages/Employee/Summary';
@@ -106,6 +109,12 @@ const App = () => {
             path="/spending"
             element={
               <DapurRoute element={<Layout><Pengeluaran /></Layout>} />
+            }
+          />
+          <Route
+            path="/DapurOption"
+            element={
+              <DapurRoute element={<Layout><DapurOption /></Layout>} />
             }
           />
           <Route
