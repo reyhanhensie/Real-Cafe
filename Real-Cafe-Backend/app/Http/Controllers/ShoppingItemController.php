@@ -19,6 +19,28 @@ class ShoppingItemController extends Controller
 
         return response()->json($query->get());
     }
+    // Replace the duplicate `index` with this:
+    public function update(Request $request, $id)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'name' => 'required|string|unique:shopping_items,name,' . $id,
+            'category_id' => 'required|integer|exists:shopping_item_categories,id',
+        ]);
+
+        // Find the item to update
+        $item = ShoppingItem::findOrFail($id);
+
+        // Update item details
+        $item->update([
+            'name' => $validated['name'],
+            'category_id' => $validated['category_id'],
+        ]);
+        $item->load('category');
+
+        return response()->json($item, 201);
+    }
+
 
     // GET /categories
     public function getCategories()
@@ -40,6 +62,7 @@ class ShoppingItemController extends Controller
             'name' => $validated['name'],
             'category_id' => $validated['category_id'],
         ]);
+        $item->load('category');
 
         return response()->json($item, 201);
     }
