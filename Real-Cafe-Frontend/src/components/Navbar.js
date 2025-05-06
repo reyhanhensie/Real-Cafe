@@ -12,7 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const { userRole } = useContext(AuthContext); // Access userRole from context
-  const token = localStorage.get("token"); // Get the token from cookies
+  const token = localStorage.getItem("token"); // Get the token from cookies
   const Authority =
     userRole === "kasir"
       ? 1
