@@ -13,4 +13,8 @@ class ShoppingItemCategory extends Model
     {
         return $this->hasMany(ShoppingItem::class);
     }
+    public function ShoppingList()
+    {
+        return $this->hasMany(ShoppingList::class);
+    }
 }

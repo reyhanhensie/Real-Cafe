@@ -9,7 +9,7 @@ class ShoppingListController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ShoppingList::query();
+        $query = ShoppingList::with('category'); // this is the correct way to eager load
 
         if ($request->has('status')) {
             $query->where('status', $request->status);
@@ -18,6 +18,8 @@ class ShoppingListController extends Controller
         if ($request->has('search')) {
             $query->where('item', 'like', '%' . $request->search . '%');
         }
+        $query->with('category'); // this is the correct way to eager load
+
 
         return response()->json($query->get());
     }
@@ -25,14 +27,23 @@ class ShoppingListController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'item' => 'required|string|max:255',
-            'price' => 'nullable|integer|min:0',
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+            'price' => 'required|integer|min:0',
+            'category_id' => 'required|integer|exists:shopping_item_categories,id',
+
         ]);
 
         $shoppingList = ShoppingList::create([
-            'item' => $request->item,
+            'name' => $request->name,
+            'category' => $request->category,
             'price' => $request->price,
+            'category_id' => $request->category_id,
+            'description' => $request->description,
         ]);
+        $shoppingList->load('category');
+
 
         return response()->json($shoppingList, 201);
     }
@@ -50,7 +61,7 @@ class ShoppingListController extends Controller
 
         return response()->json(['message' => 'Status updated successfully.']);
     }
-    
+
     public function update($id, Request $request)
     {
         $request->validate([
@@ -73,7 +84,7 @@ class ShoppingListController extends Controller
         return response()->json(['message' => 'Item updated successfully.']);
     }
 
- 
+
     public function destroy($id)
     {
         $shoppingList = ShoppingList::findOrFail($id);

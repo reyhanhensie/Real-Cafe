@@ -8,7 +8,7 @@ import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner comp
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const location = useLocation(); // Use useLocation to preserve the intended location
-  const token = localStorage.get("token");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const checkAuthentication = async () => {

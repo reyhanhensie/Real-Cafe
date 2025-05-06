@@ -9,5 +9,9 @@ class ShoppingList extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','category', 'price', 'status'];
+    protected $fillable = ['name', 'category', 'description', 'price', 'status', 'category_id'];
+    public function category()
+    {
+        return $this->belongsTo(ShoppingItemCategory::class);
+    }
 }

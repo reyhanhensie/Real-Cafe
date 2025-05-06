@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('shopping_lists', function (Blueprint $table) {
             $table->id();
-            $table->text('item');
+            $table->text('name');
+            $table->text('category');
+            $table->text('description');
+            $table->integer('category_id'); // Changed from decimal to integer
+
             $table->integer('price')->nullable(); // Changed from decimal to integer
             $table->enum('status', ['pending', 'bought', 'complete'])->default('pending');
             $table->timestamps();
+
         });
     }
 

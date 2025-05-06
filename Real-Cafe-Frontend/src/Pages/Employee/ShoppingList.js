@@ -12,6 +12,14 @@ const ShoppingList = () => {
     name: "",
     category_id: "",
   });
+  const [formDataShoppingList, setFormDataShoppingList] = useState({
+    name: "",
+    category: "",
+    category_id: "",
+    price: "",
+    description: "",
+  });
+
   const [editData, setEditData] = useState({
     item: "",
     price: "",
@@ -36,12 +44,18 @@ const ShoppingList = () => {
   const [isDeletingShoppingItem, setIsDeletingShoppingItem] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
+  const [isAddingShoppingList, setIsAddingShoppingList] = useState(false);
+  const [editingShoppingListId, setEditingShoppingListId] = useState(null);
+  const [ShoppingList, setShoppingList] = useState([]);
+
+
+
 
   useEffect(() => {
-    const fetchSpending = async () => {
+    const fetchShoppingList = async () => {
       try {
         const response = await axios.get(`${API_URL}/shopping-list`);
-        setSpending(response.data);
+        setShoppingList(response.data);
         const totalAmount = response.data.reduce(
           (acc, item) => acc + parseFloat(item.price || 0),
           0
@@ -52,7 +66,7 @@ const ShoppingList = () => {
       }
     };
 
-    fetchSpending();
+    fetchShoppingList();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -128,6 +142,14 @@ const ShoppingList = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  const handleInputChangeShoppingList = (e) => {
+    const { name, value } = e.target;
+    setFormDataShoppingList((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
 
 
 
@@ -259,6 +281,7 @@ const ShoppingList = () => {
       category_id: item.category_id,
     });
   };
+
   const handleShoppingItemDelete = async (id) => {
     try {
       await axios.delete(`${API_URL}/shopping-items/${id}`);
@@ -266,6 +289,50 @@ const ShoppingList = () => {
     } catch (error) {
       console.error("Error deleting item:", error);
     }
+  }
+
+  const handleAddShoppingList = (item) => {
+    setIsAddingShoppingList(true);
+    setFormDataShoppingList({
+      name: item.name,
+      category: item.category.name,
+      category_id: item.category_id,
+      price: "",
+      description: "",
+    });
+  };
+
+  const HandleSubmitShoppingList = async (e) => {
+    e.preventDefault();
+    console.log("Form Data:", formData);
+    console.log(parseInt(formData.category_id));
+
+    try {
+
+      if (editingShoppingListId) {
+        const response = await axios.put(`${API_URL}/shopping-list/${editingShoppingItemId}`, formDataShoppingList);
+        setShoppingList((prev) =>
+          editingShoppingItemId
+            ? prev.map((item) =>
+              item.id === editingShoppingItemId ? response.data : item
+            )
+            : [...prev, response.data]
+        );
+
+      } else {
+        const response = await axios.post(`${API_URL}/shopping-list/`, formDataShoppingList);
+        setShoppingList((prev) => [...prev, response.data]);
+      }
+
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+    setFormDataShoppingList({ name: "" }); // Reset formCategoryData after submission
+    setFormDataShoppingList({ category_id: "" }); // Reset formCategoryData after submission
+
+    // Reset after save
+    setIsEditingShoppingItem(false);
+    setEditingShoppingItemId(null);
   }
 
 
@@ -350,11 +417,11 @@ const ShoppingList = () => {
                   <ul className={style2.itemList}>
                     {items.map((item) => (
                       <li className={style2.item} key={item.id}>
-                         <span className={style2.itemName}>{item.name}</span>
+                        <span className={style2.itemName}>{item.name}</span>
                         <div className={style2.actionButtons}>
                           <button
                             onClick={() => {
-                              setItemToDelete(item);
+                              handleAddShoppingList(item);
                             }}
                             className={style2.delete}
                           >
@@ -609,9 +676,9 @@ const ShoppingList = () => {
           </tr>
         </thead>
         <tbody>
-          {spending.map((item) => (
+          {ShoppingList.map((item) => (
             <tr key={item.id}>
-              <td>{item.item}</td>
+              <td>{item.name}</td>
               <td>Rp. {PriceFormat(item.price)}</td>
               <td>{FormatDate(item.created_at)}</td>
               <td>
@@ -634,50 +701,114 @@ const ShoppingList = () => {
         </tfoot>
       </table>
 
-      {
-        editingItem && (
-          <div className={style.modalOverlay}>
-            <div className={style.modalContent}>
-              <h3>Edit Pengeluaran</h3>
-              <form className={style.ModalForm} onSubmit={handleEditSubmit}>
-                <div className={style.ModalFormDescription}>
-                  <label>Deskripsi :</label>
+      {editingItem && (
+        <div className={style.modalOverlay}>
+          <div className={style.modalContent}>
+            <h3>Edit Pengeluaran</h3>
+            <form className={style.ModalForm} onSubmit={handleEditSubmit}>
+              <div className={style.ModalFormDescription}>
+                <label>Deskripsi :</label>
+                <input
+                  type="text"
+                  name="deskripsi"
+                  value={editData.item}
+                  onChange={(e) =>
+                    setEditData({ ...editData, item: e.target.value })
+                  }
+                  required
+                  autoComplete="off"
+                />
+              </div>
+              <div className={style.ModalFormTotal}>
+                <label>Total :</label>
+                <p>
+                  Rp.{" "}
                   <input
-                    type="text"
-                    name="deskripsi"
-                    value={editData.item}
+                    type="number"
+                    name="total"
+                    value={editData.price}
                     onChange={(e) =>
-                      setEditData({ ...editData, item: e.target.value })
+                      setEditData({ ...editData, price: e.target.value })
                     }
                     required
                     autoComplete="off"
                   />
-                </div>
-                <div className={style.ModalFormTotal}>
-                  <label>Total :</label>
-                  <p>
-                    Rp.{" "}
-                    <input
-                      type="number"
-                      name="total"
-                      value={editData.price}
-                      onChange={(e) =>
-                        setEditData({ ...editData, price: e.target.value })
-                      }
-                      required
-                      autoComplete="off"
-                    />
-                  </p>
-                </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <button type="submit">Update</button>
-                <button type="button" onClick={handleCloseEdit}>
-                  Cancel
-                </button>
-              </form>
-            </div>
+                </p>
+              </div>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+              <button type="submit">Update</button>
+              <button type="button" onClick={handleCloseEdit}>
+                Cancel
+              </button>
+            </form>
           </div>
-        )
+        </div>
+      )
+      }
+      {isAddingShoppingList && (
+        <div className={style2.EditingShoppingModalOverlay}>
+          <div className={style2.EditingShoppingModalFormContainer}>
+            <button className={style2.modalContent_close_button} onClick={() => {
+              setIsAddingShoppingList(false);
+              setFormDataShoppingList({ name: "", category_id: "" });
+            }}
+            >
+              <img
+                src={"/icons/x-circle.svg"}
+                alt="Close"
+                className={style1.modalContent_close_icon}
+              />
+            </button>
+            <label>Nama :</label>
+            <input
+              type="text"
+              name="name"
+              disabled
+              value={formDataShoppingList.name}
+              onChange={handleInputChangeShoppingList}
+
+              placeholder="Nama Barang"
+            />
+            <label>Kategori :</label>
+            <input
+              type="text"
+              name="category"
+              disabled
+              value={formDataShoppingList.category}
+              onChange={handleInputChangeShoppingList}
+
+              placeholder="Nama Barang"
+            />
+            <label>Deskripsi :</label>
+            <input
+              type="text"
+              name="description"
+              value={formDataShoppingList.description}
+              onChange={handleInputChangeShoppingList}
+              placeholder="Optional"
+            />
+            <label>Harga :</label>
+            <h3>Rp.
+              <input
+                type="number"
+                name="price"
+                value={formDataShoppingList.price}
+                onChange={handleInputChangeShoppingList}
+                placeholder="Harga Barang"
+              />
+            </h3>
+
+
+            {formDataShoppingList.price === "" ? (
+              <button disabled>Simpan</button>
+            ) : (
+              <button onClick={HandleSubmitShoppingList}>
+                Tambah
+              </button>
+            )}
+          </div>
+        </div>
+      )
       }
     </div >
   );
