@@ -3,6 +3,7 @@ import axios from "axios";
 import API_URL from "../../apiconfig";
 import style from "./ShoppingList.module.css";
 import style1 from "./ShoppingList.style1.module.css";
+import style2 from "./ShoppingList.style2.module.css";
 
 const ShoppingList = () => {
   const [spending, setSpending] = useState([]);
@@ -219,6 +220,17 @@ const ShoppingList = () => {
   }
 
 
+  // SORTING KATEGORI DI SHOPPING ITEM
+  const groupedItems = shoppingItems.reduce((groups, item) => {
+    const categoryName = item.category?.name || "Tidak Berkategori";
+    if (!groups[categoryName]) {
+      groups[categoryName] = [];
+    }
+    groups[categoryName].push(item);
+    return groups;
+  }, {});
+
+
 
   return (
     <div className={style.pengeluaran}>
@@ -354,11 +366,36 @@ const ShoppingList = () => {
               </div>
             </div>
             <h2>Daftar Menu Belanja</h2>
-            <ul>
-              {shoppingItems.map((item) => (
-                <li key={item.id}>{item.name}</li>
+            <div className={style2.modalContentContainer}>
+              {Object.entries(groupedItems).map(([categoryName, items]) => (
+                <div className={style2.categoryBlock} key={categoryName}>
+                  <h3 className={style2.categoryTitle}>{categoryName}</h3>
+                  <ul className={style2.itemList}>
+                    {items.map((item) => (
+                      <li className={style2.item} key={item.id}>
+                        <span className={style2.itemName}>{item.name}</span>
+                        <div className={style2.actionButtons}>
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className={style2.edit}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className={style2.delete}
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
+
+
           </div>
         </div>
       )}
