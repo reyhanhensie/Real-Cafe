@@ -51,6 +51,9 @@ const ShoppingList = () => {
   const [isDeletingShoppingList, setIsDeletingShoppingList] = useState(false);
   const [ShoppingListtoDelete, setShoppingListtoDelete] = useState(null);
 
+  const [statusToUpdate, setStatusToUpdate] = useState(null);
+  const [isUpdatingStatusShoppingList, setUpdatingStatusShoppingList] = useState(false);
+
 
 
 
@@ -315,6 +318,7 @@ const ShoppingList = () => {
     console.log("Form Data:", formData);
     console.log(parseInt(formData.category_id));
 
+
     try {
 
       if (editingShoppingListId) {
@@ -333,8 +337,6 @@ const ShoppingList = () => {
         setShoppingList((prev) => [...prev, response.data]);
         console.log("Response:", response.data);
         setTotal((prevTotal) => prevTotal + parseFloat(response.data.price || 0));
-
-
       }
 
     } catch (error) {
@@ -362,25 +364,36 @@ const ShoppingList = () => {
     }
   };
 
+  const HandleUpdateStatusDone = (item, status) => async (e) => {
+
+    try {
+      const response = await axios.put(`${API_URL}/shopping-list/${item.id}/status`, {
+        status: status,
+      });
+      // Remove the item from the list
+      setShoppingList((prev) => prev.filter((i) => i.id !== item.id));
+      setTotal((prevTotal) => prevTotal - parseFloat(item.price));
+
+    }
+    catch (error) {
+      console.error("Error updating status:", error);
+    }
+    setUpdatingStatusShoppingList(false);
+
+  }
+
   const HandleUpdateStatus = (item, status) => async (e) => {
     try {
       const response = await axios.put(`${API_URL}/shopping-list/${item.id}/status`, {
         status: status,
       });
 
-      if (status === "complete") {
-        // Remove the item from the list
-        setShoppingList((prev) => prev.filter((i) => i.id !== item.id));
-        setTotal((prevTotal) => prevTotal - parseFloat(item.price));
-
-      } else {
-        // Just update the item
-        setShoppingList((prev) =>
-          prev.map((i) =>
-            i.id === item.id ? response.data : i
-          )
-        );
-      }
+      // Just update the item
+      setShoppingList((prev) =>
+        prev.map((i) =>
+          i.id === item.id ? response.data : i
+        )
+      );
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -416,9 +429,9 @@ const ShoppingList = () => {
         </div>
 
         {/* New Button to open Shopping Items Modal */}
-        <button onClick={handleOpenModal}>View Shopping Items</button>
+        <button onClick={handleOpenModal}>Tambah Daftar Belanja</button>
 
-        <div className={style.Form}>
+        {/* <div className={style.Form}>
           <form className={style.FormHeader} onSubmit={handleSubmit}>
             <div className={style.FormDescription}>
               <label>Deskripsi :</label>
@@ -449,7 +462,7 @@ const ShoppingList = () => {
             </div>
             <button type="submit">Tambah Pengeluaran</button>
           </form>
-        </div>
+        </div> */}
       </div>
 
       {/* Modal for shopping items */}
@@ -536,127 +549,25 @@ const ShoppingList = () => {
           </div>
         </div>
       )}
-      {isCreatingShoppingItem && (
-        <div className={style1.modal_add_shipping_item_form}>
-          <div className={style1.modalContent_add_shipping_item_form}>
-            <button className={style1.modalContent_close_button} onClick={() => setIsCreatingShoppingItem(false)}>
-              <img
-                src={"/icons/x-circle.svg"}
-                alt="Close"
-                className={style1.modalContent_close_icon}
-              />
-            </button>
-            <h2>Tambah Daftar Belanja</h2>
 
-            <div className={style1.modalContent_add_shipping_item_InputForm_Container}>
-              <div className={style1.modalContent_add_shipping_item_InputForm}>
-                <label>Nama :</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Nama Barang"
-                />
-                <label>Kategori :</label>
-                <select
-                  value={formData.category_id}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      category_id: e.target.value === "" ? "" : parseInt(e.target.value),
-                    })
-                  }
-                >
-                  <option value="">-- Pilih Kategori --</option>
-                  {Categories.map((Categories) => (
-                    <option key={Categories.id} value={Categories.id}>
-                      {Categories.name}
-                    </option>
-                  ))}
-                </select>
-                {formData.category_id === "" || formData.name === "" ? (
-                  <button disabled>Simpan</button>
-
-                ) : (
-                  <button
-                    onClick={HandleSubmitShoppingItem}>Simpan</button>
-                )}
-
-              </div>
-
-              <div className={style1.modalContent_add_shipping_item_InputForm2}>
-                <label>Tambah Kategori</label>
-                <button onClick={() => handleOpenModalCategory()}>
-                  <img
-                    src={"/icons/add-menu.svg"}
-                    alt="Close"
-                    className={style1.modalContent_add_category_icon}
-                  />
-                </button>
-              </div>
-            </div>
-            <h2>Daftar Menu Belanja</h2>
-            <div className={style2.modalContentContainer}>
-              {Object.entries(groupedItems).map(([categoryName, items]) => (
-                <div className={style2.categoryBlock} key={categoryName}>
-                  <h3 className={style2.categoryTitle}>{categoryName}</h3>
-                  <ul className={style2.itemList}>
-                    {items.map((item) => (
-                      <li className={style2.item} key={item.id}>
-                        <span className={style2.itemName}>{item.name}</span>
-                        <div className={style2.actionButtons}>
-                          <button
-                            onClick={() => handleEditShoppingItem(item)}
-                            className={style2.edit}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => {
-                              setItemToDelete(item);
-                              setIsDeletingShoppingItem(true);
-                            }}
-                            className={style2.delete}
-                          >
-                            Hapus
-                          </button>
-
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-
-          </div>
-        </div>
-      )}
-
-      {isDeletingShoppingItem && (
+      {isUpdatingStatusShoppingList && (
         <div className={style2.EditingShoppingDeleteModalOverlay}>
           <div className={style2.EditingShoppingDeleteModal}>
-            <h2>Hapus Barang?</h2>
-            <p>Apakah kamu yakin ingin menghapus <strong>{itemToDelete?.name}</strong> dari daftar?</p>
+            <h2>Update Status Selesai?</h2>
+            <p>Daftar yang di update "Selesai" tidak bisa di lihat lagi</p>
 
             <div className={style2.EditingShoppingDeleteModalActions}>
               <button
                 className={style2.EditingShoppingDeleteButton}
-                onClick={() => {
-                  handleShoppingItemDelete(itemToDelete.id);
-                  setIsDeletingShoppingItem(false);
-                  setItemToDelete(null);
-                }}
+                onClick={HandleUpdateStatusDone(statusToUpdate, "complete")}
               >
-                Ya, Hapus
+                Ya
               </button>
               <button
                 className={style2.EditingShoppingCancelButton}
                 onClick={() => {
-                  setIsDeletingShoppingItem(false);
-                  setItemToDelete(null);
+                  setUpdatingStatusShoppingList(false);
+                  setStatusToUpdate(null);
                 }}
               >
                 Batal
@@ -664,101 +575,238 @@ const ShoppingList = () => {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
+      {
+        isCreatingShoppingItem && (
+          <div className={style1.modal_add_shipping_item_form}>
+            <div className={style1.modalContent_add_shipping_item_form}>
+              <button className={style1.modalContent_close_button} onClick={() => setIsCreatingShoppingItem(false)}>
+                <img
+                  src={"/icons/x-circle.svg"}
+                  alt="Close"
+                  className={style1.modalContent_close_icon}
+                />
+              </button>
+              <h2>Tambah Daftar Belanja</h2>
+
+              <div className={style1.modalContent_add_shipping_item_InputForm_Container}>
+                <div className={style1.modalContent_add_shipping_item_InputForm}>
+                  <label>Nama :</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Nama Barang"
+                  />
+                  <label>Kategori :</label>
+                  <select
+                    value={formData.category_id}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        category_id: e.target.value === "" ? "" : parseInt(e.target.value),
+                      })
+                    }
+                  >
+                    <option value="">-- Pilih Kategori --</option>
+                    {Categories.map((Categories) => (
+                      <option key={Categories.id} value={Categories.id}>
+                        {Categories.name}
+                      </option>
+                    ))}
+                  </select>
+                  {formData.category_id === "" || formData.name === "" ? (
+                    <button disabled>Simpan</button>
+
+                  ) : (
+                    <button
+                      onClick={HandleSubmitShoppingItem}>Simpan</button>
+                  )}
+
+                </div>
+
+                <div className={style1.modalContent_add_shipping_item_InputForm2}>
+                  <label>Tambah Kategori</label>
+                  <button onClick={() => handleOpenModalCategory()}>
+                    <img
+                      src={"/icons/add-menu.svg"}
+                      alt="Close"
+                      className={style1.modalContent_add_category_icon}
+                    />
+                  </button>
+                </div>
+              </div>
+              <h2>Daftar Menu Belanja</h2>
+              <div className={style2.modalContentContainer}>
+                {Object.entries(groupedItems).map(([categoryName, items]) => (
+                  <div className={style2.categoryBlock} key={categoryName}>
+                    <h3 className={style2.categoryTitle}>{categoryName}</h3>
+                    <ul className={style2.itemList}>
+                      {items.map((item) => (
+                        <li className={style2.item} key={item.id}>
+                          <span className={style2.itemName}>{item.name}</span>
+                          <div className={style2.actionButtons}>
+                            <button
+                              onClick={() => handleEditShoppingItem(item)}
+                              className={style2.edit}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => {
+                                setItemToDelete(item);
+                                setIsDeletingShoppingItem(true);
+                              }}
+                              className={style2.delete}
+                            >
+                              Hapus
+                            </button>
+
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
 
 
-      {isCreatingCategory && (
-        <div className={style1.modal_category_form}>
-          <div className={style1.modalContent_category_form}>
-            <button className={style1.modalContent_close_button} onClick={() => setIsCreatingCategory(false)}>
-              <img
-                src={"/icons/x-circle.svg"}
-                alt="Close"
-                className={style1.modalContent_close_icon}
-              />
-            </button>
-            <h2>Tambah Kategori</h2>
-            <div className={style1.modalContent_category_input_form}>
-              <label>Kategori :</label>
-              <input
-                type="text"
-                name="name"
-                value={formCategoryData.name}
-                onChange={handleInputCategoryChange}
-                placeholder="Ketik Kategori"
-                required
-              />
-              <button onClick={HandleSumbitCategory}>Simpan</button>
             </div>
-            <h3>Kategori Tersedia</h3>
-            <ul>
-              {Categories.map((item) => (
-                <li className={style1.CategoriesList} key={item.id}>{item.name}
+          </div>
+        )
+      }
 
-                  {/* NANTI */}
-                  {/* <div className={style1.CategoriesListButton}>
+      {
+        isDeletingShoppingItem && (
+          <div className={style2.EditingShoppingDeleteModalOverlay}>
+            <div className={style2.EditingShoppingDeleteModal}>
+              <h2>Hapus Barang?</h2>
+              <p>Apakah kamu yakin ingin menghapus <strong>{itemToDelete?.name}</strong> dari daftar?</p>
+
+              <div className={style2.EditingShoppingDeleteModalActions}>
+                <button
+                  className={style2.EditingShoppingDeleteButton}
+                  onClick={() => {
+                    handleShoppingItemDelete(itemToDelete.id);
+                    setIsDeletingShoppingItem(false);
+                    setItemToDelete(null);
+                  }}
+                >
+                  Ya, Hapus
+                </button>
+                <button
+                  className={style2.EditingShoppingCancelButton}
+                  onClick={() => {
+                    setIsDeletingShoppingItem(false);
+                    setItemToDelete(null);
+                  }}
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+
+      {
+        isCreatingCategory && (
+          <div className={style1.modal_category_form}>
+            <div className={style1.modalContent_category_form}>
+              <button className={style1.modalContent_close_button} onClick={() => setIsCreatingCategory(false)}>
+                <img
+                  src={"/icons/x-circle.svg"}
+                  alt="Close"
+                  className={style1.modalContent_close_icon}
+                />
+              </button>
+              <h2>Tambah Kategori</h2>
+              <div className={style1.modalContent_category_input_form}>
+                <label>Kategori :</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formCategoryData.name}
+                  onChange={handleInputCategoryChange}
+                  placeholder="Ketik Kategori"
+                  required
+                />
+                <button onClick={HandleSumbitCategory}>Simpan</button>
+              </div>
+              <h3>Kategori Tersedia</h3>
+              <ul>
+                {Categories.map((item) => (
+                  <li className={style1.CategoriesList} key={item.id}>{item.name}
+
+                    {/* NANTI */}
+                    {/* <div className={style1.CategoriesListButton}>
                     <button onClick={null }>Edit</button>
                     <button onClick={null }>Hapus</button>
                   </div> */}
 
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* EDIT SHOPPING ITEM */}
-      {isEditingShoppingItem && (
-        <div className={style2.EditingShoppingModalOverlay}>
-          <div className={style2.EditingShoppingModalFormContainer}>
-            <button className={style2.modalContent_close_button} onClick={() => {
-              setIsEditingShoppingItem(false);
-              setFormData({ name: "", category_id: "" });
-            }}
-            >
-              <img
-                src={"/icons/x-circle.svg"}
-                alt="Close"
-                className={style1.modalContent_close_icon}
-              />
-            </button>
-            <label>Nama :</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Nama Barang"
-            />
-            <label>Kategori :</label>
-            <select
-              value={formData.category_id}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  category_id: e.target.value === "" ? "" : parseInt(e.target.value),
-                })
-              }
-            >
-              <option value="">-- Pilih Kategori --</option>
-              {Categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-
-            {formData.category_id === "" || formData.name === "" ? (
-              <button disabled>Simpan</button>
-            ) : (
-              <button onClick={HandleSubmitShoppingItem}>
-                {editingShoppingItemId ? "Update" : "Simpan"}
+      {
+        isEditingShoppingItem && (
+          <div className={style2.EditingShoppingModalOverlay}>
+            <div className={style2.EditingShoppingModalFormContainer}>
+              <button className={style2.modalContent_close_button} onClick={() => {
+                setIsEditingShoppingItem(false);
+                setFormData({ name: "", category_id: "" });
+              }}
+              >
+                <img
+                  src={"/icons/x-circle.svg"}
+                  alt="Close"
+                  className={style1.modalContent_close_icon}
+                />
               </button>
-            )}
+              <label>Nama :</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Nama Barang"
+              />
+              <label>Kategori :</label>
+              <select
+                value={formData.category_id}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    category_id: e.target.value === "" ? "" : parseInt(e.target.value),
+                  })
+                }
+              >
+                <option value="">-- Pilih Kategori --</option>
+                {Categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+
+              {formData.category_id === "" || formData.name === "" ? (
+                <button disabled>Simpan</button>
+              ) : (
+                <button onClick={HandleSubmitShoppingItem}>
+                  {editingShoppingItemId ? "Update" : "Simpan"}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      )
+        )
       }
 
 
@@ -770,7 +818,7 @@ const ShoppingList = () => {
             <th>Nama</th>
             <th>Deskripsi</th>
             <th>Harga</th>
-            <th>Jam</th>
+            <th>Waktu</th>
             <th>Status</th>
             <th>Update Status</th>
           </tr>
@@ -819,7 +867,11 @@ const ShoppingList = () => {
                     <p>Beli</p>
 
                   </button>
-                  <button className={style2.ShoppingListTable__statusDone} onClick={HandleUpdateStatus(item, "complete")}>
+                  <button className={style2.ShoppingListTable__statusDone}
+                    onClick={() => {
+                      setUpdatingStatusShoppingList(true);
+                      setStatusToUpdate(item);
+                    }}>
                     <img
                       src={"/icons/check-mark-round.svg"}
                       alt="Done"
@@ -845,114 +897,116 @@ const ShoppingList = () => {
 
 
 
-      {editingItem && (
-        <div className={style.modalOverlay}>
-          <div className={style.modalContent}>
-            <h3>Edit Pengeluaran</h3>
-            <form className={style.ModalForm} onSubmit={handleEditSubmit}>
-              <div className={style.ModalFormDescription}>
-                <label>Deskripsi :</label>
-                <input
-                  type="text"
-                  name="deskripsi"
-                  value={editData.item}
-                  onChange={(e) =>
-                    setEditData({ ...editData, item: e.target.value })
-                  }
-                  required
-                  autoComplete="off"
-                />
-              </div>
-              <div className={style.ModalFormTotal}>
-                <label>Total :</label>
-                <p>
-                  Rp.{" "}
+      {
+        editingItem && (
+          <div className={style.modalOverlay}>
+            <div className={style.modalContent}>
+              <h3>Edit Pengeluaran</h3>
+              <form className={style.ModalForm} onSubmit={handleEditSubmit}>
+                <div className={style.ModalFormDescription}>
+                  <label>Deskripsi :</label>
                   <input
-                    type="number"
-                    name="total"
-                    value={editData.price}
+                    type="text"
+                    name="deskripsi"
+                    value={editData.item}
                     onChange={(e) =>
-                      setEditData({ ...editData, price: e.target.value })
+                      setEditData({ ...editData, item: e.target.value })
                     }
                     required
                     autoComplete="off"
                   />
-                </p>
-              </div>
-              {error && <p style={{ color: "red" }}>{error}</p>}
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleCloseEdit}>
-                Cancel
-              </button>
-            </form>
+                </div>
+                <div className={style.ModalFormTotal}>
+                  <label>Total :</label>
+                  <p>
+                    Rp.{" "}
+                    <input
+                      type="number"
+                      name="total"
+                      value={editData.price}
+                      onChange={(e) =>
+                        setEditData({ ...editData, price: e.target.value })
+                      }
+                      required
+                      autoComplete="off"
+                    />
+                  </p>
+                </div>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <button type="submit">Update</button>
+                <button type="button" onClick={handleCloseEdit}>
+                  Cancel
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-      )
+        )
       }
-      {isAddingShoppingList && (
-        <div className={style2.EditingShoppingModalOverlay}>
-          <div className={style2.EditingShoppingModalFormContainer}>
-            <button className={style2.modalContent_close_button} onClick={() => {
-              setIsAddingShoppingList(false);
-              setFormDataShoppingList({ name: "", category_id: "" });
-            }}
-            >
-              <img
-                src={"/icons/x-circle.svg"}
-                alt="Close"
-                className={style1.modalContent_close_icon}
-              />
-            </button>
-            <label>Nama :</label>
-            <input
-              type="text"
-              name="name"
-              disabled
-              value={formDataShoppingList.name}
-              onChange={handleInputChangeShoppingList}
-
-              placeholder="Nama Barang"
-            />
-            <label>Kategori :</label>
-            <input
-              type="text"
-              name="category"
-              disabled
-              value={formDataShoppingList.category}
-              onChange={handleInputChangeShoppingList}
-
-              placeholder="Nama Barang"
-            />
-            <label>Deskripsi :</label>
-            <input
-              type="text"
-              name="description"
-              value={formDataShoppingList.description}
-              onChange={handleInputChangeShoppingList}
-              placeholder="Optional"
-            />
-            <label>Harga :</label>
-            <h3>Rp.
-              <input
-                type="number"
-                name="price"
-                value={formDataShoppingList.price}
-                onChange={handleInputChangeShoppingList}
-                placeholder="Harga Barang"
-              />
-            </h3>
-
-
-            {formDataShoppingList.price === "" ? (
-              <button disabled>Simpan</button>
-            ) : (
-              <button onClick={HandleSubmitShoppingList}>
-                Tambah
+      {
+        isAddingShoppingList && (
+          <div className={style2.EditingShoppingModalOverlay}>
+            <div className={style2.EditingShoppingModalFormContainer}>
+              <button className={style2.modalContent_close_button} onClick={() => {
+                setIsAddingShoppingList(false);
+                setFormDataShoppingList({ name: "", category_id: "" });
+              }}
+              >
+                <img
+                  src={"/icons/x-circle.svg"}
+                  alt="Close"
+                  className={style1.modalContent_close_icon}
+                />
               </button>
-            )}
+              <label>Nama :</label>
+              <input
+                type="text"
+                name="name"
+                disabled
+                value={formDataShoppingList.name}
+                onChange={handleInputChangeShoppingList}
+
+                placeholder="Nama Barang"
+              />
+              <label>Kategori :</label>
+              <input
+                type="text"
+                name="category"
+                disabled
+                value={formDataShoppingList.category}
+                onChange={handleInputChangeShoppingList}
+
+                placeholder="Nama Barang"
+              />
+              <label>Deskripsi :</label>
+              <input
+                type="text"
+                name="description"
+                value={formDataShoppingList.description}
+                onChange={handleInputChangeShoppingList}
+                placeholder="Optional"
+              />
+              <label>Harga :</label>
+              <h3>Rp.
+                <input
+                  type="number"
+                  name="price"
+                  value={formDataShoppingList.price}
+                  onChange={handleInputChangeShoppingList}
+                  placeholder="Harga Barang"
+                />
+              </h3>
+
+
+              {formDataShoppingList.price === "" ? (
+                <button disabled>Simpan</button>
+              ) : (
+                <button onClick={HandleSubmitShoppingList}>
+                  Tambah
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      )
+        )
       }
     </div >
   );
