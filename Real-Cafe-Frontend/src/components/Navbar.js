@@ -12,7 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const { userRole } = useContext(AuthContext); // Access userRole from context
-  const token = Cookies.get("token"); // Get the token from cookies
+  const token = localStorage.get("token"); // Get the token from cookies
   const Authority =
     userRole === "kasir"
       ? 1
@@ -27,7 +27,7 @@ const Navbar = () => {
     // Send a request to log the user out
     await axios.post(`${URL_API}/logout`).then(() => {
       // Remove the token and reset user role
-      Cookies.remove("token");
+      localStorage.remove("token");
       // setAuthority(null); // Reset authority on logout
       navigate("/");
     });
