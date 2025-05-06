@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
       }
       else if (!isOnRegisterPage) {
-        const token = Cookies.get("token");
+        const token = localStorage.getItem("token");
         if (token) {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
           try {
@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }) => {
           } catch (error) {
             console.error("Error fetching user role", error);
             setIsAuthenticated(false);
-            Cookies.remove("token");
-            Cookies.remove("role");
+            localStorage.remove("token");
+            localStorage.remove("role");
             navigate("/login");
           }
         } else {
