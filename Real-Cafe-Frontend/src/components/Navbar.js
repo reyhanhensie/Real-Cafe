@@ -27,7 +27,7 @@ const Navbar = () => {
     // Send a request to log the user out
     await axios.post(`${URL_API}/logout`).then(() => {
       // Remove the token and reset user role
-      localStorage.remove("token");
+      localStorage.removeItem("token");
       // setAuthority(null); // Reset authority on logout
       navigate("/");
     });

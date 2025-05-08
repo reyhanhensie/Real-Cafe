@@ -18,6 +18,7 @@ import AllTime from './Pages/Admin/AllTime';
 import Traffic from './Pages/Admin/Traffic';
 import MenuFotoEdit from './Pages/Admin/MenuFotoEdit';
 import Expense from './Pages/Admin/Expense';
+import Summary from './Pages/Admin/Summary';
 
 // EMPLOYEE
 import OrderForm from './Pages/Employee/OrderForm';
@@ -29,7 +30,6 @@ import OrderSummaryDrink from './Pages/Employee/OrderSummaryDrink';
 
 import Stock from './Pages/Employee/Stock';
 import Pengeluaran from './Pages/Employee/Pengeluaran';
-import Summary from './Pages/Employee/Summary';
 import Shift from './Pages/Employee/Shift';
 import ShoppingList from './Pages/Employee/ShoppingList';
 

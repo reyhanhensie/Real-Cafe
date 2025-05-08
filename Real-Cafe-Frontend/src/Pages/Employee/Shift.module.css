@@ -1,26 +1,38 @@
 .SummaryContent {
-  margin: 1%;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   overflow-y: scroll;
-  align-items: center;
-  min-height: 100vh;
+  overflow: hidden;
+  align-items: start;
+  height: 90vh;
   width: 100%;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .Title {
   top: 0;
 }
+
 .Header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
+.Content {
+  /* display: flex; */
+  max-height: 75vh;
+  overflow-y: scroll;
+}
+
 .Table {
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 100vw;
 }
 
 .list td {
@@ -65,8 +77,7 @@
   width: 24px;
   justify-content: center;
   align-items: center;
-  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-    brightness(93%) contrast(85%);
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
   cursor: pointer;
 }
 
@@ -237,6 +248,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .EditIcon img {
   display: block;
   margin-bottom: 5px;
@@ -244,8 +256,7 @@
   width: 24px;
   justify-content: center;
   align-items: center;
-  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-    brightness(93%) contrast(85%);
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
   cursor: pointer;
 }
 
@@ -269,8 +280,7 @@
   width: 24px;
   justify-content: center;
   align-items: center;
-  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-    brightness(93%) contrast(85%);
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
   cursor: pointer;
 }
 

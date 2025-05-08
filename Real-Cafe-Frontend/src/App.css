@@ -33,9 +33,9 @@ body {
   flex-grow: 1;
   box-sizing: border-box;
   margin: 0 ;
-  height: 92vh;
+  height: 100%;
   /* overflow-x: hidden; */
-  overflow-y: auto;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   justify-content: center;

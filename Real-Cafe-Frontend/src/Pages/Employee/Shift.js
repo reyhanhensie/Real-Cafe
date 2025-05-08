@@ -164,92 +164,95 @@ const Shift = () => {
           Print Shift
         </button>
       </div>
+      <div className={styles.Content}>
 
-      <table className={styles.Table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Meja</th>
-            <th>Harga</th>
-            <th>Keterangan</th>
-            <th>Edit</th>
-            <th>Kasir</th>
-            <th>Mulai</th>
-            <th>Selesai</th>
-            <th className={styles.print}>Print</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <React.Fragment key={order.id}>
-              <tr
-                className={styles.list}
-                onClick={() => toggleOrderItems(order.id)}
-              >
-                <td>{order.id}</td>
-                <td>{order.meja_no}</td>
-                <td>Rp. {PriceFormat(order.total_price)}</td>
-                <td>{order.message || "-"}</td>
-                <td className={styles.EditIcon}>
-                  <img
-                    src="/icons/edit.svg"
-                    alt="Edit"
-                    onClick={() => handleEditMessage(order.id, order.message)}
-                  />
-                </td>
-                <td>{order.kasir}</td>
-                <td>{FormatDate(order.created_at)}</td>
-                <td>{FormatDate(order.updated_at)}</td>
-                <td className={styles.print} onClick={() => print(order.id)}>
-                  <img src="/icons/print.svg" alt="print" />
-                </td>
-              </tr>
-              {expandedOrderId === order.id && (
-                <tr>
-                  <td colSpan="6">
-                    <ul>
-                      {order.items.map((item) => (
-                        <li className={styles.ExpandList} key={item.id}>
-                          <span className={styles.ExpandDot}>•</span>
-                          <span className={styles.ExpandName}>
-                            {item.item_name}
-                          </span>
-                          <span className={styles.ExpandQty}>
-                            Qty: {item.quantity}
-                          </span>
-                          <span className={styles.ExpandPrice}>Price: </span>
-                          <span className={styles.ExpandPriceValue}>
-                            Rp. {PriceFormat(item.price)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+        <table className={styles.Table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Meja</th>
+              <th>Harga</th>
+              <th>Keterangan</th>
+              <th>Edit</th>
+              <th>Kasir</th>
+              <th>Mulai</th>
+              <th>Selesai</th>
+              <th className={styles.print}>Print</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <React.Fragment key={order.id}>
+                <tr
+                  className={styles.list}
+                  onClick={() => toggleOrderItems(order.id)}
+                >
+                  <td>{order.id}</td>
+                  <td>{order.meja_no}</td>
+                  <td>Rp. {PriceFormat(order.total_price)}</td>
+                  <td>{order.message || "-"}</td>
+                  <td className={styles.EditIcon}>
+                    <img
+                      src="/icons/edit.svg"
+                      alt="Edit"
+                      onClick={() => handleEditMessage(order.id, order.message)}
+                    />
+                  </td>
+                  <td>{order.kasir}</td>
+                  <td>{FormatDate(order.created_at)}</td>
+                  <td>{FormatDate(order.updated_at)}</td>
+                  <td className={styles.print} onClick={() => print(order.id)}>
+                    <img src="/icons/print.svg" alt="print" />
                   </td>
                 </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="2">
-              <h2>Total</h2>
-            </td>
-            <td colSpan="2">
-              <h2>Rp. {PriceFormat(total)}</h2>
-            </td>
-            <td colSpan="4">
-              <button
-                className={styles.FinishShiftButton}
-                onClick={() => setIsModalOpen(true)}
-              >
-                Selesai Shift
-              </button>
-              {/* <button>Print Shift</button> */}
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+                {expandedOrderId === order.id && (
+                  <tr>
+                    <td colSpan="6">
+                      <ul>
+                        {order.items.map((item) => (
+                          <li className={styles.ExpandList} key={item.id}>
+                            <span className={styles.ExpandDot}>•</span>
+                            <span className={styles.ExpandName}>
+                              {item.item_name}
+                            </span>
+                            <span className={styles.ExpandQty}>
+                              Qty: {item.quantity}
+                            </span>
+                            <span className={styles.ExpandPrice}>Price: </span>
+                            <span className={styles.ExpandPriceValue}>
+                              Rp. {PriceFormat(item.price)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="2">
+                <h2>Total</h2>
+              </td>
+              <td colSpan="2">
+                <h2>Rp. {PriceFormat(total)}</h2>
+              </td>
+              <td colSpan="4">
+                <button
+                  className={styles.FinishShiftButton}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Selesai Shift
+                </button>
+                {/* <button>Print Shift</button> */}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
       {isPrintingShift && (
         <div className={styles.Printing}>
           <div className={styles.PrintingContent}>
