@@ -8,7 +8,7 @@ body {
   padding: 0;
   font-family: Arial, sans-serif;
   background-color: #dbc1ac;
-
+  overflow-y: auto; /* Always allow vertical scroll if needed */
   overflow-x: hidden; /* Prevents horizontal scroll */
   width: 100%; /* Ensures no overflow due to width */
   box-sizing: border-box; /* Includes padding and border in the element's width and height */
