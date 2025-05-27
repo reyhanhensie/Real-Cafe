@@ -1,21 +1,29 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { Chart } from "chart.js";
-
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+} from "chart.js";
 import { Bar } from "react-chartjs-2";
 import style from "./Cashflow.module.css";
-
 import API_URL from "../../apiconfig";
 
-// ChartJS.register(
-//   BarElement,
-//   CategoryScale,
-//   LinearScale,
-//   Tooltip,
-//   Legend,
-//   LineElement,
-//   PointElement
-// );
+// Register Chart.js components
+ChartJS.register(
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement
+);
 
 const MenuDropdown = () => {
   // State for API data and UI control
@@ -30,7 +38,7 @@ const MenuDropdown = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch initial data on mount (or you can remove if you want only on "Apply" button)
+  // Fetch initial data on mount
   useEffect(() => {
     fetchCashflowData();
   }, []);
@@ -40,10 +48,10 @@ const MenuDropdown = () => {
     setError(null);
     try {
       const today = new Date();
-      const timeHigh = today.toISOString().split('T')[0]; // e.g., "2025-05-27"
+      const timeHigh = today.toISOString().split('T')[0];
 
       const timeLowDate = new Date(today.getFullYear(), today.getMonth(), 1);
-      const timeLow = timeLowDate.toISOString().split('T')[0]; // e.g., "2025-05-01"
+      const timeLow = timeLowDate.toISOString().split('T')[0];
 
       const response = await axios.get(
         `${API_URL}/cashflow/Daily?time_low=${timeLow}&time_high=${timeHigh}`
@@ -63,7 +71,6 @@ const MenuDropdown = () => {
     setLoading(true);
     setError(null);
     try {
-      // Here you can customize the API URL parameters as per your backend
       const apiUrl = `${API_URL}/cashflow/${selectedPeriod}?time_low=${timeStart}&time_high=${timeEnd}`;
       const response = await axios.get(apiUrl);
       setApiResponse(response.data);
@@ -95,12 +102,17 @@ const MenuDropdown = () => {
   const chartData = useMemo(() => {
     if (!apiResponse) return { labels: [], datasets: [] };
 
-    const labels = Object.keys(apiResponse.pendapatan || {});
-    const pendapatanData = labels.map((date) => apiResponse.pendapatan[date] || 0);
-    const pengeluaranData = labels.map((date) => apiResponse.pengeluaran[date] || 0);
-    const belanjaData = labels.map((date) => apiResponse.belanja[date] || 0);
+    // Add safety checks for API response structure
+    const pendapatan = apiResponse.pendapatan || {};
+    const pengeluaran = apiResponse.pengeluaran || {};
+    const belanja = apiResponse.belanja || {};
 
-    // Correct formula: pendapatan - (pengeluaran - belanja)
+    const labels = Object.keys(pendapatan);
+    const pendapatanData = labels.map((date) => pendapatan[date] || 0);
+    const pengeluaranData = labels.map((date) => pengeluaran[date] || 0);
+    const belanjaData = labels.map((date) => belanja[date] || 0);
+
+    // Calculate net cash flow
     const bersihData = labels.map(
       (date, i) => pendapatanData[i] - (pengeluaranData[i] + belanjaData[i])
     );
@@ -111,18 +123,21 @@ const MenuDropdown = () => {
         {
           label: "Pendapatan",
           backgroundColor: "rgba(75, 192, 192, 0.6)",
+          borderColor: "rgba(75, 192, 192, 1)",
           data: pendapatanData,
           type: "bar",
         },
         {
           label: "Pengeluaran",
           backgroundColor: "rgba(255, 99, 132, 0.6)",
+          borderColor: "rgba(255, 99, 132, 1)",
           data: pengeluaranData,
           type: "bar",
         },
         {
           label: "Belanja",
           backgroundColor: "rgba(255, 206, 86, 0.6)",
+          borderColor: "rgba(255, 206, 86, 1)",
           data: belanjaData,
           type: "bar",
         },
@@ -132,18 +147,23 @@ const MenuDropdown = () => {
           backgroundColor: "rgba(153, 102, 255, 0.2)",
           data: bersihData,
           type: "line",
-          fill: true,
-          tension: 0.3, // smooth line
+          fill: false,
+          tension: 0.3,
           pointRadius: 4,
-          borderWidth: 2,
+          borderWidth: 3,
+          yAxisID: 'y',
         },
       ],
     };
   }, [apiResponse]);
 
-  // Chart options with nice tooltips and axis labels
+  // Chart options with mixed chart support
   const chartOptions = {
     responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
     plugins: {
       legend: {
         position: "top",
@@ -159,7 +179,7 @@ const MenuDropdown = () => {
         callbacks: {
           label: (ctx) => {
             const val = ctx.raw;
-            return `Rp ${val.toLocaleString("id-ID")}`;
+            return `${ctx.dataset.label}: Rp ${val.toLocaleString("id-ID")}`;
           },
         },
       },
@@ -179,6 +199,9 @@ const MenuDropdown = () => {
         },
       },
       y: {
+        type: 'linear',
+        display: true,
+        position: 'left',
         beginAtZero: true,
         ticks: {
           color: "#000",
@@ -196,12 +219,11 @@ const MenuDropdown = () => {
   };
 
   return (
-
     <div className={style.Finance}>
       <div className={style.Header}>
         <div className={style.filters} style={{ gap: "1rem", flexWrap: "wrap" }}>
           <div>
-            <label htmlFor="period">Periode :</label>
+            <label htmlFor="period">Periode:</label>
             <select
               id="period"
               value={selectedPeriod}
@@ -215,7 +237,7 @@ const MenuDropdown = () => {
           </div>
 
           <div>
-            <label htmlFor="timeStart">Mulai :</label>
+            <label htmlFor="timeStart">Mulai:</label>
             <input
               type="date"
               id="timeStart"
@@ -225,7 +247,7 @@ const MenuDropdown = () => {
           </div>
 
           <div>
-            <label htmlFor="timeEnd">Selesai :</label>
+            <label htmlFor="timeEnd">Selesai:</label>
             <input
               type="date"
               id="timeEnd"
@@ -239,18 +261,24 @@ const MenuDropdown = () => {
           </button>
         </div>
       </div>
-      <div className={style.Content}>
 
+      <div className={style.Content}>
         {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-        {apiResponse && (
+        
+        {loading && <p>Loading chart data...</p>}
+        
+        {apiResponse && chartData.labels.length > 0 && (
           <div className={style.chartContainer} style={{ marginTop: "2rem" }}>
             <h2>Cashflow Chart</h2>
             <Bar data={chartData} options={chartOptions} />
           </div>
         )}
+        
+        {apiResponse && chartData.labels.length === 0 && (
+          <p>No data available for the selected period.</p>
+        )}
       </div>
     </div>
-
   );
 };
 
