@@ -9,20 +9,24 @@ import {
   Legend,
   LineElement,
   PointElement,
+  BarController,
+  LineController,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 import style from "./Cashflow.module.css";
 import API_URL from "../../apiconfig";
 
-// Register Chart.js components
+// Register Chart.js components - IMPORTANT: Include controllers for mixed charts
 ChartJS.register(
   BarElement,
+  LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
-  LineElement,
-  PointElement
+  BarController,
+  LineController
 );
 
 const MenuDropdown = () => {
@@ -270,7 +274,7 @@ const MenuDropdown = () => {
         {apiResponse && chartData.labels.length > 0 && (
           <div className={style.chartContainer} style={{ marginTop: "2rem" }}>
             <h2>Cashflow Chart</h2>
-            <Bar data={chartData} options={chartOptions} />
+            <Chart type="bar" data={chartData} options={chartOptions} />
           </div>
         )}
         
