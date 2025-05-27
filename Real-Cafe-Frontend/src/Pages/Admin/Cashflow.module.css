@@ -1,0 +1,59 @@
+.Finance {
+  height: 100vh;
+  /* margin-top: 2%; */
+  display: flex;
+  flex-direction: column;
+  /* gap: 10px; */
+  /* padding: 10px; */
+  background-color: #dbc1ac;
+  justify-content: center;
+  align-items: center;
+}
+select,
+option {
+  background-color: #ecd9c4;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ecd9c4;
+}
+.Header {
+  width: 100%;
+  /* height: 5vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: #ecd9c4; */
+  border-radius: 8px;
+}
+.Content {
+  width: 150vh;
+  /* height: 25vh; */
+  /* display: flex; */
+  justify-content: center;
+  /* flex-direction: column; */
+}
+
+.filters {
+  display: flex;
+  flex-direction: row; /* Arrange filters in a row */
+  align-items: center; /* Vertically center-align items */
+  gap: 20px; /* Add spacing between filter elements */
+  margin-bottom: 20px; /* Add spacing below the filter row */
+}
+
+.filters label {
+  margin-right: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.filters select,
+.filters input[type="date"] {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #ecd9c4;
+}

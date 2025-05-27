@@ -71,6 +71,9 @@ Route::patch('/order/{id}/message', [OrderController::class, 'changeMessage']);
 Route::get('/finance/{menu}/{item}/{type}/{period}', [FinanceController::class, 'index']);
 Route::get('/AllTime/{menu}/{item}/{type}/{period}', [FinanceController::class, 'AllTime']);
 Route::get('/traffic/{menu}/{item}', [FinanceController::class, 'traffic']);
+// CASHFLOW
+Route::get('/cashflow/{period}', [FinanceController::class, 'cashflow']);
+
 
 
 Route::get('/print/{id}', [OrderController::class, 'printReceipt']);

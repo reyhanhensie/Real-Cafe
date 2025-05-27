@@ -19,6 +19,7 @@ import Traffic from './Pages/Admin/Traffic';
 import MenuFotoEdit from './Pages/Admin/MenuFotoEdit';
 import Expense from './Pages/Admin/Expense';
 import Summary from './Pages/Admin/Summary';
+import Cashflow from './Pages/Admin/Cashflow';
 
 // EMPLOYEE
 import OrderForm from './Pages/Employee/OrderForm';
@@ -84,6 +85,12 @@ const App = () => {
             path="/sale-revenue"
             element={
               <AdminRoute element={<Layout><Sale_Revenue /></Layout>} />
+            }
+          />
+          <Route
+            path="/cashflow"
+            element={
+              <AdminRoute element={<Layout><Cashflow /></Layout>} />
             }
           />
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Spending;
+use App\Models\ShoppingList;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -180,13 +182,14 @@ class FinanceController extends Controller
                     'price' => $group->sum('price'), // Sum the prices
                 ];
             })->values();
-            if ($data === null){
+            if ($data === null) {
                 return null;
             }
         }
         return response()->json($data);
     }
-        public function AllTime($menu, $item, $type, $period, Request $request)
+
+    public function AllTime($menu, $item, $type, $period, Request $request)
     {
         $time_low = $request->input('time_low');
         $time_high = $request->input('time_high');
@@ -289,6 +292,95 @@ class FinanceController extends Controller
                 return response()->json(['error' => 'Invalid data type'], 400);
         }
 
+
         return response()->json($groupedData);
+    }
+    public function cashflow($period, Request $request)
+    {
+        $time_low = $request->input('time_low');
+        $time_high = $request->input('time_high');
+        $time_low = Carbon::parse($time_low)->startOfDay();
+        $time_high = Carbon::parse($time_high)->endOfDay();
+
+        $orders = Order::whereBetween('created_at', [$time_low, $time_high])->get();
+        $spending = Spending::whereBetween('created_at', [$time_low, $time_high])->get();
+        $shopping = ShoppingList::whereBetween('created_at', [$time_low, $time_high])->get();
+
+        switch ($period) {
+            case 'Daily':
+                // Group the orders by the day
+                $groupedOrders = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->toDateString(); // Group by date
+                });
+                $groupedSpending = $spending->groupBy(function ($spend) {
+                    return Carbon::parse($spend->created_at)->toDateString(); // Group by date
+                });
+                $groupedShopping = $shopping->groupBy(function ($shop) {
+                    return Carbon::parse($shop->created_at)->toDateString(); // Group by date
+                });
+
+                break;
+
+            case 'Weekly':
+                // Group the orders by the week (start of the week)
+                $groupedOrders = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->startOfWeek()->toDateString(); // Group by the start of the week
+                });
+                $groupedSpending = $spending->groupBy(function ($spend) {
+                    return Carbon::parse($spend->created_at)->startOfWeek()->toDateString(); // Group by date
+                });
+                $groupedShopping = $shopping->groupBy(function ($shop) {
+                    return Carbon::parse($shop->created_at)->startOfWeek()->toDateString(); // Group by date
+                });
+                break;
+
+            case 'Monthly':
+                $groupedOrders = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->startOfMonth()->toDateString(); // Group by the start of the week
+                });
+                $groupedSpending = $spending->groupBy(function ($spend) {
+                    return Carbon::parse($spend->created_at)->startOfMonth()->toDateString(); // Group by the start of the week
+                });
+
+                $groupedShopping = $shopping->groupBy(function ($shop) {
+                    return Carbon::parse($shop->created_at)->startOfMonth()->toDateString(); // Group by date
+                });
+                break;
+            case 'Yearly':
+                $groupedOrders = $orders->groupBy(function ($order) {
+                    return Carbon::parse($order->created_at)->startOfYear()->toDateString(); // Group by the start of the week
+                });
+                $groupedSpending = $orders->groupBy(function ($spend) {
+                    return Carbon::parse($spend->created_at)->startOfYear()->toDateString(); // Group by the start of the week
+                });
+                $groupedShopping = $shopping->groupBy(function ($shop) {
+                    return Carbon::parse($shop->created_at)->startOfYear()->toDateString(); // Group by date
+                });
+                break;
+
+
+
+            default:
+                // Handle cases where the period is not recognized
+                return response()->json(['error' => 'Invalid period type'], 400);
+        }
+        $groupedOrders = $groupedOrders->map(function ($group) {
+            return $group->sum(function ($order) {
+                return $order->items->sum('price'); // Sum of total_price for each order
+            });
+        });
+        $groupedSpending = $groupedSpending->map(function ($items, $date) {
+            return $items->sum('total');
+        });
+        $groupedShopping = $groupedShopping->map(function ($items, $date) {
+            return $items->sum('price');
+        });
+        $data = [
+            'pendapatan' => $groupedOrders,
+            'pengeluaran' => $groupedSpending,
+            'belanja' => $groupedShopping,
+        ];
+
+        return response()->json($data);
     }
 }
