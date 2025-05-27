@@ -1,34 +1,25 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-} from "chart.js";
+import { Chart } from "chart.js";
+
 import { Bar } from "react-chartjs-2";
 import style from "./Cashflow.module.css";
 
 import API_URL from "../../apiconfig";
 
-ChartJS.register(
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement
-);
+// ChartJS.register(
+//   BarElement,
+//   CategoryScale,
+//   LinearScale,
+//   Tooltip,
+//   Legend,
+//   LineElement,
+//   PointElement
+// );
 
 const MenuDropdown = () => {
   // State for API data and UI control
   const [apiResponse, setApiResponse] = useState(null);
-  const [selectedType, setSelectedType] = useState("Revenue");
   const [selectedPeriod, setSelectedPeriod] = useState("Daily");
   const [timeStart, setTimeStart] = useState(() =>
     new Date().toISOString().slice(0, 10)
@@ -251,11 +242,11 @@ const MenuDropdown = () => {
       <div className={style.Content}>
 
         {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-        {apiResponse &&  (
+        {apiResponse && (
           <div className={style.chartContainer} style={{ marginTop: "2rem" }}>
             <h2>Cashflow Chart</h2>
             <Bar data={chartData} options={chartOptions} />
-           </div>
+          </div>
         )}
       </div>
     </div>
