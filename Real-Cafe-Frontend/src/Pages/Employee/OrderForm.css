@@ -24,16 +24,19 @@
   width: 20%;
 }
 
-.order-form-bayar button {
+/* .order-form-bayar button {
   background-color: red;
-}
+} */
 
 .qris-text {
   margin-left: 5px;
+  color: white;
+  /* background-color: red; */
 }
 
 .qris-check {
   color: red;
+  background-color: red;
   justify-content: center;
   align-items: center;
   align-self: center;
@@ -47,6 +50,7 @@
   width: 30px;
   height: 30px;
   background-color: #ece0d1;
+  
   border-radius: 8px;
   /* background-color: red; */
   /* display: flex; */

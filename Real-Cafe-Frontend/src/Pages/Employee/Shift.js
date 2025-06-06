@@ -7,6 +7,8 @@ const Shift = () => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [total, setTotal] = useState(0);
+  const [cashTotal, setCashTotal] = useState(0);
+  const [qrisTotal, setQrisTotal] = useState(0);
   const [shiftSpending, setShiftSpending] = useState(0); // Pengeluaran from API
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
   const [isPrintingShift, setIsPrintingShift] = useState(false); // Modal visibility
@@ -45,6 +47,16 @@ const Shift = () => {
           0
         );
         setTotal(totalPrice);
+
+        const cashTotal = orderResponse.data
+          .filter(order => order.qris === 0 || order.qris === false) // make sure you check both 1 or true
+          .reduce((acc, order) => acc + parseFloat(order.total_price), 0);
+        setCashTotal(cashTotal);
+
+        const qrisTotal = orderResponse.data
+          .filter(order => order.qris === 1 || order.qris === true) // make sure you check both 1 or true
+          .reduce((acc, order) => acc + parseFloat(order.total_price), 0);
+        setQrisTotal(qrisTotal);
 
         const spendingResponse = await axios.get(`${URL_API}/ShiftSpending`);
         const shiftSpendingValue = parseFloat(spendingResponse.data);
@@ -172,6 +184,7 @@ const Shift = () => {
               <th>ID</th>
               <th>Meja</th>
               <th>Harga</th>
+              <th className={styles.print}>Qris</th>
               <th>Keterangan</th>
               <th>Edit</th>
               <th>Kasir</th>
@@ -190,6 +203,13 @@ const Shift = () => {
                   <td>{order.id}</td>
                   <td>{order.meja_no}</td>
                   <td>Rp. {PriceFormat(order.total_price)}</td>
+                  <td className={styles.print}>
+                    {order.qris === 0 ? (
+                      <img src="/icons/cross-circle.svg" alt="QRIS Off" />
+                    ) : (
+                      <img src="/icons/check-circle.svg" alt="QRIS Off" />
+                    )}
+                  </td>
                   <td>{order.message || "-"}</td>
                   <td className={styles.EditIcon}>
                     <img
@@ -300,7 +320,7 @@ const Shift = () => {
         <div className={styles.Modal}>
           <div className={styles.ModalContent}>
             <h2>Selesai Shift</h2>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form className={styles.ModalForm} onSubmit={(e) => e.preventDefault()}>
               <label>
                 Kasir:
                 <input
@@ -316,8 +336,25 @@ const Shift = () => {
                   required
                 />
               </label>
+
               <label>
-                Penjualan:
+                Cash Penjualan:
+                <input
+                  type="text"
+                  value={ConstantPriceFormat(cashTotal)}
+                  readOnly
+                />
+              </label>
+              <label>
+                Qris Penjualan:
+                <input
+                  type="text"
+                  value={ConstantPriceFormat(qrisTotal)}
+                  readOnly
+                />
+              </label>
+              <label>
+                Total Penjualan:
                 <input
                   type="text"
                   value={ConstantPriceFormat(total)}
@@ -341,7 +378,15 @@ const Shift = () => {
                 />
               </label>
               <label>
-                Uang Laci:
+                Uang Laci Seharusnya:
+                <input
+                  type="text"
+                  value={ConstantPriceFormat(cashTotal - shiftSpending)}
+                  required
+                />
+              </label>
+              <label>
+                Uang Laci di Kasir:
                 <input
                   type="text"
                   value={uangLaci}

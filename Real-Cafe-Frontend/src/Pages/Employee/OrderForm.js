@@ -200,8 +200,10 @@ const OrderForm = () => {
         message: message,
         items: formattedItems,
         bayar: parseInt(Bayar, 10),
+        qris: Qris,
       });
-
+      console.log(typeof Qris);
+      console.log(Qris);
       const total = orderItems.reduce((sum, items) => sum + items.price * items.quantity, 0);
       // const Bayar = parseInt(Bayar, 10);
       const kembalian = Bayar - total;
@@ -410,29 +412,16 @@ const OrderForm = () => {
             />
             {!isBayarValid && <h4>Uang Kurang !</h4>}
 
-            <h3 className="qris-text">Qris :</h3>
+            {/* <h3 className="qris-text">Qris :</h3> */}
             {!Qris ? (
-
-              <button
-                className="qris-check"
-                onClick={() => setQris(true)}
-              // disabled={item.qty === 0}
-              >
-                <img
-                  src={"/icons/cross-circle.svg"}
-                  alt="Add Icon"
-                  className="is-qris"
-                />
+              <button className="qris-check" onClick={() => setQris(true)}>
+                <img src="/icons/cross-circle.svg" alt="QRIS Off" className="is-qris" />
+                <span className="qris-text">QRIS: OFF</span>
               </button>
             ) : (
-              <button className="qris-check"
-                onClick={() => setQris(false)}
-              >
-                <img
-                  src="/icons/check-circle.svg"
-                  alt="Mark"
-                  className="is-qris"
-                />
+              <button className="qris-check" onClick={() => setQris(false)}>
+                <img src="/icons/check-circle.svg" alt="QRIS On" className="is-qris" />
+                <span className="qris-text">QRIS: ON</span>
               </button>
             )}
           </div>

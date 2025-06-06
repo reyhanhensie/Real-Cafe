@@ -101,6 +101,7 @@ class OrderController extends Controller
             'items.*.id' => 'required|integer',
             'items.*.qty' => 'required|integer|min:1',
             'bayar' => 'required|integer|min:0', // Payment amount
+            'qris' => 'nullable|boolean', // QRIS payment option
         ]);
 
         $totalPrice = 0;
@@ -142,10 +143,11 @@ class OrderController extends Controller
         // Create the order
         $order = Order::create([
             'total_price' => $totalPrice,
-            'meja_no' => $request->meja, // Add meja_no here
+            'meja_no' => $request->meja, 
             'message' => $request->message,
             'kasir' => $request->kasir,
-            'bayar' => $bayar
+            'bayar' => $bayar,
+            'qris' => $request->qris ?? false
         ]);
 
         // Save order items
