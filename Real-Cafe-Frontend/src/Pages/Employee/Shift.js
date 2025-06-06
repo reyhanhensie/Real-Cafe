@@ -103,6 +103,8 @@ const Shift = () => {
       });
       console.log("Shift finished successfully:", response.data);
       setIsModalOpen(false); // Close the modal
+      // Refresh the page
+      window.location.reload();
     } catch (error) {
       console.error("Error finishing shift:", error);
     }
