@@ -1,5 +1,60 @@
 /* Base styles for larger screens */
 
+
+/* POP UP */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #ecd9c4;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 20%;
+}
+
+.order-form-bayar button {
+  background-color: red;
+}
+
+.qris-text {
+  margin-left: 5px;
+}
+
+.qris-check {
+  color: red;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  /* background-color: red;  */
+  display: flex;
+  height: 100%;
+  padding: 0;
+}
+
+.is-qris {
+  width: 30px;
+  height: 30px;
+  background-color: #ece0d1;
+  border-radius: 8px;
+  /* background-color: red; */
+  /* display: flex; */
+  /* flex: 1; */
+  /* align-items: center; */
+
+}
+
 /* In your OrderForm.css or a new print-specific stylesheet */
 
 .order-form {
@@ -50,10 +105,12 @@
   color: #4e3928;
   font-weight: 600;
 }
+
 .menu-section ul {
   margin-left: 0;
   padding-left: 0px;
 }
+
 .menu-section li {
   display: flex;
   justify-content: space-between;
@@ -64,20 +121,25 @@
   font-weight: 700;
   color: #4e3928;
 }
+
 li.menu-header {
   border-color: black;
   border-bottom-width: 2px;
   border-bottom-style: solid;
 }
+
 span.header-stock {
   flex: 1.5;
 }
+
 span.header-name {
   flex: 3;
 }
+
 span.header-price {
   flex: 2;
 }
+
 span.header-add {
   flex: 1;
   align-items: center;
@@ -98,6 +160,7 @@ span.header-add {
   text-align: left;
   text-indent: 15px;
 }
+
 .out-of-stock {
   color: red;
   font-weight: 700;
@@ -122,11 +185,11 @@ span.item-name {
 }
 
 .add-icon {
-  width: 20px; /* Adjust the size as needed */
+  width: 20px;
+  /* Adjust the size as needed */
   height: 20px;
   /* font-size: 16px; */
-  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-    brightness(93%) contrast(85%);
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
 }
 
 .item-add {
@@ -153,12 +216,13 @@ span.item-name {
   padding: 0;
   margin: 5px;
 }
+
 .add-icon-placeholder {
-  width: 20px; /* Adjust the size as needed */
+  width: 20px;
+  /* Adjust the size as needed */
   height: 20px;
   /* font-size: 16px; */
-  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-    brightness(93%) contrast(85%);
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
   border: none;
   cursor: default;
 }
@@ -190,6 +254,7 @@ span.item-name {
   text-align: right;
   align-items: center;
 }
+
 .order-cashier input {
   background-color: #ecd9c4;
   border-color: #4e3928;
@@ -204,9 +269,12 @@ span.item-name {
   /* padding-right: 5px; */
   /* margin-top: 15px; */
   display: inline-block;
-  white-space: wrap; /* Prevent text from wrapping */
-  overflow: visible; /* Hide overflow content */
+  white-space: wrap;
+  /* Prevent text from wrapping */
+  overflow: visible;
+  /* Hide overflow content */
 }
+
 .order-summary ul {
   padding-left: 10px;
 }
@@ -216,6 +284,7 @@ span.item-name {
   margin-bottom: 5px;
   font-weight: 500;
 }
+
 /* Remove the spinners for WebKit browsers */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
@@ -226,13 +295,15 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Remove the spinners for Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
-  appearance: textfield; /* Standard property */
+  appearance: textfield;
+  /* Standard property */
 }
 
 .order-name {
   flex: 3;
   font-weight: 500;
 }
+
 .order-price {
   flex: 3;
   align-items: right;
@@ -255,18 +326,20 @@ input[type="number"] {
   width: 30px;
   justify-content: center;
   align-items: center;
-  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-    brightness(93%) contrast(85%);
+  filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
 }
 
 .order-qty-container {
   display: flex;
 }
+
 .order-item {
   font-size: 18px;
 }
+
 button.order-qty-button {
-  width: 30px; /* Adjust the size as needed */
+  width: 30px;
+  /* Adjust the size as needed */
   height: 30px;
   /* font-size: 16px; */
   justify-content: center;
@@ -278,8 +351,7 @@ button.order-qty-button {
 
 .order-qty-button:disabled img {
   cursor: not-allowed;
-  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
-    brightness(100%) contrast(114%);
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg) brightness(100%) contrast(114%);
 }
 
 input.order-qty-input {
@@ -298,21 +370,24 @@ input.order-qty-input {
   width: 20px;
   -webkit-appearance: none;
   -moz-appearance: textfield;
-  appearance: textfield; /* Standard property */
+  appearance: textfield;
+  /* Standard property */
 }
+
 .order-qty-input.max {
   border: 2px solid black;
   background-color: #ffcccc;
   font-weight: bold;
   color: red;
 }
+
 .order-remove img {
   height: 30px;
   width: 30px;
-  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
-    brightness(100%) contrast(114%);
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg) brightness(100%) contrast(114%);
   cursor: pointer;
 }
+
 button.order-remove {
   height: 30px;
   width: 30px;
@@ -328,11 +403,13 @@ button.order-remove {
   font-weight: bold;
   margin-top: 10px;
 }
+
 .order-form-input {
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
+
 .order-form-message {
   display: flex;
   justify-content: center;
@@ -347,7 +424,8 @@ button.order-remove {
   border-style: solid;
   font-size: 16px;
   text-indent: 10px;
-  margin-top: 10px; /* Add margin on top to separate from Meja No */
+  margin-top: 10px;
+  /* Add margin on top to separate from Meja No */
   width: 95%;
   height: 50%;
   resize: none;
@@ -357,10 +435,12 @@ button.order-remove {
 .order-form-meja h3 {
   margin-right: 10px;
 }
+
 .order-form-meja h4 {
   margin-left: 10px;
   color: red;
 }
+
 .order-form-meja {
   display: flex;
   flex-direction: row;
@@ -381,17 +461,21 @@ button.order-remove {
   padding-right: 5px;
   margin-top: 15px;
   display: inline-block;
-  white-space: wrap; /* Prevent text from wrapping */
-  overflow: visible; /* Hide overflow content */
+  white-space: wrap;
+  /* Prevent text from wrapping */
+  overflow: visible;
+  /* Hide overflow content */
 }
 
 .order-form-bayar h3 {
   margin-right: 10px;
 }
+
 .order-form-bayar h4 {
   margin-left: 10px;
   color: red;
 }
+
 .order-form-bayar {
   display: flex;
   flex-direction: row;
@@ -412,9 +496,12 @@ button.order-remove {
   padding-right: 5px;
   margin-top: 15px;
   display: inline-block;
-  white-space: wrap; /* Prevent text from wrapping */
-  overflow: visible; /* Hide overflow content */
+  white-space: wrap;
+  /* Prevent text from wrapping */
+  overflow: visible;
+  /* Hide overflow content */
 }
+
 .order-form-input button {
   font-size: 20px;
   border-radius: 12px;
@@ -423,6 +510,7 @@ button.order-remove {
   color: #ecd9c4;
   cursor: pointer;
 }
+
 .order-form-input button:disabled {
   font-size: 20px;
   border-radius: 12px;
@@ -431,12 +519,13 @@ button.order-remove {
   color: #ecd9c4;
   cursor: not-allowed;
 }
+
 .item-add:disabled img {
   cursor: not-allowed;
-  width: 20px; /* Adjust the size as needed */
+  width: 20px;
+  /* Adjust the size as needed */
   height: 20px;
-  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
-    brightness(100%) contrast(114%);
+  filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg) brightness(100%) contrast(114%);
 }
 
 /* Media Queries for Portrait Mode on Phones */
@@ -494,11 +583,11 @@ button.order-remove {
   }
 
   .add-icon {
-    width: 20px; /* Adjust the size as needed */
+    width: 20px;
+    /* Adjust the size as needed */
     height: 16px;
     font-size: 16px;
-    filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg)
-      brightness(93%) contrast(85%);
+    filter: invert(20%) sepia(8%) saturate(2641%) hue-rotate(344deg) brightness(93%) contrast(85%);
   }
 
   .item-add {
@@ -509,10 +598,10 @@ button.order-remove {
     cursor: pointer;
     padding: 0;
   }
+
   .item-add:disabled img {
     cursor: not-allowed;
-    filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg)
-      brightness(100%) contrast(114%);
+    filter: invert(16%) sepia(99%) saturate(7470%) hue-rotate(4deg) brightness(100%) contrast(114%);
   }
 
   .item-add-placeholder {
@@ -597,6 +686,7 @@ button.order-remove {
     font-size: 18px;
     padding: 10px;
   }
+
   .order-cashier input {
     width: 80%;
     font-size: 16px;

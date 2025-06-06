@@ -30,6 +30,10 @@ const OrderForm = () => {
   const [SelectedCashier, setSelectedCashier] = useState("");
   const [loading, setLoading] = useState(false);
   const [cashierCode, setCashierCode] = useState("");
+  const [Qris, setQris] = useState(false);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupData, setPopupData] = useState({});
 
   // Cashier mapping
   const cashierMap = {
@@ -182,6 +186,8 @@ const OrderForm = () => {
     setLoading(true);
 
     try {
+
+
       const formattedItems = orderItems.map(item => ({
         type: item.type,
         id: item.id,
@@ -196,7 +202,11 @@ const OrderForm = () => {
         bayar: parseInt(Bayar, 10),
       });
 
-      alert(`Pesanan Berhasil Dibuat!, ID Pesanan : ${response.data.id}`);
+      const total = orderItems.reduce((sum, items) => sum + items.price * items.quantity, 0);
+      // const Bayar = parseInt(Bayar, 10);
+      const kembalian = Bayar - total;
+      setPopupData({ mejaNoNumber, total, Bayar, kembalian });
+      setShowPopup(true);
 
       // Reset form
       setOrderItems([]);
@@ -220,8 +230,27 @@ const OrderForm = () => {
   const isKasirValid = SelectedCashier !== "";
   const isBayarValid = parseInt(Bayar || 0, 10) >= totalPrice;
 
+
+
   return (
     <div className="order-form">
+      {showPopup && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2 className="text-lg font-bold mb-2">Pesanan berhasil dibuat</h2>
+            <p>No Meja: {popupData.mejaNoNumber}</p>
+            <p>Total: Rp{popupData.total}</p>
+            <p>Bayar: Rp{popupData.Bayar}</p>
+            <p>Kembalian: Rp{popupData.kembalian}</p>
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => setShowPopup(false)}
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
       <div className="menu-container">
         <div className="nav-bar">
           {categories.map((category) => (
@@ -252,6 +281,7 @@ const OrderForm = () => {
               );
 
               return (
+
                 <li key={item.id} className="menu-item">
                   <span className={`item-stock ${item.qty === 0 ? "out-of-stock" : ""}`}>
                     {item.qty || "Habis"}
@@ -379,6 +409,32 @@ const OrderForm = () => {
               min="0"
             />
             {!isBayarValid && <h4>Uang Kurang !</h4>}
+
+            <h3 className="qris-text">Qris :</h3>
+            {!Qris ? (
+
+              <button
+                className="qris-check"
+                onClick={() => setQris(true)}
+              // disabled={item.qty === 0}
+              >
+                <img
+                  src={"/icons/cross-circle.svg"}
+                  alt="Add Icon"
+                  className="is-qris"
+                />
+              </button>
+            ) : (
+              <button className="qris-check"
+                onClick={() => setQris(false)}
+              >
+                <img
+                  src="/icons/check-circle.svg"
+                  alt="Mark"
+                  className="is-qris"
+                />
+              </button>
+            )}
           </div>
 
           <h3>Total Price: Rp. {PriceFormat(totalPrice)}</h3>
