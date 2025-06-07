@@ -221,8 +221,23 @@ const OrderForm = () => {
       setQris(false);
       setError(null);
     } catch (err) {
-      setError("Error, Stock Habis");
-    } finally {
+      if (err.response) {
+        // If it's a 401 with a custom error message from the backend
+        if (err.response.status === 401 && err.response.data?.error) {
+          setError(err.response.data.error);
+        } else {
+          // Other errors (e.g. 500, 404)
+          setError("Error,Langsung Tanya Mas Reyhan 0851-6295-1337");
+        }
+      } else if (err.request) {
+        // Network error or no response received
+        setError("Server Offline");
+      } else {
+        // Anything else
+        setError("Error tidak diketahui.");
+      }
+    }
+    finally {
       setLoading(false);
     }
   };

@@ -114,7 +114,9 @@ class OrderController extends Controller
 
             // Check if there's enough stock
             if ($menuItem->qty < $item['qty']) {
-                return response()->json(['error' => 'Insufficient stock for item ' . $item['id']], 400);
+
+                return response()->json(['error' => 'Stok tidak cukup untuk Menu: ' . $menuItem->name], 401);
+                // return response()->json(['error' => 'Insufficient stock for item ' . $item['id']], 401);
             }
 
             // Calculate price and update total
@@ -143,7 +145,7 @@ class OrderController extends Controller
         // Create the order
         $order = Order::create([
             'total_price' => $totalPrice,
-            'meja_no' => $request->meja, 
+            'meja_no' => $request->meja,
             'message' => $request->message,
             'kasir' => $request->kasir,
             'bayar' => $bayar,
@@ -208,7 +210,7 @@ class OrderController extends Controller
             $NotaBayar = "Rp." . $bayar;
             $NotaKembalian = "Rp." . $kembalian;
 
-            $printer->text("----------------------------------------\n");            
+            $printer->text("----------------------------------------\n");
             $printer->text(sprintf("Jumlah Pesanan: %-3d %20s\n\n", $order->items->sum('quantity'), $NotaTotal));
             $printer->text(sprintf("Bayar: %-10s %22s\n", "", $NotaBayar));
             $printer->text(sprintf("Kembali: %-12s %18s\n", "", $NotaKembalian));
