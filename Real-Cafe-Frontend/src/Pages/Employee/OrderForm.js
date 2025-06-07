@@ -218,6 +218,7 @@ const OrderForm = () => {
       setBayar("");
       setSelectedCashier("");
       setCashierCode("");
+      setQris(false);
       setError(null);
     } catch (err) {
       setError("Error, Stock Habis");
