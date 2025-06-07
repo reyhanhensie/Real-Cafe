@@ -231,10 +231,10 @@ const OrderForm = () => {
         }
       } else if (err.request) {
         // Network error or no response received
-        setError("Server Offline");
+        setError("Server Offline, gak usah tanya mas Reyhan");
       } else {
         // Anything else
-        setError("Error tidak diketahui.");
+        setError("Error tidak diketahui, Langsung Tanya Mas Reyhan 0851-6295-1337");
       }
     }
     finally {
