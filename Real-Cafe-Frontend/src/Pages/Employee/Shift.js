@@ -19,6 +19,12 @@ const Shift = () => {
   const [isEditingMessage, setIsEditingMessage] = useState(false);
   const [form, setForm] = useState({ message: "" });
   const [editingOrderId, setEditingOrderId] = useState(null);
+  const [confirmationDialog, setConfirmationDialog] = useState({
+    isOpen: false,
+    orderId: null,
+  });
+  const [error, setError] = useState(null);
+
 
   const FormatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -167,6 +173,32 @@ const Shift = () => {
     }
   };
 
+  const handleEditQris = async (orderId) => {
+    setConfirmationDialog({ isOpen: true, orderId });
+  };
+  const cancelCompleteOrder = () => {
+    setConfirmationDialog({ isOpen: false, orderId: null });
+  };
+  const confirmCompleteOrder = async () => {
+    try {
+      await axios.patch(
+        `${URL_API}/order/${confirmationDialog.orderId}/qris`
+      );
+      // Update the QRIS status locally (toggle it)
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === confirmationDialog.orderId
+            ? { ...order, qris: order.qris === 1 || order.qris === true ? 0 : 1 }
+            : order
+        )
+      );
+    } catch (err) {
+      console.error("Error Changing Request:", err);
+      setError("Error Changing Request");
+    }
+    setConfirmationDialog({ isOpen: false, orderId: null });
+  };
+
   return (
     <div className={styles.SummaryContent}>
       <div className={styles.Header}>
@@ -186,7 +218,8 @@ const Shift = () => {
               <th>ID</th>
               <th>Meja</th>
               <th>Harga</th>
-              <th className={styles.print}>Qris</th>
+              <th className={styles.qris}>Qris</th>
+              <th className={styles.qris}>Edit</th>
               <th>Keterangan</th>
               <th>Edit</th>
               <th>Kasir</th>
@@ -205,13 +238,19 @@ const Shift = () => {
                   <td>{order.id}</td>
                   <td>{order.meja_no}</td>
                   <td>Rp. {PriceFormat(order.total_price)}</td>
-                  <td className={styles.print}>
+                  <td className={styles.qrisIMG}>
                     {order.qris === 0 ? (
                       <img src="/icons/cross-circle.svg" alt="QRIS Off" />
                     ) : (
                       <img src="/icons/check-circle.svg" alt="QRIS Off" />
                     )}
                   </td>
+                  <td className={styles.qrisEditIMG} >
+                    <img
+                      src="/icons/edit.svg"
+                      alt="Edit"
+                      onClick={() => handleEditQris(order.id)}
+                    /></td>
                   <td>{order.message || "-"}</td>
                   <td className={styles.EditIcon}>
                     <img
@@ -443,6 +482,22 @@ const Shift = () => {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {confirmationDialog.isOpen && (
+        <div className="confirmation-dialog">
+          <p>Ganti Status QRIS?</p>
+          <div className="confirmation-buttons">
+            <button onClick={cancelCompleteOrder} className="cancel-button">
+              Cancel
+            </button>
+            <button
+              onClick={confirmCompleteOrder}
+              className="confirm-button"
+            >
+              Iya
+            </button>
           </div>
         </div>
       )}

@@ -67,6 +67,7 @@ Route::patch('/order/{id}/complete', [OrderController::class, 'markAsCompleted']
 Route::patch('/order/{id}/complete/food', [OrderController::class, 'markAsCompletedFood']);
 Route::patch('/order/{id}/complete/drink', [OrderController::class, 'markAsCompletedDrink']);
 Route::patch('/order/{id}/message', [OrderController::class, 'changeMessage']);
+Route::patch('/order/{id}/qris', [OrderController::class, 'ChangeQrisStatus']);
 
 Route::get('/finance/{menu}/{item}/{type}/{period}', [FinanceController::class, 'index']);
 Route::get('/AllTime/{menu}/{item}/{type}/{period}', [FinanceController::class, 'AllTime']);
@@ -87,6 +88,7 @@ Route::get('/ShiftSummary', [ShiftsController::class, 'filter']); // Create an o
 Route::post('/ShiftChange', [ShiftsController::class, 'Shift']); // Create an order
 Route::get('/ShiftSpending', [SpendingController::class, 'ShiftSpending']); // Create an order
 Route::get('/ShiftSpendingFilter', [SpendingController::class, 'shift']); // Create an order
+
 
 Route::get('/ShiftOrder', [OrderController::class, 'ShiftOrders']); // Create an order
 Route::get('/ShiftOrderFilter', [OrderController::class, 'shift']); // Create an order

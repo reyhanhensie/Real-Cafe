@@ -397,6 +397,23 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Order message changed', 'order' => $order], 200);
     }
+    public function ChangeQrisStatus($id)
+    {
+        $order = Order::findOrFail($id);
+
+        // Update the status to 'completed'
+        if (($order->qris) == 1) {
+            $order->update([
+                'qris' => 0,
+            ]);
+        } else {
+            $order->update([
+                'qris' => 1,
+            ]);
+        }
+
+        return response()->json(['qris' => 'Order Qris Updated', 'order' => $order], 200);
+    }
 
 
 
