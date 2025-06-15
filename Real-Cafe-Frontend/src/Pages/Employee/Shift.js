@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import URL_API from "../../apiconfig";
 import styles from "./Shift.module.css"; // Import the CSS Module
+import OrderSummary from "./OrderSummary";
 
 const Shift = () => {
   const [orders, setOrders] = useState([]);
@@ -185,13 +186,27 @@ const Shift = () => {
         `${URL_API}/order/${confirmationDialog.orderId}/qris`
       );
       // Update the QRIS status locally (toggle it)
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.id === confirmationDialog.orderId
-            ? { ...order, qris: order.qris === 1 || order.qris === true ? 0 : 1 }
-            : order
-        )
+      const updatedOrders = orders.map((order) =>
+        order.id === confirmationDialog.orderId
+          ? { ...order, qris: order.qris === 1 || order.qris === true ? 0 : 1 }
+          : order
       );
+
+      setOrders(updatedOrders);
+
+      // Step 2: Recalculate cashTotal and qrisTotal
+      const updatedCashTotal = updatedOrders
+        .filter(order => order.qris === 0 || order.qris === false)
+        .reduce((acc, order) => acc + parseFloat(order.total_price), 0);
+      setCashTotal(updatedCashTotal);
+
+      const updatedQrisTotal = updatedOrders
+        .filter(order => order.qris === 1 || order.qris === true)
+        .reduce((acc, order) => acc + parseFloat(order.total_price), 0);
+      setQrisTotal(updatedQrisTotal);
+
+      // Step 3: Close the confirmation dialog
+      setConfirmationDialog({ isOpen: false, orderId: null });
     } catch (err) {
       console.error("Error Changing Request:", err);
       setError("Error Changing Request");
