@@ -106,7 +106,6 @@ const MenuDropdown = () => {
   const chartData = useMemo(() => {
     if (!apiResponse) return { labels: [], datasets: [] };
 
-    // Add safety checks for API response structure
     const pendapatan = apiResponse.pendapatan || {};
     const pengeluaran = apiResponse.pengeluaran || {};
     const belanja = apiResponse.belanja || {};
@@ -116,10 +115,25 @@ const MenuDropdown = () => {
     const pengeluaranData = labels.map((date) => pengeluaran[date] || 0);
     const belanjaData = labels.map((date) => belanja[date] || 0);
 
-    // Calculate net cash flow
     const bersihData = labels.map(
       (date, i) => pendapatanData[i] - (pengeluaranData[i] + belanjaData[i])
     );
+
+    // Cumulative Total Bersih
+    const cumulativeBersih = [];
+    let runningTotal = 0;
+    for (let i = 0; i < bersihData.length; i++) {
+      runningTotal += bersihData[i];
+      cumulativeBersih.push(runningTotal);
+    }
+
+    // Totals
+    const totals = {
+      pendapatan: pendapatanData.reduce((a, b) => a + b, 0),
+      pengeluaran: pengeluaranData.reduce((a, b) => a + b, 0),
+      belanja: belanjaData.reduce((a, b) => a + b, 0),
+      bersih: bersihData.reduce((a, b) => a + b, 0),
+    };
 
     return {
       labels,
@@ -157,7 +171,21 @@ const MenuDropdown = () => {
           borderWidth: 3,
           yAxisID: 'y',
         },
+        {
+          label: "Total Bersih (Kumulatif)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          data: cumulativeBersih,
+          type: "line",
+          fill: false,
+          borderDash: [5, 5],
+          tension: 0.3,
+          pointRadius: 3,
+          borderWidth: 2,
+          yAxisID: 'y',
+        },
       ],
+      totals, // 👈 Include totals to display below
     };
   }, [apiResponse]);
 
@@ -268,20 +296,32 @@ const MenuDropdown = () => {
 
       <div className={style.Content}>
         {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
-        
+
         {loading && <p>Loading chart data...</p>}
-        
+
         {apiResponse && chartData.labels.length > 0 && (
           <div className={style.chartContainer} style={{ marginTop: "2rem" }}>
             <h2>Cashflow Chart</h2>
             <Chart type="bar" data={chartData} options={chartOptions} />
           </div>
         )}
-        
+
         {apiResponse && chartData.labels.length === 0 && (
           <p>No data available for the selected period.</p>
         )}
+        
+        {apiResponse && chartData.totals && (
+          <div className={style.TotalInfo} style={{ marginTop: "2rem", fontWeight: "bold" }}>
+            <p>Total Pendapatan: Rp {chartData.totals.pendapatan.toLocaleString("id-ID")}</p>
+            <p>Total Pengeluaran: Rp {chartData.totals.pengeluaran.toLocaleString("id-ID")}</p>
+            <p>Total Belanja: Rp {chartData.totals.belanja.toLocaleString("id-ID")}</p>
+            <p>Total Bersih: Rp {chartData.totals.bersih.toLocaleString("id-ID")}</p>
+          </div>
+        )}
+
+
       </div>
+
     </div>
   );
 };
