@@ -480,13 +480,18 @@ class OrderController extends Controller
 
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("\nREAL CAFE JATIROTO\n");
-            $printer->text("========================================\n");
-            $printer->text("$timestamp\n");
-            $printer->text("Order ID: {$order->id}\n");
-            $printer->text("Meja No: {$order->meja_no}\n");
-            $printer->text("Kasir: {$order->kasir}\n");
-            $printer->text("========================================\n");
-            $printer->text("Menu                               Total\n");
+            $printer->text("================================================\n");
+            $printer->text("WIFI\n");
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO A\n");
+            $printer->text("Password  : Cafereal123\n");
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO B\n");
+            $printer->text("Password  : Cafereal123\n");
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO C\n");
+            $printer->text("Password  : Cafereal123\n");
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("================================================\n");
+            $printer->text("Menu                                       Total\n");
 
             // Group items by category
             $groupedItems = [];
