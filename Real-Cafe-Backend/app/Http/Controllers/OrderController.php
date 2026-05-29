@@ -166,15 +166,10 @@ class OrderController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("\nREAL CAFE JATIROTO\n");
             $printer->text("================================================\n");
-            $printer->text("WIFI\n");
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("SSID Wifi : REAL CAFE JATIROTO A\n");
-            $printer->text("Password  : Cafereal123\n");
-            $printer->text("SSID Wifi : REAL CAFE JATIROTO B\n");
-            $printer->text("Password  : Cafereal123\n");
-            $printer->text("SSID Wifi : REAL CAFE JATIROTO C\n");
-            $printer->text("Password  : Cafereal123\n");
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("$timestamp\n");
+            $printer->text("Order ID: {$order->id}\n");
+            $printer->text("Meja No: {$order->meja_no}\n");
+            $printer->text("Kasir: {$order->kasir}\n");
             $printer->text("================================================\n");
             $printer->text("Menu                                       Total\n");
 
@@ -201,7 +196,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-28s Rp.%d\n",
+                            " %-36s Rp.%d\n",
                             $item->item_name,
                             $item->price
                         )
@@ -217,18 +212,19 @@ class OrderController extends Controller
 
             $printer->text("------------------------------------------------\n");
             $printer->text(sprintf("Jumlah Pesanan: %-3d %20s\n\n", $order->items->sum('quantity'), $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %22s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %18s\n", "", $NotaKembalian));
+            $printer->text(sprintf("Bayar: %-18s %22s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-20s %18s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("================================================\n");
-            $printer->text("$timestamp\n");
-            $printer->text("Order ID: {$order->id}\n");
-            $printer->text("Meja No: {$order->meja_no}\n");
-            $printer->text("Kasir: {$order->kasir}\n");
-
-            $printer->text("================================================\n");
             $printer->text("TERIMA KASIH\n");
-            $printer->text("ATAS KUNJUNGANNYA\n\n\n");
+            $printer->text("ATAS KUNJUNGANNYA\n");
+            $printer->text("================================================\n");
+            $printer->text("WIFI\n\n");
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO A\n");
+            $printer->text("Password  : Cafereal123\n");
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO B\n");
+            $printer->text("Password  : Cafereal123\n\n\n");
 
             $printer->cut();
             $printer->close();
@@ -481,15 +477,10 @@ class OrderController extends Controller
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->text("\nREAL CAFE JATIROTO\n");
             $printer->text("================================================\n");
-            $printer->text("WIFI\n");
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("SSID Wifi : REAL CAFE JATIROTO A\n");
-            $printer->text("Password  : Cafereal123\n");
-            $printer->text("SSID Wifi : REAL CAFE JATIROTO B\n");
-            $printer->text("Password  : Cafereal123\n");
-            $printer->text("SSID Wifi : REAL CAFE JATIROTO C\n");
-            $printer->text("Password  : Cafereal123\n");
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("$timestamp\n");
+            $printer->text("Order ID: {$order->id}\n");
+            $printer->text("Meja No: {$order->meja_no}\n");
+            $printer->text("Kasir: {$order->kasir}\n");
             $printer->text("================================================\n");
             $printer->text("Menu                                       Total\n");
 
@@ -516,7 +507,7 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $printer->text(
                         sprintf(
-                            " -%-28s Rp.%d\n",
+                            " %-36s Rp.%d\n",
                             $item->item_name,
                             $item->price
                         )
@@ -531,16 +522,21 @@ class OrderController extends Controller
             $NotaBayar = "Rp." . $bayar;
             $NotaKembalian = "Rp." . $kembalian;
 
-            $printer->text("----------------------------------------\n");
+            $printer->text("------------------------------------------------\n");
             $printer->text(sprintf("Jumlah Pesanan: %-3d %20s\n\n", $order->items->sum('quantity'), $NotaTotal));
-            $printer->text(sprintf("Bayar: %-10s %22s\n", "", $NotaBayar));
-            $printer->text(sprintf("Kembali: %-12s %18s\n", "", $NotaKembalian));
+            $printer->text(sprintf("Bayar: %-18s %22s\n", "", $NotaBayar));
+            $printer->text(sprintf("Kembali: %-20s %18s\n", "", $NotaKembalian));
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("========================================\n");
+            $printer->text("================================================\n");
             $printer->text("TERIMA KASIH\n");
             $printer->text("ATAS KUNJUNGANNYA\n");
-            $printer->text("========================================\n");
-            $printer->text("PASSWORD :           cafereal123\n\n\n");
+            $printer->text("================================================\n");
+            $printer->text("WIFI\n\n");
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO A\n");
+            $printer->text("Password  : Cafereal123\n");
+            $printer->text("SSID Wifi : REAL CAFE JATIROTO B\n");
+            $printer->text("Password  : Cafereal123\n\n\n");
 
             $printer->cut();
             $printer->close();
